@@ -1,10 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>picoCTF2025: Virtual Machine 1 · zimeng xiong</title>
-</head>
+<script defer="" src="/prefetch.4aef6239e652.js"></script></head>
 <body>
 <nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
 <main><article><header><h1>picoCTF2025: Virtual Machine 1</h1><time datetime="2025-10-10T19:49:47-07:00">10 October 2025</time> </header><div><p>View solve on <a href="https://github.com/ZimengXiong/picoCTF-public/tree/master">github</a></p>
@@ -17,12 +18,12 @@ Archive:  Virtual-Machine-1.zip
   inflating: VirtualMachine1.dae
 </code></pre>
 <p>we get a COLLADA <code>.dae</code> file??? A 3D File?? I don't have anything that opens COLLADA files (blender removed support a few versions ago), so I converted it into a STEP file using <a href="https://imagetostl.com/convert/file/dae/to/step#convert">imagetostl.com</a>
-<img alt="" src="/media/262de66db43a8d9d05839f3d.png"/></p>
+<img alt="" decoding="async" height="1324" loading="lazy" src="/media/262de66db43a8d9d05839f3d.png" width="1687"/></p>
 <p>We get a sneak peak at the model, this will be fun...</p>
-<p><img alt="" src="/media/7ec2ac3515bb9957b1f42083.png"/></p>
+<p><img alt="" decoding="async" height="204" loading="lazy" src="/media/7ec2ac3515bb9957b1f42083.png" width="551"/></p>
 <p>It looks like OnShape has failed to translate the file (over 30 minutes)
 So I converted it into a .blend and opened it with blender</p>
-<p><img alt="" src="/media/c13e660bd0a394bc56de8687.png"/>
+<p><img alt="" decoding="async" height="1355" loading="lazy" src="/media/c13e660bd0a394bc56de8687.png" width="1283"/>
 And then exported it as <code>.glTF</code> so I could import it into OnShape (I think the gear relations and revolute parameters might come in handy)</p>
 <p>While it's converting (hopefully), lets inspect the model first, it seems to be some Lego Technic gears, with some differentials(?)</p>
 <p>Let's take a look at the instance first:</p>
@@ -32,23 +33,23 @@ Answer&gt; ^C⏎
 </code></pre>
 <p>It looks like the machine is a calculator, 50299 might in radians or degrees or turns, or something like that. We have to solve for the rotation of the output blue axle with relation to the red input axle.</p>
 <p>The OnShape finished importing:
-<img alt="" src="/media/b2eaff6b798c85e945693332.png"/></p>
+<img alt="" decoding="async" height="1050" loading="lazy" src="/media/b2eaff6b798c85e945693332.png" width="608"/></p>
 <h2>Breaking down into Sections</h2>
 <p>We can start working on it in sections:
-<img alt="" src="/media/24ed41ef47eabd5938379ea1.png"/></p>
+<img alt="" decoding="async" height="838" loading="lazy" src="/media/24ed41ef47eabd5938379ea1.png" width="950"/></p>
 <h3>Lego Gears</h3>
 <p>Here is a list of Lego gear sizes:
-<img alt="" src="/media/801eea047e8682743cd2fadf.png"/>
+<img alt="" decoding="async" height="375" loading="lazy" src="/media/801eea047e8682743cd2fadf.png" width="500"/>
 And a differential
-<img alt="" src="/media/3a1b67264bad255791cacb50.png"/>
+<img alt="" decoding="async" height="411" loading="lazy" src="/media/3a1b67264bad255791cacb50.png" width="518"/>
 The differential is a <code>Technic, Gear Differential 24-16 Tooth</code></p>
 <p>Separating the gears, we see a total of 6 distinct gear ratios
-<img alt="" src="/media/c5c03192fa163c4b16a360b3.png"/></p>
+<img alt="" decoding="async" height="444" loading="lazy" src="/media/c5c03192fa163c4b16a360b3.png" width="486"/></p>
 <h3>"Differential Equations", lol</h3>
 <p>The differential acts as an averaging mechanism for rotational velocities:</p>
 <p><span><span><math><semantics><mrow><msub><mi>ω</mi><mrow><mi>d</mi><mi>i</mi><mi>f</mi><mi>f</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>ω</mi><mn>1</mn></msub><mo>+</mo><msub><mi>ω</mi><mn>2</mn></msub></mrow><mn>2</mn></mfrac></mrow><annotation>\omega_{diff} = \frac{\omega_1 + \omega_2}{2}</annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span><span>d</span><span>i</span><span>f</span><span>f</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>ω</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>+</span><span><span>ω</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
 <p>where <span><span><math><semantics><mrow><msub><mi>ω</mi><mn>1</mn></msub></mrow><annotation>\omega_1</annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>ω</mi><mn>2</mn></msub></mrow><annotation>\omega_2</annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> are the input rotational velocities. Thus, we need to split this section into two parts, by first calculating <span><span><math><semantics><mrow><msub><mi>A</mi><mrow><mn>1</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>A_{1,1}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span><span>1</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>A</mi><mrow><mn>1</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>A_{1,2}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span><span>1</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>
-<img alt="" src="/media/03bb829afb70557e489a400a.png"/></p>
+<img alt="" decoding="async" height="457" loading="lazy" src="/media/03bb829afb70557e489a400a.png" width="500"/></p>
 <h2>Section I</h2>
 <p>We can derive both sections symbolically with python:</p>
 <pre><code>def A_1_1(A1):
@@ -61,9 +62,9 @@ The differential is a <code>Technic, Gear Differential 24-16 Tooth</code></p>
 </code></pre>
 <p>But wait...how do we handle rotation on different axis??
 Let's define positive rotation as clockwise when viewed from directly above. But the question still remains, how do we define rotation in the horizontal axis? Lets arbitrarily define it as clockwise when viewed from the right when viewed from the back:
-<img alt="" src="/media/754fdcb2fb7e3d334e4463bb.png"/>
+<img alt="" decoding="async" height="457" loading="lazy" src="/media/754fdcb2fb7e3d334e4463bb.png" width="500"/>
 Let's also give the gears on different axis different names:
-<img alt="" src="/media/e1c8659860f998ad1830a4cb.png"/>
+<img alt="" decoding="async" height="457" loading="lazy" src="/media/e1c8659860f998ad1830a4cb.png" width="500"/>
 With this configuration, if a pitch axial gear (with <span><span><math><semantics><mrow><mi>ω</mi></mrow><annotation>\omega</annotation></semantics></math></span><span><span><span></span><span>ω</span></span></span></span> b) is on the left of a yaw axial gear (with <span><span><math><semantics><mrow><mi>ω</mi></mrow><annotation>\omega</annotation></semantics></math></span><span><span><span></span><span>ω</span></span></span></span> a), then b=-a, and vice versa.</p>
 <p>Thus,</p>
 <pre><code>def B_1_1(iA1):
@@ -105,7 +106,7 @@ def B1(b1_1, b1_2):
 <p>Now, we can calculate <span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub></mrow><annotation>A_2</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>, first labeling the gears</p>
 <p><strong>Section I Summary:</strong>
 <span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mfrac><mn>24</mn><mn>8</mn></mfrac><mo>×</mo><mfrac><mn>16</mn><mn>8</mn></mfrac><mo>×</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_2 = -A_1 \times \frac{24}{8} \times \frac{16}{8} \times \frac{1}{2} = -A_1 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>8</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>24</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>8</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>16</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span>
-<img alt="" src="/media/ba54addb7a8de8040a4e6c78.png"/></p>
+<img alt="" decoding="async" height="457" loading="lazy" src="/media/ba54addb7a8de8040a4e6c78.png" width="500"/></p>
 <pre><code>def A2(B1):
     b0 = -B1
     b1 = b0
@@ -114,12 +115,12 @@ def B1(b1_1, b1_2):
 </code></pre>
 <h2>Section II</h2>
 <p>Let's annotate in a similar fashion Section #2
-<img alt="" src="/media/e4cdd2425957ba0076fc1de2.png"/>
+<img alt="" decoding="async" height="338" loading="lazy" src="/media/e4cdd2425957ba0076fc1de2.png" width="500"/>
 This looks daunting, but it's not that bad. We have 6 distinct sections.
 Let's number them:
-<img alt="" src="/media/bd0e320b60a8ecba71d888cc.png"/>
+<img alt="" decoding="async" height="338" loading="lazy" src="/media/bd0e320b60a8ecba71d888cc.png" width="500"/>
 We can start coding now!
-<img alt="" src="/media/a84a24d7a99b3d1981115eee.png"/>
+<img alt="" decoding="async" height="338" loading="lazy" src="/media/a84a24d7a99b3d1981115eee.png" width="500"/>
 We now have <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>2</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{2,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>2</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>2</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>B_{2,2}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>2</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>:</p>
 <pre><code>def A_2_1(iA2):
     """
@@ -158,8 +159,8 @@ def B_2_2(a2_1):
     return b0
 </code></pre>
 <p>Then, we can derive <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{3,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>:
-<img alt="" src="/media/d2b4ae54fa5090213a7e0223.png"/>
-<img alt="" src="/media/301f16451a595a82ac5c6754.png"/>
+<img alt="" decoding="async" height="514" loading="lazy" src="/media/d2b4ae54fa5090213a7e0223.png" width="329"/>
+<img alt="" decoding="async" height="338" loading="lazy" src="/media/301f16451a595a82ac5c6754.png" width="500"/>
 Ooops! It looks like this section (orange) is NOT a 36t, but 3x12. Now we can calculate <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{3,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>:</p>
 <pre><code>def B3_1(iB2):
     """
@@ -174,7 +175,7 @@ Ooops! It looks like this section (orange) is NOT a 36t, but 3x12. Now we can ca
     return b4
 </code></pre>
 <p>Moving on, we calculate <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>B_{3,2}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> using <span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub></mrow><annotation>A_2</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>
-<img alt="" src="/media/c367efb04a625a34553fc34e.png"/></p>
+<img alt="" decoding="async" height="338" loading="lazy" src="/media/c367efb04a625a34553fc34e.png" width="500"/></p>
 <pre><code>def B3_2(iA2):
     """
     Second branch of Section III
@@ -215,7 +216,7 @@ Ooops! It looks like this section (orange) is NOT a 36t, but 3x12. Now we can ca
 </code></pre>
 <h2>Section III</h2>
 <p>We notice a heuristic here,
-<img alt="" src="/media/2909b18b5e8cf7462a65dd8b.png"/>
+<img alt="" decoding="async" height="836" loading="lazy" src="/media/2909b18b5e8cf7462a65dd8b.png" width="500"/>
 We notice <span><span><math><semantics><mrow><msub><mi>A</mi><mn>1</mn></msub><mo>:</mo><msub><mi>A</mi><mn>2</mn></msub><mo>=</mo><msub><mi>A</mi><mn>3</mn></msub><mo>:</mo><msub><mi>A</mi><mn>4</mn></msub></mrow><annotation>A_1:A_2 = A_3:A_4</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>:</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>:</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>, so we can use the same transformation function for both sections.</p>
 <p><strong>Section III Summary:</strong>
 <span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msub><mi>A</mi><mn>2</mn></msub><mo>(</mo><msub><mi>A</mi><mn>3</mn></msub><mo>)</mo><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>3</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_4 = A_2(A_3) = -A_3 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span></p>

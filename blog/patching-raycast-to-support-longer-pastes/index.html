@@ -1,13 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Patching Raycast to Support Longer Pastes · zimeng xiong</title>
-</head>
+<script defer="" src="/prefetch.4aef6239e652.js"></script></head>
 <body>
 <nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
-<main><article><header><h1>Patching Raycast to Support Longer Pastes</h1><time datetime="2025-01-14T17:22:53.232Z">14 January 2025</time> </header><div><p><img alt="cantpaste.gif" src="/media/42a7ebc0e16104d3dc81dd41.gif"/></p>
+<main><article><header><h1>Patching Raycast to Support Longer Pastes</h1><time datetime="2025-01-14T17:22:53.232Z">14 January 2025</time> </header><div><p><img alt="cantpaste.gif" decoding="async" height="414" loading="lazy" src="/media/42a7ebc0e16104d3dc81dd41.gif" width="1724"/></p>
 <p>I like Raycast's <code>Ask AI</code> mode a lot: you type a question into the spotlight search bar followed by <code>Tab</code> and your assistant of choice (in this case, <code>Gemini 2.5 Flash Lite</code>) gives you the answer. However, for some reason, there is a max char limit on this field, which is really annoying when I am pasting stack traces or code in for a quick answer. Raycast's solution to this is to use the full "AI Chat" experience, but that ruins the point of the "Quick AI". So onto disassembling and patching it is.</p>
 <h1>Locating the Ask AI UI</h1>
 <h2>JS??</h2>
@@ -207,7 +208,7 @@ printf '\x16\x00\x00\x14' | dd of=Contents/MacOS/Raycast bs=1 seek=$((0x1f92234)
 <pre><code>codesign --force --sign - /Applications/Raycast.app
 </code></pre>
 <p>Now we can paste text as long as we want into Raycast!!
-<img alt="Pasting a long piece of text into patched Raycast" src="/media/2a8d8362fe65335507842b7d.gif"/></p>
+<img alt="Pasting a long piece of text into patched Raycast" decoding="async" height="414" loading="lazy" src="/media/2a8d8362fe65335507842b7d.gif" width="1724"/></p>
 <p>I have to say, this is one of the funner things I've done recently, RE is always thrilling 🙂.</p></div><a href="/blog/">← blog</a></article></main>
 </body>
 </html>

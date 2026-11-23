@@ -1,10 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Solving picoMini by CMU-Africa · zimeng xiong</title>
-</head>
+<script defer="" src="/prefetch.4aef6239e652.js"></script></head>
 <body>
 <nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
 <main><article><header><h1>Solving picoMini by CMU-Africa</h1><time datetime="2025-10-05T10:52:32-07:00">5 October 2025</time> </header><div><p>A friend recommended <a href="https://picoctf.org">picoCTF</a> to me. I had played similar games like <a href="https://overthewire.org/wargames/bandit/">banditOverTheWire</a> before, so I thought it would be pretty fun to try out.</p>
@@ -96,13 +97,13 @@ Using <code>hexedit</code>:</p>
 00000040   22 2C 23 1C  1C 28 37 29  2C 30 31 34  34 34 1F 27  ",#..(7),01444.'
 </code></pre>
 <p>Correcting the first two blocks to <code>FF D8</code> restores the JPG!
-<img alt="" src="/media/fcd447b1859e998d860e245f.jpg"/></p>
+<img alt="" decoding="async" height="500" loading="lazy" src="/media/fcd447b1859e998d860e245f.jpg" width="800"/></p>
 <hr/>
 <h2>Crack the Gate 1</h2>
 <p>We’re in the middle of an investigation. One of our persons of interest, ctf player, is believed to be hiding sensitive data inside a restricted web portal. We’ve uncovered the email address he uses to log in: <a href="mailto:ctf-player@picoctf.org">ctf-player@picoctf.org</a>. Unfortunately, we don’t know the password, and the usual guessing techniques haven’t worked. But something feels off... it’s almost like the developer left a secret way in. Can you figure it out?
 The website is running here. Can you try to log in?</p>
 <p>We are presented with a login scren:
-<img alt="" src="/media/a54ef792020bfe355da2a955.png"/></p>
+<img alt="" decoding="async" height="1045" loading="lazy" src="/media/a54ef792020bfe355da2a955.png" width="1224"/></p>
 <p>Upon inspection, we see the way the form handles passwords:</p>
 <pre><code>&lt;/head&gt;
 &lt;body&gt;
@@ -493,7 +494,7 @@ Hello, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bin/sh. Your shell is /b
 <h2>byp4ss3d</h2>
 <p>A university's online registration portal asks students to upload their ID cards for verification. The developer put some filters in place to ensure only image files are uploaded but are they enough? Take a look at how the upload is implemented. Maybe there's a way to slip past the checks and interact with the server in ways you shouldn't.
 You can access the web application at here!</p>
-<p><img alt="" src="/media/a5d16c6e796c70f23e361318.png"/></p>
+<p><img alt="" decoding="async" height="757" loading="lazy" src="/media/a5d16c6e796c70f23e361318.png" width="1356"/></p>
 <p>Uhhhh. I'm really lost for this one, so lets check out the hints!</p>
 <blockquote>
 <p>Apache can be tricked into executing non-PHP files as PHP with a <code>.htaccess</code> file.</p>
@@ -521,10 +522,10 @@ AddType application/x-httpd-php .jpg
 &lt;/html&gt;⏎
 </code></pre>
 <p>Then, we upload both files and navigate to the disguised webshell.
-<img alt="" src="/media/d46cd6649bdfc7b477292c9e.png"/>
+<img alt="" decoding="async" height="638" loading="lazy" src="/media/d46cd6649bdfc7b477292c9e.png" width="1351"/>
 We are presented with the webshell!!</p>
 <p>Poking around, we see <code>flag.txt</code> located two directories above, and since we can only execute one command at a time with no retention, we can <code>cat</code> the flag with <code>cd ../.. &amp;&amp; cat flag.txt</code></p>
-<p><img alt="" src="/media/276c12b04f9cb6b61d58e4fb.png"/></p>
+<p><img alt="" decoding="async" height="227" loading="lazy" src="/media/276c12b04f9cb6b61d58e4fb.png" width="928"/></p>
 <hr/>
 <h2>M1n10n'5_53cr37</h2>
 <p>Get ready for a mischievous adventure with your favorite Minions! 🕵️‍♂️💥 They’ve been up to their old tricks, and this time, they've hidden the flag in a devious way within the Android source code. Your task is to channel your inner Minion and dive into the disassembled or decompiled code. Watch out, because these little troublemakers have hidden the flag in multiple sneaky spots or maybe even pulled a fast one and concealed it in the same location!Put on your overalls, grab your magnifying glass, and get cracking. The Minions have left clues, and it's up to you to follow their trail and uncover the flag. Can you outwit these playful pranksters and find their secret? Let the Minion mischief begin!Find the android apk here Minions Mobile Application and try to get the flag.</p>
@@ -593,7 +594,7 @@ smali_classes3/com/example/picoctfimage/MainActivity.smali:    sget v3, Lcom/exa
 <pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; find . -type f -name "*.jpg"
 ./res/drawable/minion.jpg
 </code></pre>
-<p><img alt="" src="/media/047b33024795d2f04a3b43cc.jpg"/>
+<p><img alt="" decoding="async" height="711" loading="lazy" src="/media/047b33024795d2f04a3b43cc.jpg" width="800"/>
 Running <code>exiftool</code>, we get nothing</p>
 <pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; exiftool res/drawable/minion.jpg
 ExifTool Version Number         : 13.36
@@ -794,9 +795,9 @@ Access the Pico Bank Website Pico Bank Website and download the application.</p>
 <p>We start by installing <a href="https://developer.android.com/studio/install#linux">Android Studio</a> and running the app inside the emulator.</p>
 <pre><code>zimengx@endeavour ~/S/p/C/PicoBank&gt; ./android-studio/bin/studio.sh
 </code></pre>
-<p><img alt="" src="/media/8fe620e61e1247800b3e45af.png"/>
+<p><img alt="" decoding="async" height="1115" loading="lazy" src="/media/8fe620e61e1247800b3e45af.png" width="707"/>
 I didn't expect Android AOSP to be this barebones!
-<img alt="" src="/media/d535c2ed475e7c87cb88bc73.png"/>
+<img alt="" decoding="async" height="973" loading="lazy" src="/media/d535c2ed475e7c87cb88bc73.png" width="452"/>
 We need to login with a username and password. Let's decompile the apk again with apktool.</p>
 <pre><code>(.venv) zimengx@endeavour ~/S/p/C/PicoBank [0|1]&gt; java -jar apktool_2.12.1.jar d pico-bank.apk -o pico-bank-out
 I: Using Apktool 2.12.1 on pico-bank.apk with 8 threads
@@ -822,7 +823,7 @@ I: Copying unknown files...
     const-string v2, "tricky1990"
 </code></pre>
 <p>Looks like the password may be <code>tricky1990</code>!
-<img alt="" src="/media/550480b80f713cfa63108ce3.png"/>
+<img alt="" decoding="async" height="1008" loading="lazy" src="/media/550480b80f713cfa63108ce3.png" width="486"/>
 What?? OTP?!</p>
 <p>The OTP might also be hardcoded into the application, or it could be hit by an API endpoint. Lets try the former first.</p>
 <p>In the same folder as <code>Login$1.smali</code>, we have <code>OTP.smali</code>, <code>OTP$1.smali</code>, and so on. Given the user/pass both used information given about <code>johnson</code>, the OTP is likely connected to his last transaction amount: <code>34567</code>, as it cannot be the text <code>blue</code>.</p>
@@ -911,7 +912,7 @@ smali_classes3/com/example/picobank/OTP.smali:    sget v0, Lcom/example/picobank
 ...
 </code></pre>
 <p>Haha, there we go! <code>name="otp_value"&gt;9673&lt;/string&gt;</code>
-<img alt="" src="/media/c081251da4e74d6964a2215a.png"/>
+<img alt="" decoding="async" height="962" loading="lazy" src="/media/c081251da4e74d6964a2215a.png" width="467"/>
 We get a hint: "Have you analyzed the server's responses when handling OTP requests"</p>
 <p>We know the endpoint is at <code>/verify-otp</code>, so lets try sending a POST. We assume the payload is just titled "otp".</p>
 <pre><code>(.venv) zimengx@endeavour ~/S/p/C/PicoBank&gt; curl -X POST "http://saffron-estate.picoctf.net:58641/verify-otp" \
@@ -926,7 +927,7 @@ We get a hint: "Have you analyzed the server's responses when handling OTP reque
 <blockquote>
 <p>The other part of the flag is hidden in the app</p>
 </blockquote>
-<p><img alt="" src="/media/65e367d990c185a1441e023e.png"/>
+<p><img alt="" decoding="async" height="975" loading="lazy" src="/media/65e367d990c185a1441e023e.png" width="478"/>
 Looking at the app, the transactions immediately stand out. They are 7-8 length sequences of 1s and 0s, The front 1 is likely not needed and a red herring as ASCII only makes use of 7 bits (with the first bit indicating UTF8 encoding as was later appended to the ASCII standard, just happened to read about the ASCII &amp; UTF-8 standard a few days ago :)). If we take these strings and decode it, we might get the flag.</p>
 <p>Since we can't highlight and copy the text, copying it down by hand is too slow. Lets try to see if we can find the values in the code.</p>
 <pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out&gt; grep -R "1110000"
@@ -1006,7 +1007,7 @@ picoCTF{1_l13d_4b0ut_b31ng_⏎
 <p>Solved!!</p>
 <h2>Final Rank</h2>
 <p>This places me at #115 on the global leader-board and #99 on the HS/College one. Not sure how its ranked. Likely by time of achieving that score rather than time from first problem solve to last problem. I will keep an eye out for these going forward so I can solve them as soon as they come out next time. Fun experience overall. 10/10 recommend.</p>
-<p><img alt="" src="/media/a318ce315f80f5a821c0e23f.png"/>
-<img alt="" src="/media/a6f029801dd09bae548df120.png"/></p></div><a href="/blog/">← blog</a></article></main>
+<p><img alt="" decoding="async" height="69" loading="lazy" src="/media/a318ce315f80f5a821c0e23f.png" width="1049"/>
+<img alt="" decoding="async" height="68" loading="lazy" src="/media/a6f029801dd09bae548df120.png" width="1045"/></p></div><a href="/blog/">← blog</a></article></main>
 </body>
 </html>
