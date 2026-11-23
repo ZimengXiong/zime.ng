@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents will need a good window manager · zimeng xiong</title>
+</head>
+<body>
+<nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
+<main><article><header><h1>Agents will need a good window manager</h1><time datetime="2026-04-14T05:58:04Z">13 April 2026</time> </header><div><p>After working on <a href="https://github.com/zimengxiong/winmux">WinMux</a> for the past weekish, I think this is part of the next step to something like Claude Cowork being actually usable. If we ignore the "agents shouldn't be using the same interface as humans to use computers" argument (which I agree with, but it will be long before applications properly support this), as agents start to use computers, they will inevitably run come across the same issues us developers have faced &amp; solved long ago—that windows are annoying.</p>
+<p>My blog doesn't support embedding videos, so checkout a demo (pause if you want to read the prompt) <a href="/media/f2514ead66be32e3ff79b10b.mp4">here</a></p>
+<h1>Productive devs use a window manager</h1>
+<p>I have been using tiling window managers for nearly 7 years now, and whenever I use another computer, I'm just in awe of how anyone gets work done without one—all your windows are just on top of each other, and you have to play a game of whack-a-mole finding click surfaces of windows covered by other windows, and if you are unlucky, you have to DRAG windows away for the sole purpose of accessing other windows below it, it really is hell. Computer-use agents would benefit much greatly if they could manage windows directly (they suck at anything mouse related, let alone dragging).</p>
+<h1>The future is agent-managed</h1>
+<p>In the same way I don't really get OpenClaw, I also don't think I will appreciate asking an agent to arrange my workspaces, but I bet that non-technical people would. Being able to just say "put my Chrome on the left 60/40 split with Excel on the right" (and not have to learn any keyboard shortcuts), especially when done right (always on/single tap voice assistant trigger), could be meaningfully faster for people who used to be accustomed to dragging windows. And it doesn't have to stop there, we dont need, strictly speaking, tiling window managers. We could just as well do a agent-managed non-tiling window manager, which is what <a href="https://github.com/zimengxiong/winmux?tab=readme-ov-file#unmanaged-mode-wip">unmanaged mode</a> in WinMux achieves, automating corner-snapping like results.</p>
+<p>Agentic window managers suffer from the same problem as every other agentic assistant before it: they know some, but not everything about me. With something like neuralink, agentic window managing would be sick, but at least for now, I don't think it's for me. There are some cases in which it is nice, like after a long project spanning multiple workspaces and tens of windows later, asking it to clean up after me, but I usually just do a <code>shutdown -r now</code> anyways.</p>
+<h1>Implementing an agent-wm interface</h1>
+<p>We implemented the agent-wm interface in WinMux by prioritizing three things:</p>
+<ol>
+<li>reduce as many tool-call turns the agent needs to make an update. we absolutely should not expose default aerospace/yabai like commands, such as <code>yabai -m &lt;window&gt; &lt;space&gt;</code>, that would mean arranging 10 windows would require anywhere between 20-100 tool calls and individual commands.</li>
+<li>reduce cognitive load as much as possible. our agents are dumb (local/not-so-good open weight), because we prioritize TPS. we don't want agents to spend time reasoning relative window positions.</li>
+<li>separate individual actions with bulk actions, we should provide a shortcut for small actions like "maximize my chrome window" vs "so I have two windows social media, group them into a tab group and then group my non social media w chrome..."</li>
+</ol>
+<p>WinMux exposes an agent command that does three things: <code>query</code>, <code>apply</code>, and <code>skill</code>. The agent first runs <code>winmux agent skill</code>, which prints the rules of the interface (which can also be added as regular <code>skills.sh</code> skills, then runs <code>winmux agent query --path /tmp/winmux-agent.json</code>. That writes a JSON snapshot of the current world: all active windows, their titles and app names, what workspace they are in, what tab group they belong to, and a simplified view of the layout.</p>
+<p>The important part is that the agent does not need to understand WinMux’s internal tree directly. The file gives it a more agent-friendly model: windows, tab groups, panes, relations like “left of” / “below,” and current size proportions to reduce cognitive load (#2), as it's easier for us to provide reliable relative positions than models known to struggle with spatial reasoning. Then there is one editable section called <code>edit</code>:</p>
+<pre><code>{
+  "worldId": "...",
+  "inventory": {
+    "windows": [
+      {
+        "windowId": 282,
+        "appName": "Google Chrome",
+        "title": "WinMux",
+        "workspace": "1",
+        "tabGroupId": "tabgroup-282"
+      }
+    ],
+    "tabGroups": [
+      {
+        "tabGroupId": "tabgroup-282",
+        "workspace": "1",
+        "tabs": [282, 2518, 2523],
+        "activeWindowId": 282
+      }
+    ]
+  },
+  "reasoning": {
+    "panes": [],
+    "relations": [],
+    "rawTrees": []
+  },
+  "edit": {
+    "operations": [],
+    "layout": null
+  }
+}
+</code></pre>
+<p>For small changes, the agent writes operations:</p>
+<pre><code>{
+  "edit": {
+    "operations": [
+      { "type": "focusWindow", "windowId": 123 },
+      { "type": "moveWindowToWorkspace", "windowId": 123, "workspace": "2" },
+      { "type": "setPaneSize", "pane": { "windowId": 123 }, "axis": "vertical", "size": 0.75 }
+    ]
+  }
+}
+</code></pre>
+<p>For bigger rearrangements, it can describe the whole workspace declaratively. This is the case I care about most for “set up my workspace” prompts:</p>
+<pre><code>{
+  "edit": {
+    "layout": {
+      "workspaces": [
+        {
+          "name": "1",
+          "layout": {
+            "kind": "split",
+            "direction": "horizontal",
+            "children": [
+              {
+                "kind": "tabGroup",
+                "tabs": [282, 2518, 2523],
+                "activeWindowId": 282,
+                "size": 0.8
+              },
+              {
+                "kind": "split",
+                "direction": "vertical",
+                "size": 0.2,
+                "children": [
+                  {
+                    "kind": "tabGroup",
+                    "tabs": [1638, 2014, 2263],
+                    "activeWindowId": 1638,
+                    "size": 0.7
+                  },
+                  {
+                    "kind": "window",
+                    "windowId": 1219,
+                    "size": 0.3
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+</code></pre>
+<p>That says: Chrome tabs take 80% of the width, the right column takes 20%, and inside that right column the IDE tab group sits above the terminal. Tab groups are treated as first-class things in this file, even though internally they are just a specific kind of WinMux container.</p>
+<p>This, as obvious, is much better than making the agent loop through a bunch of tiny CLI calls. It can query once, reason over the entire state, edit one file, and apply once. There is also a <code>worldId</code> guard so if the window world changes underneath it, WinMux rejects the stale file and makes the agent query again.</p>
+<p>It is still not magic. Agents, like humans, will absolutely call functions with wrong names, miss a Chrome window, or misunderstand whether “80/20” applies horizontally or vertically. So the interface has to be annoyingly explicit: exact schemas, stable IDs, aliases for tab groups created in the same edit, and fields like <code>axis: "vertical"</code> when the layout could be ambiguous (unlike humans, agents don't complain when asked to be more specific).</p></div><a href="/blog/">← blog</a></article></main>
+</body>
+</html>

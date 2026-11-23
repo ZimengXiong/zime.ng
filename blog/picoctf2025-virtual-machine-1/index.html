@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>picoCTF2025: Virtual Machine 1 · zimeng xiong</title>
+</head>
+<body>
+<nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
+<main><article><header><h1>picoCTF2025: Virtual Machine 1</h1><time datetime="2025-10-10T19:49:47-07:00">10 October 2025</time> </header><div><p>View solve on <a href="https://github.com/ZimengXiong/picoCTF-public/tree/master">github</a></p>
+<p>I thought it would be a good idea to try another picoCTF problem. I noticed none of the problems on last week's picoCTF Mini were <code>hard</code>, so I picked <a href="https://play.picoctf.org/practice/challenge/386?difficulty=3&amp;page=1">Virtual Machine 1</a>. This problem has <code>429 solves</code> and a whopping <code>30% satisfication rate</code></p>
+<p><strong>The enemy has upgraded their mechanical analog computer. Start an instance to begin.We grabbed this design doc from enemy servers: <a href="https://artifacts.picoctf.net/c/265/Virtual-Machine-1.zip">Download</a>. We know that the rotation of the red axle is the input and the rotation of th axle is output. Reverse engineer the me blueechanism and get past their checker program:thnc saturn.picoctf.net 60698.</strong></p>
+<h2>CAD Model</h2>
+<p>First off,</p>
+<pre><code>zimengx@endeavour ~/S/p/P/virtualMachine1&gt; unzip Virtual-Machine-1.zip
+Archive:  Virtual-Machine-1.zip
+  inflating: VirtualMachine1.dae
+</code></pre>
+<p>we get a COLLADA <code>.dae</code> file??? A 3D File?? I don't have anything that opens COLLADA files (blender removed support a few versions ago), so I converted it into a STEP file using <a href="https://imagetostl.com/convert/file/dae/to/step#convert">imagetostl.com</a>
+<img alt="" src="/media/262de66db43a8d9d05839f3d.png"/></p>
+<p>We get a sneak peak at the model, this will be fun...</p>
+<p><img alt="" src="/media/7ec2ac3515bb9957b1f42083.png"/></p>
+<p>It looks like OnShape has failed to translate the file (over 30 minutes)
+So I converted it into a .blend and opened it with blender</p>
+<p><img alt="" src="/media/c13e660bd0a394bc56de8687.png"/>
+And then exported it as <code>.glTF</code> so I could import it into OnShape (I think the gear relations and revolute parameters might come in handy)</p>
+<p>While it's converting (hopefully), lets inspect the model first, it seems to be some Lego Technic gears, with some differentials(?)</p>
+<p>Let's take a look at the instance first:</p>
+<pre><code>zimengx@endeavour ~/S/p/P/virtualMachine1 [SIGINT]&gt; nc saturn.picoctf.net 50299
+If the input to the machine is 20698, what is the output?
+Answer&gt; ^C⏎
+</code></pre>
+<p>It looks like the machine is a calculator, 50299 might in radians or degrees or turns, or something like that. We have to solve for the rotation of the output blue axle with relation to the red input axle.</p>
+<p>The OnShape finished importing:
+<img alt="" src="/media/b2eaff6b798c85e945693332.png"/></p>
+<h2>Breaking down into Sections</h2>
+<p>We can start working on it in sections:
+<img alt="" src="/media/24ed41ef47eabd5938379ea1.png"/></p>
+<h3>Lego Gears</h3>
+<p>Here is a list of Lego gear sizes:
+<img alt="" src="/media/801eea047e8682743cd2fadf.png"/>
+And a differential
+<img alt="" src="/media/3a1b67264bad255791cacb50.png"/>
+The differential is a <code>Technic, Gear Differential 24-16 Tooth</code></p>
+<p>Separating the gears, we see a total of 6 distinct gear ratios
+<img alt="" src="/media/c5c03192fa163c4b16a360b3.png"/></p>
+<h3>"Differential Equations", lol</h3>
+<p>The differential acts as an averaging mechanism for rotational velocities:</p>
+<p><span><span><math><semantics><mrow><msub><mi>ω</mi><mrow><mi>d</mi><mi>i</mi><mi>f</mi><mi>f</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>ω</mi><mn>1</mn></msub><mo>+</mo><msub><mi>ω</mi><mn>2</mn></msub></mrow><mn>2</mn></mfrac></mrow><annotation>\omega_{diff} = \frac{\omega_1 + \omega_2}{2}</annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span><span>d</span><span>i</span><span>f</span><span>f</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>ω</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>+</span><span><span>ω</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
+<p>where <span><span><math><semantics><mrow><msub><mi>ω</mi><mn>1</mn></msub></mrow><annotation>\omega_1</annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>ω</mi><mn>2</mn></msub></mrow><annotation>\omega_2</annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> are the input rotational velocities. Thus, we need to split this section into two parts, by first calculating <span><span><math><semantics><mrow><msub><mi>A</mi><mrow><mn>1</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>A_{1,1}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span><span>1</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>A</mi><mrow><mn>1</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>A_{1,2}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span><span>1</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>
+<img alt="" src="/media/03bb829afb70557e489a400a.png"/></p>
+<h2>Section I</h2>
+<p>We can derive both sections symbolically with python:</p>
+<pre><code>def A_1_1(A1):
+	a0 = A1
+	a1 = -a0*24/8
+	a2 = a1
+	a3 = a2*16/8
+	a4 = -a3
+	a5 = a4
+</code></pre>
+<p>But wait...how do we handle rotation on different axis??
+Let's define positive rotation as clockwise when viewed from directly above. But the question still remains, how do we define rotation in the horizontal axis? Lets arbitrarily define it as clockwise when viewed from the right when viewed from the back:
+<img alt="" src="/media/754fdcb2fb7e3d334e4463bb.png"/>
+Let's also give the gears on different axis different names:
+<img alt="" src="/media/e1c8659860f998ad1830a4cb.png"/>
+With this configuration, if a pitch axial gear (with <span><span><math><semantics><mrow><mi>ω</mi></mrow><annotation>\omega</annotation></semantics></math></span><span><span><span></span><span>ω</span></span></span></span> b) is on the left of a yaw axial gear (with <span><span><math><semantics><mrow><mi>ω</mi></mrow><annotation>\omega</annotation></semantics></math></span><span><span><span></span><span>ω</span></span></span></span> a), then b=-a, and vice versa.</p>
+<p>Thus,</p>
+<pre><code>def B_1_1(iA1):
+    """
+    Calculate first branch output for Section I
+    Gear ratios: 24T:8T → 16T:8T → sign inversion
+    """
+    a0 = iA1
+    a1 = -a0*24/8    # First gear reduction (24:8)
+    a2 = a1
+    a3 = -a2*16/8   # Second gear reduction (16:8)
+    a4 = -a3        # Sign inversion
+    a5 = a4
+    b6 = -a5        # Final sign inversion
+    return b6
+
+def B_1_2(iA1):
+    """
+    Calculate second branch output for Section I
+    Gear ratios: 24T:12T → 16T:8T → 16T:8T
+    """
+    a0 = iA1
+    a1 = -a0*24/12  # First gear reduction (24:12)
+    a2 = a1
+    a3 = -a2*16/8   # Second gear reduction (16:8)
+    a4 = a3
+    a5 = -a4*16/8   # Third gear reduction (16:8)
+    a6 = -a5
+    a7 = a6
+    b8 = a7
+    return b8
+
+def B1(b1_1, b1_2):
+    """
+    Differential averaging of both branches
+    """
+    return (b1_1 + b1_2)/2
+</code></pre>
+<p>Now, we can calculate <span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub></mrow><annotation>A_2</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>, first labeling the gears</p>
+<p><strong>Section I Summary:</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mfrac><mn>24</mn><mn>8</mn></mfrac><mo>×</mo><mfrac><mn>16</mn><mn>8</mn></mfrac><mo>×</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_2 = -A_1 \times \frac{24}{8} \times \frac{16}{8} \times \frac{1}{2} = -A_1 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>8</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>24</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>8</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>16</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span>
+<img alt="" src="/media/ba54addb7a8de8040a4e6c78.png"/></p>
+<pre><code>def A2(B1):
+    b0 = -B1
+    b1 = b0
+    a0 = -b1
+    return a0
+</code></pre>
+<h2>Section II</h2>
+<p>Let's annotate in a similar fashion Section #2
+<img alt="" src="/media/e4cdd2425957ba0076fc1de2.png"/>
+This looks daunting, but it's not that bad. We have 6 distinct sections.
+Let's number them:
+<img alt="" src="/media/bd0e320b60a8ecba71d888cc.png"/>
+We can start coding now!
+<img alt="" src="/media/a84a24d7a99b3d1981115eee.png"/>
+We now have <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>2</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{2,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>2</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>2</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>B_{2,2}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>2</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>:</p>
+<pre><code>def A_2_1(iA2):
+    """
+    First stage of Section II
+    Gear ratio: 24T:12T
+    """
+    a0 = iA2
+    a1 = -a0*24/12  # Gear reduction (24:12)
+    return a1
+
+def B_2_1(a2_1):
+    """
+    First branch of Section II
+    Gear ratios: 24T:8T → 24T:8T → sign inversions
+    """
+    a0 = a2_1
+    a1 = -a0*24/8   # First gear reduction (24:8)
+    a2 = a1
+    a3 = -a2*24/8   # Second gear reduction (24:8)
+    a4 = -a3        # Sign inversion
+    a5 = a4
+    b0 = -a5        # Final sign inversion
+    return b0
+
+def B_2_2(a2_1):
+    """
+    Second branch of Section II
+    Gear ratios: 24T:12T → 40T:8T
+    """
+    a0 = a2_1
+    a1 = -a0*24/12  # First gear reduction (24:12)
+    a2 = a1
+    a3 = -a2*40/8   # Second gear reduction (40:8)
+    a4 = a3
+    b0 = a4
+    return b0
+</code></pre>
+<p>Then, we can derive <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{3,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>:
+<img alt="" src="/media/d2b4ae54fa5090213a7e0223.png"/>
+<img alt="" src="/media/301f16451a595a82ac5c6754.png"/>
+Ooops! It looks like this section (orange) is NOT a 36t, but 3x12. Now we can calculate <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{3,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>:</p>
+<pre><code>def B3_1(iB2):
+    """
+    First branch of Section III
+    Gear ratios: 24T:12T → sign inversions → 40T:8T
+    """
+    b0 = -iB2*24/12  # First gear reduction (24:12)
+    b1 = -b0         # Sign inversion
+    b2 = -b1         # Sign inversion
+    b3 = b2
+    b4 = -b3*40/8    # Second gear reduction (40:8)
+    return b4
+</code></pre>
+<p>Moving on, we calculate <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>B_{3,2}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> using <span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub></mrow><annotation>A_2</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>
+<img alt="" src="/media/c367efb04a625a34553fc34e.png"/></p>
+<pre><code>def B3_2(iA2):
+    """
+    Second branch of Section III
+    Gear ratios: 24T:12T → 16T:8T → 16T:8T → 16T:8T → 16T:8T → 24T:8T
+    """
+    a0 = iA2
+    a1 = -a0*24/12   # First gear reduction (24:12)
+    a2 = a1
+    a3 = -a2*16/8    # Second gear reduction (16:8)
+    a4 = a3
+    a5 = -a4*16/8    # Third gear reduction (16:8)
+    a6 = a5
+    a7 = -a6*16/8    # Fourth gear reduction (16:8)
+    a8 = a7
+    a9 = -a8*16/8    # Fifth gear reduction (16:8)
+    a10 = a9
+    a11 = -a10*16/8  # Sixth gear reduction (16:8)
+    a12 = a11
+    a13 = -a12*24/8  # Seventh gear reduction (24:8)
+    a14 = a13
+    b0 = a14
+    return b0
+</code></pre>
+<p>The approach is repetitive, but my brain is overwhelmed already, so I'll do things the brute-force way.</p>
+<p>With <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation>B_{3,1}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> and <span><span><math><semantics><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><annotation>B_{3,2}</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>, we can calculate <span><span><math><semantics><mrow><msub><mi>B</mi><mn>3</mn></msub></mrow><annotation>B_3</annotation></semantics></math></span><span><span><span></span><span><span>B</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> using the differential equation (1):</p>
+<pre><code>def B3(B3_1, B3_2):
+    return (B3_1 + B3_2)/2
+</code></pre>
+<p>This allows us to calculate <span><span><math><semantics><mrow><msub><mi>A</mi><mn>3</mn></msub></mrow><annotation>A_3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span> relatively easily:</p>
+<p><strong>Section II Summary:</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>3</mn></msub><mo>=</mo><mo>−</mo><msub><mi>B</mi><mn>3</mn></msub><mo>=</mo><mo>−</mo><mfrac><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>+</mo><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub></mrow><mn>2</mn></mfrac></mrow><annotation>A_3 = -B_3 = -\frac{B_{3,1} + B_{3,2}}{2}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>B</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>+</span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
+<pre><code>def A3(B3):
+    b0 = B3
+    b1 = -b0
+    b2 = b1
+    a0 = -b2
+    return a0
+</code></pre>
+<h2>Section III</h2>
+<p>We notice a heuristic here,
+<img alt="" src="/media/2909b18b5e8cf7462a65dd8b.png"/>
+We notice <span><span><math><semantics><mrow><msub><mi>A</mi><mn>1</mn></msub><mo>:</mo><msub><mi>A</mi><mn>2</mn></msub><mo>=</mo><msub><mi>A</mi><mn>3</mn></msub><mo>:</mo><msub><mi>A</mi><mn>4</mn></msub></mrow><annotation>A_1:A_2 = A_3:A_4</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>:</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>:</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span>, so we can use the same transformation function for both sections.</p>
+<p><strong>Section III Summary:</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msub><mi>A</mi><mn>2</mn></msub><mo>(</mo><msub><mi>A</mi><mn>3</mn></msub><mo>)</mo><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>3</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_4 = A_2(A_3) = -A_3 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span></p>
+<p>Thus, we just plug A3 back into our A1-&gt;A2 function, and we solve the entire system with:</p>
+<pre><code>```python
+def A1_A2(a1):
+    """
+    Transform A1 → A2 through Section I
+    """
+    return A2(B1(B_1_1(a1), B_1_2(a1)))
+
+def A2_A3(a2):
+    """
+    Transform A2 → A3 through Section II
+    """
+    a2_1 = A_2_1(a2)
+    b2 = B2(B_2_1(a2_1), B_2_2(a2_1))
+    b3_1 = B3_1(b2)
+    b3_2 = B3_2(a2)
+    b3 = B3(b3_1, b3_2)
+    return A3(b3)
+
+def A3_A4(a3):
+    """
+    Transform A3 → A4 through Section III (same as Section I)
+    """
+    return A1_A2(a3)
+
+def solveSystem(a1):
+    """
+    Complete system solution: A1 → A2 → A3 → A4
+    """
+    return A3_A4(A2_A3(A1_A2(a1)))
+
+print(solveSystem(-17198))
+</code></pre>
+<h2>Complete System Solution</h2>
+<p>The complete system can be represented as a series of transformations:</p>
+<p><span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub><mo>=</mo><msub><mi>f</mi><mn>1</mn></msub><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>)</mo><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_2 = f_1(A_1) = -A_1 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>f</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>3</mn></msub><mo>=</mo><msub><mi>f</mi><mn>2</mn></msub><mo>(</mo><msub><mi>A</mi><mn>2</mn></msub><mo>)</mo><mo>=</mo><mo>−</mo><mfrac><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>2</mn></msub><mo>)</mo><mo>+</mo><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>2</mn></msub><mo>)</mo></mrow><mn>2</mn></mfrac></mrow><annotation>A_3 = f_2(A_2) = -\frac{B_{3,1}(A_2) + B_{3,2}(A_2)}{2}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>f</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span>+</span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msub><mi>f</mi><mn>3</mn></msub><mo>(</mo><msub><mi>A</mi><mn>3</mn></msub><mo>)</mo><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>3</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_4 = f_3(A_3) = -A_3 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>f</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span></p>
+<p><strong>Final System Equation:</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msub><mi>f</mi><mn>3</mn></msub><mo>(</mo><msub><mi>f</mi><mn>2</mn></msub><mo>(</mo><msub><mi>f</mi><mn>1</mn></msub><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>)</mo><mo>)</mo><mo>)</mo></mrow><annotation>A_4 = f_3(f_2(f_1(A_1)))</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>f</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>f</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>f</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)))</span></span></span></span></p>
+<p>Where the overall transformation is:
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>9</mn><mo>×</mo><mfrac><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn><mo>)</mo><mo>+</mo><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mrow><annotation>A_4 = A_1 \times 9 \times \frac{B_{3,1}(A_1 \times 3) + B_{3,2}(A_1 \times 3)}{2}</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>9</span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>×</span><span>3</span><span>)</span><span>+</span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>×</span><span>3</span><span>)</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
+<h2>Plugging it in</h2>
+<p>Lets see if it works!</p>
+<pre><code>zimengx@endeavour ~/S/p/P/virtualMachine1&gt; python3 solveSystem.py
+Traceback (most recent call last):
+  File "~/SchoolDrive/picoCTF/Practice/virtualMachine1/solveSystem.py", line 113, in &lt;module&gt;
+    print(solveSystem(1))
+          ~~~~~~~~~~~^^^
+  File "~/SchoolDrive/picoCTF/Practice/virtualMachine1/solveSystem.py", line 111, in solveSystem
+    return A3_A4(A2_A3(A1_A2(A1)))
+                 ~~~~~^^^^^^^^^^^
+  File "~/SchoolDrive/picoCTF/Practice/virtualMachine1/solveSystem.py", line 100, in A2_A3
+    A_2_1 = A_2_1(A2)
+            ^^^^^
+UnboundLocalError: cannot access local variable 'A_2_1' where it is not associated with a value
+</code></pre>
+<p>Nope, looks like my use of the same character as both the variable and function name is causing issues.</p>
+<pre><code>zimengx@endeavour ~/S/p/P/virtualMachine1&gt; python3 solveSystem.py
+-9359.0
+</code></pre>
+<p>Looks like it works! Let's test it on our input.</p>
+<pre><code>zimengx@endeavour ~/S/p/P/virtualMachine1&gt; nc saturn.picoctf.net 51644
+
+If the input to the machine is 13536, what is the output?
+Answer&gt; -126683424
+That's not correct.
+You have to wait 360.0 seconds before trying again.
+</code></pre>
+<p>Sighhh...this mean we only have one more attempt, let's invert the sign of our input to see if we are using different coordinates.</p>
+<p>Since I didn't want to wait 360 seconds, I launched a new instance and inverted the number</p>
+<pre><code>print(solveSystem(-17198))
+</code></pre>
+<pre><code>zimengx@endeavour ~/S/p/P/virtualMachine1 [SIGINT]&gt; nc saturn.picoctf.net 53014
+If the input to the machine is 17198, what is the output?
+Answer&gt; 160956082
+160956082
+That's correct!
+picoCTF{xxxxxxxxxxxxxxxxxxxxxxxx}
+</code></pre>
+<p>YAYYYYYYYYYY.
+Total time took: 2hr 10min including time it took to write this, so I guess it would have taken roughly 2/3-1/2 the time without.</p>
+<h2>Complete System Analysis</h2>
+<h3>Mathematical Summary</h3>
+<p><strong>Key Equations:</strong></p>
+<ol>
+<li>
+<p><strong>Differential Averaging:</strong>
+<span><span><math><semantics><mrow><msub><mi>ω</mi><mrow><mi>d</mi><mi>i</mi><mi>f</mi><mi>f</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>ω</mi><mn>1</mn></msub><mo>+</mo><msub><mi>ω</mi><mn>2</mn></msub></mrow><mn>2</mn></mfrac></mrow><annotation>\omega_{diff} = \frac{\omega_1 + \omega_2}{2} </annotation></semantics></math></span><span><span><span></span><span><span>ω</span><span><span><span><span><span><span></span><span><span><span>d</span><span>i</span><span>f</span><span>f</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>ω</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>+</span><span><span>ω</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
+</li>
+<li>
+<p><strong>Section I Transformation (A₁ → A₂):</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>2</mn></msub><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mfrac><mn>24</mn><mn>8</mn></mfrac><mo>×</mo><mfrac><mn>16</mn><mn>8</mn></mfrac><mo>×</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_2 = -A_1 \times \frac{24}{8} \times \frac{16}{8} \times \frac{1}{2} = -A_1 \times 3 </annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>8</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>24</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>8</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>16</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span></p>
+</li>
+<li>
+<p><strong>Section II Transformation (A₂ → A₃):</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>3</mn></msub><mo>=</mo><mo>−</mo><mfrac><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>2</mn></msub><mo>)</mo><mo>+</mo><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>2</mn></msub><mo>)</mo></mrow><mn>2</mn></mfrac></mrow><annotation>A_3 = -\frac{B_{3,1}(A_2) + B_{3,2}(A_2)}{2} </annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span><span>+</span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>)</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
+</li>
+<li>
+<p><strong>Section III Transformation (A₃ → A₄):</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><mo>−</mo><msub><mi>A</mi><mn>3</mn></msub><mo>×</mo><mn>3</mn></mrow><annotation>A_4 = -A_3 \times 3</annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span>−</span><span><span>A</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>3</span></span></span></span></p>
+</li>
+</ol>
+<p><strong>Complete System Solution:</strong>
+<span><span><math><semantics><mrow><msub><mi>A</mi><mn>4</mn></msub><mo>=</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>9</mn><mo>×</mo><mfrac><mrow><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>1</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn><mo>)</mo><mo>+</mo><msub><mi>B</mi><mrow><mn>3</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>(</mo><msub><mi>A</mi><mn>1</mn></msub><mo>×</mo><mn>3</mn><mo>)</mo></mrow><mn>2</mn></mfrac></mrow><annotation>A_4 = A_1 \times 9 \times \frac{B_{3,1}(A_1 \times 3) + B_{3,2}(A_1 \times 3)}{2} </annotation></semantics></math></span><span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>×</span><span></span></span><span><span></span><span>9</span><span></span><span>×</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>2</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>1</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>×</span><span>3</span><span>)</span><span>+</span><span><span>B</span><span><span><span><span><span><span></span><span><span><span>3</span><span>,</span><span>2</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>(</span><span><span>A</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span>×</span><span>3</span><span>)</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></p>
+<p>Full Code:</p>
+<pre><code>def B_1_1(iA1):
+    a0 = iA1
+    a1 = -a0*24/8
+    a2 = a1
+    a3 = -a2*16/8
+    a4 = -a3
+    a5 = a4
+    b6 = -a5
+    return b6
+
+def B_1_2(iA1):
+    a0 = iA1
+    a1 = -a0*24/12
+    a2 = a1
+    a3 = -a2*16/8
+    a4 = a3
+    a5 = -a4*16/8
+    a6 = -a5
+    a7 = a6
+    b8 = a7
+    return b8
+
+def B1(b1_1, b1_2):
+    return (b1_1 + b1_2)/2
+
+def A2(iB1):
+    b0 = -iB1
+    b1 = b0
+    a0 = -b1
+    return a0
+
+def A_2_1(iA2):
+    a0 = iA2
+    a1 = -a0*24/12
+    return a1
+
+def B_2_1(a2_1):
+    a0 = a2_1
+    a1 = -a0*24/8
+    a2 = a1
+    a3 = -a2*24/8
+    a4 = -a3
+    a5 = a4
+    b0 = -a5
+    return b0
+
+def B_2_2(a2_1):
+    a0 = a2_1
+    a1 = -a0*24/12
+    a2 = a1
+    a3 = -a2*40/8
+    a4 = a3
+    b0 = a4
+    return b0
+
+def B2(b2_1, b2_2):
+    return (b2_1 + b2_2)/2
+
+def B3_1(iB2):
+    b0 = -iB2*24/12
+    b1 = -b0
+    b2 = -b1
+    b3 = b2
+    b4 = -b3*40/8
+    return b4
+
+def B3_2(iA2):
+    a0 = iA2
+    a1 = -a0*24/12
+    a2 = a1
+    a3 = -a2*16/8
+    a4 = a3
+    a5 = -a4*16/8
+    a6 = a5
+    a7 = -a6*16/8
+    a8 = a7
+    a9 = -a8*16/8
+    a10 = a9
+    a11 = -a10*16/8
+    a12 = a11
+    a13 = -a12*24/8
+    a14 = a13
+    b0 = a14
+    return b0
+
+def B3(b3_1, b3_2):
+    return (b3_1 + b3_2)/2
+
+def A3(iB3):
+    b0 = iB3
+    b1 = -b0
+    b2 = b1
+    a0 = -b2
+    return a0
+
+def A1_A2(a1):
+    return A2(B1(B_1_1(a1), B_1_2(a1)))
+
+def A2_A3(a2):
+    a2_1 = A_2_1(a2)
+    b2 = B2(B_2_1(a2_1), B_2_2(a2_1))
+    b3_1 = B3_1(b2)
+    b3_2 = B3_2(a2)
+    b3 = B3(b3_1, b3_2)
+    return A3(b3)
+
+def A3_A4(a3):
+    return A1_A2(a3)
+
+def solveSystem(a1):
+    return A3_A4(A2_A3(A1_A2(a1)))
+</code></pre>
+<h2>Other approaches</h2>
+<p>Let's see how other people approached this problem. Searching for "picoCTF 2025 Virtual Machine 1", I don't see any solution besides <a href="https://www.ta-oot.page/posts/ctf-writeups/picoctf2023/virtualmachine1/">this one</a>, which did not provide a solution. Quite disappointing... I wanted to see if there was a faster way.</p>
+<p>Looking at it, I can't think of a faster way or a shortcut to solving this, besides modeling it out in OnShape and doing gear relations for each gear, this would help us solve A1-&gt;2 A2-&gt;3 relations faster? I don't know how much faster it would be or how accurate it would be. It would also be fun to build this out, but I would like to think that would take more time.</p></div><a href="/blog/">← blog</a></article></main>
+</body>
+</html>
