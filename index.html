@@ -16,7 +16,8 @@
 <table role="presentation"><tr><td valign="top"><pre>      me@zimengxiong.com
       <small><a href="#copy" id="copy-email">copy</a>  <a href="https://mail.google.com/mail/?view=cm&amp;to=me@zimengxiong.com" target="_blank" rel="noopener">gmail</a>  <a href="mailto:me@zimengxiong.com">mailto:</a></small>
 
-        <a href="/discord.txt">discord</a>  <a href="https://www.reddit.com/user/arduinoRPi4/">reddit</a>  <a href="https://x.com/zimengxiong">x</a></pre></td><td valign="top"><pre>   <a href="https://github.com/ZimengXiong">github</a>   <a href="https://www.youtube.com/@alpacaengineering">youtube</a>
+      discord: b01111010
+      <small><a href="#copy-discord" id="copy-discord">copy</a></small>   <a href="https://www.reddit.com/user/arduinoRPi4/">reddit</a>   <a href="https://x.com/zimengxiong">x</a></pre></td><td valign="top"><pre>   <a href="https://github.com/ZimengXiong">github</a>   <a href="https://www.youtube.com/@alpacaengineering">youtube</a>
      ^
      '-- you should really check out
          my github if ur looking for
@@ -61,9 +62,9 @@
     if (h === "#reading" || h === "#blog") {
       e.preventDefault();
       show(h.slice(1), true);
-    } else if (h === "#copy") {
+    } else if (h === "#copy" || h === "#copy-discord") {
       e.preventDefault();
-      if (navigator.clipboard) navigator.clipboard.writeText("me@zimengxiong.com");
+      if (navigator.clipboard) navigator.clipboard.writeText(h === "#copy" ? "me@zimengxiong.com" : "b01111010");
       a.textContent = "done";
       setTimeout(function () { a.textContent = "copy"; }, 1400);
     }
