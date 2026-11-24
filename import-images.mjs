@@ -41,7 +41,11 @@ for (const file of files) {
     if (!saved.has(id)) saved.set(id, await importImage(id, match[2] && match[0]))
     const name = saved.get(id)
     const local = file.endsWith('.html') ? '/' + name : path.relative(path.dirname(file), name)
-    updated += original.slice(offset, match.index) + local
+    const start = original.lastIndexOf('\n', match.index) + 1
+    const end = original.indexOf('\n', match.index)
+    const line = original.slice(start, end === -1 ? original.length : end)
+    const standalone = !file.endsWith('.html') && line.trim() === match[0]
+    updated += original.slice(offset, match.index) + (standalone ? '![](' + local + ')' : local)
     offset = match.index + match[0].length
   }
   if (offset) await writeFile(file, updated + original.slice(offset))

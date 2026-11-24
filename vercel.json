@@ -28,7 +28,7 @@
       ]
     },
     {
-      "source": "/images/:hash([a-f0-9]{20})-:width(\\d+).webp",
+      "source": "/images/generated/:hash([a-f0-9]{20})-:width(\\d+).webp",
       "headers": [
         {
           "key": "Cache-Control",

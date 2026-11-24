@@ -8,6 +8,17 @@ const output = path.resolve('dist')
 const site = 'https://zime.ng'
 const processed = new Map()
 const widths = [320, 640, 960, 1280, 1920]
+const persist = process.argv.includes('--save-images')
+const cacheDir = 'images/generated'
+const manifestFile = cacheDir + '/manifest.json'
+const encoding = { version: 1, widths, maxWidth: 2560, quality: 82, sharp: sharp.versions.sharp, vips: sharp.versions.vips, webp: sharp.versions.webp }
+let manifest = {}
+try {
+  manifest = JSON.parse(await readFile(manifestFile, 'utf8'))
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error
+}
+let encoded = 0
 const pages = []
 const assets = new Set()
 
@@ -71,20 +82,33 @@ async function optimize(url) {
   const rotated = meta.orientation >= 5 && meta.orientation <= 8
   const width = rotated ? meta.height : meta.width
   const height = rotated ? meta.width : meta.pageHeight || meta.height
-  const candidates = []
-  for (const w of new Set([...widths.filter(w => w < width), Math.min(width, 2560)])) {
-    const buffer = await sharp(bytes, { animated: true }).autoOrient().resize({ width: w, withoutEnlargement: true }).webp({ quality: 82, keepDuplicateFrames: true }).toBuffer()
-    const hash = createHash('sha256').update(buffer).digest('hex').slice(0, 20)
-    const src = '/images/' + hash + '-' + w + '.webp'
-    await writeFile(path.join(output, src), buffer)
-    candidates.push(src + ' ' + w + 'w')
+  const key = createHash('sha256').update(bytes).update(JSON.stringify(encoding)).digest('hex')
+  if (manifest[key] && manifest[key].every(item => assets.has(item.src.slice(1)))) {
+    return { ...responsive(manifest[key], width, height), src: original }
   }
-  return { src: original, srcset: candidates.join(', '), sizes: '(max-width: ' + width + 'px) 100vw, ' + width + 'px', width, height }
+  const candidates = []
+  for (const w of new Set([...widths.filter(w => w < width), Math.min(width, encoding.maxWidth)])) {
+    const buffer = await sharp(bytes, { animated: true }).autoOrient().resize({ width: w, withoutEnlargement: true }).webp({ quality: encoding.quality, keepDuplicateFrames: true }).toBuffer()
+    encoded++
+    const hash = createHash('sha256').update(buffer).digest('hex').slice(0, 20)
+    const src = '/' + cacheDir + '/' + hash + '-' + w + '.webp'
+    await writeFile(path.join(output, src), buffer)
+    if (persist) await writeFile(src.slice(1), buffer)
+    assets.add(src.slice(1))
+    candidates.push({ src, width: w })
+  }
+  manifest[key] = candidates
+  return { ...responsive(candidates, width, height), src: original }
+}
+
+function responsive(candidates, width, height) {
+  return { srcset: candidates.map(item => item.src + ' ' + item.width + 'w').join(', '), sizes: '(max-width: ' + width + 'px) 100vw, ' + width + 'px', width, height }
 }
 
 await rm(output, { recursive: true, force: true })
 await copySite()
-await mkdir(path.join(output, 'images'), { recursive: true })
+await mkdir(path.join(output, cacheDir), { recursive: true })
+if (persist) await mkdir(cacheDir, { recursive: true })
 for (const page of pages) {
   const $ = load(await readFile(page, 'utf8'), { scriptingEnabled: false })
   for (const element of $('img[src]')) {
@@ -100,4 +124,10 @@ for (const page of pages) {
   if ($('img').length && !$('style').text().includes('max-width: 100%')) $('head').append('<style>img { max-width: 100%; height: auto; }</style>')
   await writeFile(path.join(output, page), $.html())
 }
-console.log('Built ' + pages.length + ' pages and processed ' + processed.size + ' distinct image URLs')
+for (const file of assets) {
+  if (!file.startsWith('images/') || file.startsWith(cacheDir + '/') || !/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(file)) continue
+  const url = new URL('/' + file, site)
+  if (!processed.has(url.href)) processed.set(url.href, await optimize(url))
+}
+if (persist) await writeFile(manifestFile, JSON.stringify(manifest, null, 2) + '\n')
+console.log('Built ' + pages.length + ' pages and processed ' + processed.size + ' distinct image URLs; encoded ' + encoded + ' new variants')

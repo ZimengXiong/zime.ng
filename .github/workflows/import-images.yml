@@ -2,7 +2,6 @@ name: Import GitHub images
 on:
   push:
     branches: [main]
-    paths: ['**.md', '**.markdown', '**.html', 'import-images.mjs', '.github/workflows/import-images.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -23,6 +22,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node import-images.mjs
+      - run: node build.mjs --save-images
       - run: |
           git add -u
           git add images/
