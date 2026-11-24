@@ -5,66 +5,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Patching Raycast to Support Longer Pastes</title>
 <script defer src="/prefetch.4aef6239e652.js"></script>
+<style>
+pre.m .vb::-webkit-scrollbar{display:none}
+@media (max-width: 619px) {
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  pre.m{white-space:normal}
+  pre.m>span{display:block;padding-right:16px}
+  pre.m .r{padding-left:calc(var(--i)*1ch + var(--h,0)*1ch);text-indent:calc(var(--h,0)*-1ch);overflow-wrap:anywhere}
+  pre.m .qm{display:none}
+  pre.m .vb{white-space:pre;overflow-x:auto;scrollbar-width:none;padding-right:0}
+  pre.m .rl{white-space:pre;overflow:hidden;padding-right:0}
+  pre.m .im{padding-left:calc(var(--i)*1ch)}
+  pre.m .im img{max-width:100%;height:auto;vertical-align:bottom}
+  pre.m .sep{text-align:center;word-spacing:2ch}
+  pre.m .dt,pre.m .nx{text-align:right}
+  pre.m .nx{padding-left:3ch}
+  pre.m .ta{display:flex;flex-wrap:wrap;align-items:flex-end;align-items:last baseline;column-gap:2ch;padding-left:calc(var(--i)*1ch)}
+  pre.m .ta>b{flex:1 1 12ch;min-width:0}
+  pre.m .ta>img{flex:none;width:calc(var(--w)*1px);max-width:34vw;height:auto}
+  pre.m .ta.rt{justify-content:space-between}
+  pre.m .ta.rt>b{flex:0 1 auto}
+  pre.m .ta.rt>img{max-width:40vw}
+  pre.m .ft{padding-left:3ch}
+  pre.m .ft img{width:calc(var(--w)*1px);max-width:40vw;height:auto;margin-right:2ch}
+  pre.m .g1{margin-top:1lh}
+  pre.m .g2{margin-top:2lh}
+  pre.m .g3{margin-top:3lh}
+  pre.m .g4{margin-top:4lh}
+}
+</style>
 </head>
 <body>
 <pre>   <a href="/">&lt;- back</a></pre>
-<pre>
+<pre class="m">
 
-   <img src="/art/c-patching-raycast-to-support-longer-pastes.png" width="120" height="154" alt=""> <b>Patching Raycast to Support Longer Pastes</b>
-                                                                14 jan 2025
+<span class="ta" style="--i:3;--w:120">   <img src="/art/c-patching-raycast-to-support-longer-pastes.png" width="120" height="154" alt=""> <b>Patching Raycast to Support Longer Pastes</b></span>
+<span class="dt">                                                                14 jan 2025</span>
 
 
-   <a href="/media/42a7ebc0e16104d3dc81dd41.gif"><img src="/media/42a7ebc0e16104d3dc81dd41.gif" width="560" height="134" alt="cantpaste.gif"></a>
+<span class="im g2" style="--i:3">   <a href="/media/42a7ebc0e16104d3dc81dd41.gif"><img src="/media/42a7ebc0e16104d3dc81dd41.gif" width="560" height="134" alt="cantpaste.gif"></a></span>
 
-   I like Raycast's `Ask AI` mode a lot: you type a question into the
+<span class="r g1" style="--i:3">   I like Raycast's `Ask AI` mode a lot: you type a question into the
    spotlight search bar followed by `Tab` and your assistant of choice (in
    this case, `Gemini 2.5 Flash Lite`) gives you the answer. However, for
    some reason, there is a max char limit on this field, which is really
    annoying when I am pasting stack traces or code in for a quick answer.
    Raycast's solution to this is to use the full "AI Chat" experience, but
    that ruins the point of the "Quick AI". So onto disassembling and
-   patching it is.
+   patching it is.</span>
 
 
-   <b>## Locating the Ask AI UI</b>
-   -------------------------
+<span class="r g2" style="--i:3">   <b>## Locating the Ask AI UI</b></span>
+<span class="rl">   -------------------------</span>
 
-   <b>### JS??</b>
+<span class="r g1" style="--i:3">   <b>### JS??</b></span>
 
-   My first thought was that the Spotlight "Ask AI" UI might be a web view
+<span class="r g1" style="--i:3">   My first thought was that the Spotlight "Ask AI" UI might be a web view
    backed by a JS bundle with a front-end `maxlength` or similar
-   client-side restriction.
+   client-side restriction.</span>
 
-   Raycast ships a web bundle at
+<span class="r g1" style="--i:3">   Raycast ships a web bundle at
    `/Applications/Raycast.app/Contents/Resources/RaycastWeb_RaycastWeb.
-   bundle/Contents/Resources/js/index.js`
+   bundle/Contents/Resources/js/index.js`</span>
 
-   The limit might live within a React input prop like `maxLength` or a
-   literal string mentioning character limits
+<span class="r g1" style="--i:3">   The limit might live within a React input prop like `maxLength` or a
+   literal string mentioning character limits</span>
 
-   Listing the bundle contents and confirmed that Raycast has both
+<span class="r g1" style="--i:3">   Listing the bundle contents and confirmed that Raycast has both</span>
 
-   - a native Mach-O code at `Contents/MacOS/Raycast`
-   - a web bundle at
-     `Contents/Resources/RaycastWeb_RaycastWeb.bundle/.../js/index.js`
+<span class="r g1" style="--i:3;--h:2">   - a native Mach-O code at `Contents/MacOS/Raycast`</span>
+<span class="r" style="--i:3;--h:2">   - a web bundle at
+     `Contents/Resources/RaycastWeb_RaycastWeb.bundle/.../js/index.js`</span>
 
-   Searching the JS bundle for likely indicators found no obvious
+<span class="r g1" style="--i:3">   Searching the JS bundle for likely indicators found no obvious
    Spotlight/Ask-AI paste limit and no obvious `maxlength` gate tied to the
-   root search box:
+   root search box:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &gt; rg -n "maxlength|maxLength|character limit|char limit|too long|    \
    |   Ask AI" Contents/Resources/RaycastWeb_RaycastWeb.bundle/Contents/R \
    |   esources/js/index.js
    | &lt;nothing&gt;
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-   <b>### strings!</b>
+<span class="r g2" style="--i:3">   <b>### strings!</b></span>
 
-   Now, time for `strings`
+<span class="r g1" style="--i:3">   Now, time for `strings`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &gt; strings Contents/MacOS/Raycast | rg -n "maxlength|maxLength|       \
    |   character limit|char limit|too long|Ask AI"
    |
@@ -87,17 +116,17 @@
    | 71118:maxLength
    | 74032:maxLength
    | 83776:Ask AI
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   This suggested that the limit was native and not front-end JS and also
-   told us that Raycast uses a dedicated paste-specific character limit.
+<span class="r g1" style="--i:3">   This suggested that the limit was native and not front-end JS and also
+   told us that Raycast uses a dedicated paste-specific character limit.</span>
 
 
-   <b>### Objective-C / Swift metadata</b>
+<span class="r g2" style="--i:3">   <b>### Objective-C / Swift metadata</b></span>
 
-   Using `otool` on the Mach-O to inspect class metadata and ivars:
+<span class="r g1" style="--i:3">   Using `otool` on the Mach-O to inspect class metadata and ivars:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &gt; otool -ov Contents/MacOS/Raycast | rg -n -C 40                     \
    |   "pasteMaxCharactersCount"
    | 109046-                    types   0x1d45f0 (0x1027b4200 extends     \
@@ -207,25 +236,25 @@
    | 109126-        baseProtocols  0x102d8d4b8
    | zimengx@U7 /A/Raycast.app
    | &gt;
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We see some more names, notably `_TtC9RaycastUI19SingleLineTextField`,
-   which represents the native class `RaycastUI.SingleLineTextField`
+<span class="r g1" style="--i:3">   We see some more names, notably `_TtC9RaycastUI19SingleLineTextField`,
+   which represents the native class `RaycastUI.SingleLineTextField`</span>
 
-   Its `ivars` included:,`pasteMaxCharactersCount`,
+<span class="r g1" style="--i:3">   Its `ivars` included:,`pasteMaxCharactersCount`,
    `reachedPasteMaxCharacterCountHandler`, `changeHandler`, and
-   `shouldChangeHandler`
+   `shouldChangeHandler`</span>
 
-   This meant that the Spotlight input isn't actually a stock AppKit search
-   field but a custom field with an explicit paste cap.
+<span class="r g1" style="--i:3">   This meant that the Spotlight input isn't actually a stock AppKit search
+   field but a custom field with an explicit paste cap.</span>
 
 
-   <b>## Live-process inspection with LLDB</b>
-   ------------------------------------
+<span class="r g2" style="--i:3">   <b>## Live-process inspection with LLDB</b></span>
+<span class="rl">   ------------------------------------</span>
 
-   Knowing this, we can inspect the live Raycast process:
+<span class="r g1" style="--i:3">   Knowing this, we can inspect the live Raycast process:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &gt; pgrep -fl Raycast
    |
    | 1213 /bin/sh /Users/zimengx/Documents/Scripts/Raycast/launchSchoolBr \
@@ -235,12 +264,12 @@
    |   eyJlbmhhbmNlZFNlY3VyaXR5IjpmYWxzZSwidHlwZSI6MSwic2VydmljZU5hbWUiOi \
    |   Jjb20ucmF5Y2FzdC5tYWNvcy5SYXljYXN0QXBwSW50ZW50cyJ9
    | 14807 /Applications/Raycast.app/Contents/MacOS/Raycast
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Ignoring `1213` and `1317` for obvious reasons, we attach with LLDB and
-   enumerate windows:
+<span class="r g1" style="--i:3">   Ignoring `1213` and `1317` for obvious reasons, we attach with LLDB and
+   enumerate windows:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &gt; lldb -b -p 14807 \
    |   -o 'expr -l objc++ -O -- @import AppKit; id                        \
    |     app=(id)[NSApplication sharedApplication]; NSArray&lt;NSWindow*&gt;    \
@@ -251,36 +280,36 @@
    |     isVisible]?@"visible":@"hidden", (long)[w level], [w             \
    |     isKeyWindow]?@"yes":@"no", [w isMainWindow]?@"yes":@"no"]]; } a' \
    |   -o 'detach' -o 'quit'
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We found `RaycastApp.MainWindow`, then traversing that window's view
-   tree we hit our previously found `RaycastUI.SingleLineTextField`
+<span class="r g1" style="--i:3">   We found `RaycastApp.MainWindow`, then traversing that window's view
+   tree we hit our previously found `RaycastUI.SingleLineTextField`</span>
 
-   This confirmed that the visible Spotlight input uses the custom text
-   field with the paste limit ivar.
+<span class="r g1" style="--i:3">   This confirmed that the visible Spotlight input uses the custom text
+   field with the paste limit ivar.</span>
 
 
-   <b>### Selector and method mapping</b>
+<span class="r g2" style="--i:3">   <b>### Selector and method mapping</b></span>
 
-   We mapped the `SingleLineTextField` methods using Objective-C metadata
+<span class="r g1" style="--i:3">   We mapped the `SingleLineTextField` methods using Objective-C metadata</span>
 
-   <b>Method</b>                                                 <b>Location</b>
+<span class="r g1" style="--i:3">   <b>Method</b>                                                 <b>Location</b>
    -----------------------------------------------------  -------------
    `placeholderAttributedString`                          `0x101f93b78`
    `textDidChange:`                                       `0x101f93cac`
-   `textView:shouldChangeTextInRange:replacementString:`  `0x101f921b8`
+   `textView:shouldChangeTextInRange:replacementString:`  `0x101f921b8`</span>
 
-   The method of interest was `RaycastUI.SingleLineTextField
+<span class="r g1" style="--i:3">   The method of interest was `RaycastUI.SingleLineTextField
    textView:shouldChangeTextInRange:replacementString:`, as it forwards
-   into a helper that enforces the policy.
+   into a helper that enforces the policy.</span>
 
 
-   <b>## Applying the Patch</b>
-   ---------------------
+<span class="r g2" style="--i:3">   <b>## Applying the Patch</b></span>
+<span class="rl">   ---------------------</span>
 
-   <b>### Disassembly</b>
+<span class="r g1" style="--i:3">   <b>### Disassembly</b></span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &gt; otool -tvV Contents/MacOS/Raycast | sed -n '/101f93cac/,           \
    |   /101f93ea4/p'
    | &gt; otool -tvV Contents/MacOS/Raycast | sed -n '/101f921b8/,           \
@@ -301,90 +330,90 @@
    | 0000000101f93ce0        bl      0x1025b5688 ; symbol stub for:       \
    |   _$sScMMa
    | ...truncated
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   There was a critical portion of the helper around `0x101f92220`
+<span class="r g1" style="--i:3">   There was a critical portion of the helper around `0x101f92220`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | 0000000101f92220 ldr x25, [x25]
    | 0000000101f92224 mov x0, x22
    | 0000000101f92228 mov x1, x21
    | 0000000101f9222c bl  _$sSS5countSivg
    | 0000000101f92230 cmp x25, x0
    | 0000000101f92234 b.ge 0x101f9228c
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   where `x25` is the configured `pasteMaxCharactersCount`, `x0` is the
+<span class="r g1" style="--i:3">   where `x25` is the configured `pasteMaxCharactersCount`, `x0` is the
    count of the incoming replacement string. So if `limit &gt;=
    pasted_length`, it would branch to the normal allow path, otherwise,
-   fall through to the "too long" path
+   fall through to the "too long" path</span>
 
-   Immediately after the failed comparison, the code loads the
+<span class="r g1" style="--i:3">   Immediately after the failed comparison, the code loads the
    `reachedPasteMaxCharacterCountHandler` closure and invokes it, then
-   returns `false`.
+   returns `false`.</span>
 
-   We could've found where the limit was set, and then adjust that, but
+<span class="r g1" style="--i:3">   We could've found where the limit was set, and then adjust that, but
    that would've required discovering the runtime value, as well as
    identify every controller that configures the field. Patching the policy
-   is much easier.
+   is much easier.</span>
 
 
-   <b>### Calculating the file offset</b>
+<span class="r g2" style="--i:3">   <b>### Calculating the file offset</b></span>
 
-   I mapped the VM address to a file offset. The patch target had virtual
-   address `0x101f92234`. The computed file offset was`0x1f92234`
+<span class="r g1" style="--i:3">   I mapped the VM address to a file offset. The patch target had virtual
+   address `0x101f92234`. The computed file offset was`0x1f92234`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | xxd -g 4 -l 32 -s $((0x1f92230)) Contents/MacOS/Raycast
    |
    | 01f92230: 3f0300eb ca020054 687c00f0 08b947f9
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Where `ca020054` encodes the conditional branch.
+<span class="r g1" style="--i:3">   Where `ca020054` encodes the conditional branch.</span>
 
 
-   <b>### Patching bytes</b>
+<span class="r g2" style="--i:3">   <b>### Patching bytes</b></span>
 
-   I replaced the conditional branch with an unconditional branch to the
-   same allow target.
+<span class="r g1" style="--i:3">   I replaced the conditional branch with an unconditional branch to the
+   same allow target.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | cp Contents/MacOS/Raycast Contents/MacOS/Raycast.bak-paste-limit
    | printf '\x16\x00\x00\x14' | dd of=Contents/MacOS/Raycast bs=1        \
    |   seek=$((0x1f92234)) conv=notrunc
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   With the patched bytes:
+<span class="r g1" style="--i:3">   With the patched bytes:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | 01f92230: 3f0300eb 16000014 687c00f0 08b947f9
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-   <b>## Re-signing and cleanup</b>
-   -------------------------
+<span class="r g2" style="--i:3">   <b>## Re-signing and cleanup</b></span>
+<span class="rl">   -------------------------</span>
 
-   Because the app bundle was modified, we have to re-sign it with an
-   ad-hoc signature:
+<span class="r g1" style="--i:3">   Because the app bundle was modified, we have to re-sign it with an
+   ad-hoc signature:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | codesign --force --sign - /Applications/Raycast.app
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Now we can paste text as long as we want into Raycast!!
+<span class="r g1" style="--i:3">   Now we can paste text as long as we want into Raycast!!</span>
 
-   <a href="/media/2a8d8362fe65335507842b7d.gif"><img src="/media/2a8d8362fe65335507842b7d.gif" width="560" height="134" alt="Pasting a long piece of text into patched Raycast"></a>
+<span class="im g1" style="--i:3">   <a href="/media/2a8d8362fe65335507842b7d.gif"><img src="/media/2a8d8362fe65335507842b7d.gif" width="560" height="134" alt="Pasting a long piece of text into patched Raycast"></a></span>
 
-   I have to say, this is one of the funner things I've done recently, RE
-   is always thrilling 🙂.
-
-
+<span class="r g1" style="--i:3">   I have to say, this is one of the funner things I've done recently, RE
+   is always thrilling 🙂.</span>
 
 
-   <img src="/art/d-over-m.png" width="124" height="150" alt="">   <a href="/">&lt;- back</a>
 
-   <a href="/blog/solving-picomini-by-cmu-africa/">&lt;- Solving picoMini by CMU-Africa</a>
-                                         <a href="/blog/the-macbook-air-throttles-a-lot/">The Macbook Air throttles a lot -&gt;</a>
+
+<span class="ft g4" style="--w:124">   <img src="/art/d-over-m.png" width="124" height="150" alt="">   <a href="/">&lt;- back</a></span>
+
+<span class="r g1" style="--i:3">   <a href="/blog/solving-picomini-by-cmu-africa/">&lt;- Solving picoMini by CMU-Africa</a></span>
+<span class="nx">                                         <a href="/blog/the-macbook-air-throttles-a-lot/">The Macbook Air throttles a lot -&gt;</a></span>
 
 
 

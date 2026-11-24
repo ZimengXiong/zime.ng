@@ -5,199 +5,228 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Markdown editors suck at handling files</title>
 <script defer src="/prefetch.4aef6239e652.js"></script>
+<style>
+pre.m .vb::-webkit-scrollbar{display:none}
+@media (max-width: 619px) {
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  pre.m{white-space:normal}
+  pre.m>span{display:block;padding-right:16px}
+  pre.m .r{padding-left:calc(var(--i)*1ch + var(--h,0)*1ch);text-indent:calc(var(--h,0)*-1ch);overflow-wrap:anywhere}
+  pre.m .qm{display:none}
+  pre.m .vb{white-space:pre;overflow-x:auto;scrollbar-width:none;padding-right:0}
+  pre.m .rl{white-space:pre;overflow:hidden;padding-right:0}
+  pre.m .im{padding-left:calc(var(--i)*1ch)}
+  pre.m .im img{max-width:100%;height:auto;vertical-align:bottom}
+  pre.m .sep{text-align:center;word-spacing:2ch}
+  pre.m .dt,pre.m .nx{text-align:right}
+  pre.m .nx{padding-left:3ch}
+  pre.m .ta{display:flex;flex-wrap:wrap;align-items:flex-end;align-items:last baseline;column-gap:2ch;padding-left:calc(var(--i)*1ch)}
+  pre.m .ta>b{flex:1 1 12ch;min-width:0}
+  pre.m .ta>img{flex:none;width:calc(var(--w)*1px);max-width:34vw;height:auto}
+  pre.m .ta.rt{justify-content:space-between}
+  pre.m .ta.rt>b{flex:0 1 auto}
+  pre.m .ta.rt>img{max-width:40vw}
+  pre.m .ft{padding-left:3ch}
+  pre.m .ft img{width:calc(var(--w)*1px);max-width:40vw;height:auto;margin-right:2ch}
+  pre.m .g1{margin-top:1lh}
+  pre.m .g2{margin-top:2lh}
+  pre.m .g3{margin-top:3lh}
+  pre.m .g4{margin-top:4lh}
+}
+</style>
 </head>
 <body>
 <pre>   <a href="/">&lt;- back</a></pre>
-<pre>
+<pre class="m">
 
-   <img src="/art/c-markdown-editors-suck-at-handling-files.png" width="130" height="149" alt=""> <b>Markdown editors suck at handling files</b>
-                                                                11 nov 2025
+<span class="ta" style="--i:3;--w:130">   <img src="/art/c-markdown-editors-suck-at-handling-files.png" width="130" height="149" alt=""> <b>Markdown editors suck at handling files</b></span>
+<span class="dt">                                                                11 nov 2025</span>
 
 
-   What has stopped me from using ANY mainstream markdown editors for my
+<span class="r g2" style="--i:3">   What has stopped me from using ANY mainstream markdown editors for my
    blog is because they SUCK at handling images and renaming. They
-   typically fall into a few categories:
+   typically fall into a few categories:</span>
 
-   > I do want to state that most of the time, I am using the clipboard to
-   > copy and paste images, I am not talking about dragging and dropping
-   > images, that takes wayyy too much time, having to open up a finder
-   > window and finding a file.
+<span class="r g1" style="--i:3;--h:2">   > I do want to state that most of the time, I am using the clipboard to
+   <span class="qm">> </span>copy and paste images, I am not talking about dragging and dropping
+   <span class="qm">> </span>images, that takes wayyy too much time, having to open up a finder
+   <span class="qm">> </span>window and finding a file.</span>
 
 
-   <b>## 1. Import and Forget</b>
-   -----------------------
+<span class="r g2" style="--i:3">   <b>## 1. Import and Forget</b></span>
+<span class="rl">   -----------------------</span>
 
-   This is the simplest behavior, VSCode does it:
+<span class="r g1" style="--i:3">   This is the simplest behavior, VSCode does it:</span>
 
-   <a href="/images/vscodedemo.gif"><img src="/images/vscodedemo.gif" width="560" height="419" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/vscodedemo.gif"><img src="/images/vscodedemo.gif" width="560" height="419" alt=""></a></span>
 
-   However, because screenshots are always named some gibberish such as
+<span class="r g1" style="--i:3">   However, because screenshots are always named some gibberish such as
    `SCR-20251111-kcnb.png` I almost ALWAYS want to IMMEDIATELY rename them.
-   VSCode makes this excruiatingly difficult. I have to:
+   VSCode makes this excruiatingly difficult. I have to:</span>
 
-   <b>Action</b>                                        <b>Added Click/Key Operations</b>
+<span class="vb g1">   <b>Action</b>                                        <b>Added Click/Key Operations</b>
    --------------------------------------------  --------------------------
-   1. Import the image                           1
+   1. Import the image                           1</span>
 
-   2. Click on the image file in the sidebar     1
+<span class="vb g1">   2. Click on the image file in the sidebar     1
    (WHICH CHANGES MY LEFT EDITOR FOCUS TO THE
    IMAGE, AND IF I WANT TO NOT DO THIS, I HAVE
-   TO RIGHT CICK AND THEN SELECT RENAME)
+   TO RIGHT CICK AND THEN SELECT RENAME)</span>
 
-   3. Press `return` and rename, followed by     3
-   `return`
+<span class="vb g1">   3. Press `return` and rename, followed by     3
+   `return`</span>
 
-   4. Close the opened image tab resulting from  1
-   step #2
+<span class="vb g1">   4. Close the opened image tab resulting from  1
+   step #2</span>
 
-   5. Double click the filename to select, and   2
-   MANUALLY type in the new name
+<span class="vb g1">   5. Double click the filename to select, and   2
+   MANUALLY type in the new name</span>
 
-   6. Click somewhere else and start typing      1
+<span class="vb g1">   6. Click somewhere else and start typing      1</span>
 
-   Total                                         9
+<span class="vb g1">   Total                                         9</span>
 
-   Inserting an image and trying to make it maintainable for later me
-   requires NINE STEPS PER INSERTION?!?!
+<span class="r g1" style="--i:3">   Inserting an image and trying to make it maintainable for later me
+   requires NINE STEPS PER INSERTION?!?!</span>
 
 
-   <b>## 2. Auto update</b>
-   -----------------
+<span class="r g2" style="--i:3">   <b>## 2. Auto update</b></span>
+<span class="rl">   -----------------</span>
 
-   <a href="/images/obsidianAutoUpdateLinks.png"><img src="/images/obsidianAutoUpdateLinks.png" width="560" height="53" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/obsidianAutoUpdateLinks.png"><img src="/images/obsidianAutoUpdateLinks.png" width="560" height="53" alt=""></a></span>
 
-   Obsidian has an "Auto update internal links after renaming", which
+<span class="r g1" style="--i:3">   Obsidian has an "Auto update internal links after renaming", which
    sounds helpful, and it is much better than VSCode, but it is still
-   largely inefficient.
+   largely inefficient.</span>
 
-   <a href="/images/obsidianDemo.gif"><img src="/images/obsidianDemo.gif" width="560" height="415" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/obsidianDemo.gif"><img src="/images/obsidianDemo.gif" width="560" height="415" alt=""></a></span>
 
-   <b>Action</b>                               <b>Added Click/Key Operations</b>
+<span class="vb g1">   <b>Action</b>                               <b>Added Click/Key Operations</b>
    -----------------------------------  -----------------------------------
-   1. Import the image                  1
+   1. Import the image                  1</span>
 
-   2. Right click and select "Rename",  3 (Time penalty for having to move
+<span class="vb g1">   2. Right click and select "Rename",  3 (Time penalty for having to move
    since they don't support pressing    the cursor down the right click
-   `Enter` to rename                    menu and find `Rename`
+   `Enter` to rename                    menu and find `Rename`</span>
 
-   3. Rename, followed by `return`      2
+<span class="vb g1">   3. Rename, followed by `return`      2</span>
 
-   4. Click somewhere else and start    1
-   typing
+<span class="vb g1">   4. Click somewhere else and start    1
+   typing</span>
 
-   Total                                7
+<span class="vb g1">   Total                                7</span>
 
-   There are a couple issues here, mainly the right click menu. Your eyes
+<span class="r g1" style="--i:3">   There are a couple issues here, mainly the right click menu. Your eyes
    have to start from the top and trace down it to the "Rename" option. The
    operation isn't guarenteed, you have to make sure you click the right
    option, unlike a keyboard shortcut, its vastly less deterministic and I
    have accidently hit `Delete` doing this. Overall, pretty good
    experience, not as optmized as it could be. Another minor issue is that
    it does not automatically return focus back to my editor after the
-   renaming procedure.
+   renaming procedure.</span>
 
 
-   <b>## 3. My implementation</b>
-   -----------------------
+<span class="r g2" style="--i:3">   <b>## 3. My implementation</b></span>
+<span class="rl">   -----------------------</span>
 
-   Having seen these pitfalls, my blog editor implements a much nicer
-   renaming UX.
+<span class="r g1" style="--i:3">   Having seen these pitfalls, my blog editor implements a much nicer
+   renaming UX.</span>
 
-   <b>Action</b>                           <b>Added Click/Key Operations</b>
+<span class="vb g1">   <b>Action</b>                           <b>Added Click/Key Operations</b>
    -------------------------------  --------------------------
    1. Import the image              1
    2. Click the image link          1
    3. Rename, followed by `return`  2
-   Total                            4
+   Total                            4</span>
 
-   <a href="/images/myImplementation.gif"><img src="/images/myImplementation.gif" width="560" height="512" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/myImplementation.gif"><img src="/images/myImplementation.gif" width="560" height="512" alt=""></a></span>
 
-   Whenver you click on a link or a file, a rename window automatically
+<span class="r g1" style="--i:3">   Whenver you click on a link or a file, a rename window automatically
    pops up with only the name part selected, you can safely ignore the
-   window if you choose too, which makes it unobstructive.å
+   window if you choose too, which makes it unobstructive.å</span>
 
-   <a href="/images/renameWindow.png"><img src="/images/renameWindow.png" width="560" height="138" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/renameWindow.png"><img src="/images/renameWindow.png" width="560" height="138" alt=""></a></span>
 
-   In addition, my implmentation also RETURNS FOCUS back to the editor
+<span class="r g1" style="--i:3">   In addition, my implmentation also RETURNS FOCUS back to the editor
    after the markdown link, meaning you don't need to switch focuses back
-   from what was supposed to be an intermediate UI anyways.
+   from what was supposed to be an intermediate UI anyways.</span>
 
-   And yes, it does search for all occurences of the image (for whatever
-   reason there might be multiple of the same image) throughout the file.
+<span class="r g1" style="--i:3">   And yes, it does search for all occurences of the image (for whatever
+   reason there might be multiple of the same image) throughout the file.</span>
 
-   Everything is deterministic (the only clicking you do is clicking on the
+<span class="r g1" style="--i:3">   Everything is deterministic (the only clicking you do is clicking on the
    link, which is MUCH more click surface area than a drop down menu,
    everything else is all keyboard-centric). You don't need to move all the
    way to a sidebar, because we're writing, not coding, I don't care where
-   my files go or how they are stored.
+   my files go or how they are stored.</span>
 
-   A keyboard shortcut is muscle memory; a context menu is a visual search
+<span class="r g1" style="--i:3">   A keyboard shortcut is muscle memory; a context menu is a visual search
    task. Every time you force a writer to look at UI, you've already lost.
-   The best UI for writing is invisible UX.
+   The best UI for writing is invisible UX.</span>
 
 
-   <b>## 4. HM: Github</b>
-   ----------------
+<span class="r g2" style="--i:3">   <b>## 4. HM: Github</b></span>
+<span class="rl">   ----------------</span>
 
-   Forget renaming, why keep your files in the repo anyways? Make free use
-   of Github's S3 or Azure storage: Technically, it scores the best:
+<span class="r g1" style="--i:3">   Forget renaming, why keep your files in the repo anyways? Make free use
+   of Github's S3 or Azure storage: Technically, it scores the best:</span>
 
-   <b>Action</b>               <b>Added Click/Key Operations</b>
+<span class="vb g1">   <b>Action</b>               <b>Added Click/Key Operations</b>
    -------------------  --------------------------
    1. Import the image  1
-   Total                1
+   Total                1</span>
 
-   <a href="/images/GithubDemo.gif"><img src="/images/GithubDemo.gif" width="560" height="271" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/GithubDemo.gif"><img src="/images/GithubDemo.gif" width="560" height="271" alt=""></a></span>
 
-   On a more serious note, I don't actually mind this implementation. It
+<span class="r g1" style="--i:3">   On a more serious note, I don't actually mind this implementation. It
    fits in nicely with my view that images should be stored within
    markdown, and github accomplishes exactly this. I never have to worry
    about where my images are, or renaming them in the first place. And
    since its rare I want to use the same image twice (basically never), why
    even rename? Only downside of this approach is that I still want to be
    able to manage my files locally, and for that, I (and LLMs!) do want to
-   be able to easily identify them.
+   be able to easily identify them.</span>
 
 
-   <b>## More discussion on Markdown Editors</b>
-   --------------------------------------
+<span class="r g2" style="--i:3">   <b>## More discussion on Markdown Editors</b></span>
+<span class="rl">   --------------------------------------</span>
 
-   <b>### Tool Bar</b>
+<span class="r g1" style="--i:3">   <b>### Tool Bar</b></span>
 
-   <a href="/images/toolbar.png"><img src="/images/toolbar.png" width="560" height="67" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/toolbar.png"><img src="/images/toolbar.png" width="560" height="67" alt=""></a></span>
 
-   A lot of markdown editors have a toolbar like this, which defeats the
+<span class="r g1" style="--i:3">   A lot of markdown editors have a toolbar like this, which defeats the
    purpose of a WYSIWYG editor. The text is supposed to be readable, and
    really, how much time are you saving at all by moving your mouse all the
    way to the top instead of just typing `*` twice or thrice. I haven't
    even implemented `Ctrl+B/I/K` to bold, italicize, and hyperlink text
    because I don't find myself using it, it's not much faster than just
-   typing out `_` or `**` or `[]()`.
+   typing out `_` or `**` or `[]()`.</span>
 
 
-   <b>### Sidebar</b>
+<span class="r g2" style="--i:3">   <b>### Sidebar</b></span>
 
-   The two examples I've shown above all have file browsers to manage
+<span class="r g1" style="--i:3">   The two examples I've shown above all have file browsers to manage
    folders, images, etc. Which again defeats the purpose of a WYSIWYG
    language. I like to think that all the images that I reference in a
    markdown document are CONTAINED within that document. That if the images
    aren't used, they shouldnt be there. So why do I need to keep track of
    them? My editor auto prunes all images not in the post, and I NEVER see
    the images or files anywhere except in the editor. This keeps my
-   attention focused in the editor, not in a file browser (ironically)
+   attention focused in the editor, not in a file browser (ironically)</span>
 
-   <a href="/images/MyEditor.png"><img src="/images/MyEditor.png" width="560" height="278" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/images/MyEditor.png"><img src="/images/MyEditor.png" width="560" height="278" alt=""></a></span>
 
-   Markdown's true potential will remain buried under unnecessary
-   complexity for as long as developers continue with this BS.
-
-
+<span class="r g1" style="--i:3">   Markdown's true potential will remain buried under unnecessary
+   complexity for as long as developers continue with this BS.</span>
 
 
-   <img src="/art/d-turn.png" width="151" height="170" alt="">   <a href="/">&lt;- back</a>
 
-   <a href="/blog/agents-will-need-a-good-window-manager/">&lt;- Agents will need a good window manager</a>
-                                          <a href="/blog/picoctf2025-virtual-machine-1/">picoCTF2025: Virtual Machine 1 -&gt;</a>
+
+<span class="ft g4" style="--w:151">   <img src="/art/d-turn.png" width="151" height="170" alt="">   <a href="/">&lt;- back</a></span>
+
+<span class="r g1" style="--i:3">   <a href="/blog/agents-will-need-a-good-window-manager/">&lt;- Agents will need a good window manager</a></span>
+<span class="nx">                                          <a href="/blog/picoctf2025-virtual-machine-1/">picoCTF2025: Virtual Machine 1 -&gt;</a></span>
 
 
 

@@ -5,197 +5,226 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Macbook Air throttles a lot</title>
 <script defer src="/prefetch.4aef6239e652.js"></script>
+<style>
+pre.m .vb::-webkit-scrollbar{display:none}
+@media (max-width: 619px) {
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  pre.m{white-space:normal}
+  pre.m>span{display:block;padding-right:16px}
+  pre.m .r{padding-left:calc(var(--i)*1ch + var(--h,0)*1ch);text-indent:calc(var(--h,0)*-1ch);overflow-wrap:anywhere}
+  pre.m .qm{display:none}
+  pre.m .vb{white-space:pre;overflow-x:auto;scrollbar-width:none;padding-right:0}
+  pre.m .rl{white-space:pre;overflow:hidden;padding-right:0}
+  pre.m .im{padding-left:calc(var(--i)*1ch)}
+  pre.m .im img{max-width:100%;height:auto;vertical-align:bottom}
+  pre.m .sep{text-align:center;word-spacing:2ch}
+  pre.m .dt,pre.m .nx{text-align:right}
+  pre.m .nx{padding-left:3ch}
+  pre.m .ta{display:flex;flex-wrap:wrap;align-items:flex-end;align-items:last baseline;column-gap:2ch;padding-left:calc(var(--i)*1ch)}
+  pre.m .ta>b{flex:1 1 12ch;min-width:0}
+  pre.m .ta>img{flex:none;width:calc(var(--w)*1px);max-width:34vw;height:auto}
+  pre.m .ta.rt{justify-content:space-between}
+  pre.m .ta.rt>b{flex:0 1 auto}
+  pre.m .ta.rt>img{max-width:40vw}
+  pre.m .ft{padding-left:3ch}
+  pre.m .ft img{width:calc(var(--w)*1px);max-width:40vw;height:auto;margin-right:2ch}
+  pre.m .g1{margin-top:1lh}
+  pre.m .g2{margin-top:2lh}
+  pre.m .g3{margin-top:3lh}
+  pre.m .g4{margin-top:4lh}
+}
+</style>
 </head>
 <body>
 <pre>   <a href="/">&lt;- back</a></pre>
-<pre>
+<pre class="m">
 
-   <img src="/art/c-the-macbook-air-throttles-a-lot.png" width="140" height="196" alt=""> <b>The Macbook Air throttles a lot</b>
-                                                                 8 jun 2023
+<span class="ta" style="--i:3;--w:140">   <img src="/art/c-the-macbook-air-throttles-a-lot.png" width="140" height="196" alt=""> <b>The Macbook Air throttles a lot</b></span>
+<span class="dt">                                                                 8 jun 2023</span>
 
 
-   <a href="/media/99b35480c4cc8d0b7a259bed.webp"><img src="/media/99b35480c4cc8d0b7a259bed.webp" width="560" height="747" alt=""></a>
+<span class="im g2" style="--i:3">   <a href="/media/99b35480c4cc8d0b7a259bed.webp"><img src="/media/99b35480c4cc8d0b7a259bed.webp" width="560" height="747" alt=""></a></span>
 
-   Without a fan and with summer slowly ramping up, I often find my M2
+<span class="r g1" style="--i:3">   Without a fan and with summer slowly ramping up, I often find my M2
    MacBook Air 15" heating up and becoming hot to the touch while building
    Xcode projects or running CAD software. I wanted to measure its actual
-   performance impact and see how effective a simple solution would be.
+   performance impact and see how effective a simple solution would be.</span>
 
-   The MacBook Air has its SoC (CPU/GPU+RAM) in the middle of the chassis
-   close to the display, as seen in this Creative Electron scan:
+<span class="r g1" style="--i:3">   The MacBook Air has its SoC (CPU/GPU+RAM) in the middle of the chassis
+   close to the display, as seen in this Creative Electron scan:</span>
 
-   <a href="/media/7291c240125adedfc87ab280.webp"><img src="/media/7291c240125adedfc87ab280.webp" width="560" height="315" alt="image"></a>
+<span class="im g1" style="--i:3">   <a href="/media/7291c240125adedfc87ab280.webp"><img src="/media/7291c240125adedfc87ab280.webp" width="560" height="315" alt="image"></a></span>
 
-   Under medium-heavy load, I have measured this area externally to be
-   around 50 degrees.
+<span class="r g1" style="--i:3">   Under medium-heavy load, I have measured this area externally to be
+   around 50 degrees.</span>
 
-   <a href="/media/a0fab3d9ff225eae950b0bc2.webp"><img src="/media/a0fab3d9ff225eae950b0bc2.webp" width="560" height="747" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/a0fab3d9ff225eae950b0bc2.webp"><img src="/media/a0fab3d9ff225eae950b0bc2.webp" width="560" height="747" alt=""></a></span>
 
 
-   <b>## Existing Options</b>
-   -------------------
+<span class="r g2" style="--i:3">   <b>## Existing Options</b></span>
+<span class="rl">   -------------------</span>
 
-   <b>### Thermal Pad Mod</b>
+<span class="r g1" style="--i:3">   <b>### Thermal Pad Mod</b></span>
 
-   Popularly, there is a <a href="https://forums.macrumors.com/threads/m1-air-with-thermal-pad-mod.2272939/">thermal pad mod</a> for the M-series of MacBooks, due
+<span class="r g1" style="--i:3">   Popularly, there is a <a href="https://forums.macrumors.com/threads/m1-air-with-thermal-pad-mod.2272939/">thermal pad mod</a> for the M-series of MacBooks, due
    to the lack of a <a href="https://www.ifixit.com/News/62674/m2-macbook-air-teardown-apple-forgot-the-heatsink">heatsink</a>. The mod places a thermal pad over the SoC,
-   sinking it to the bottom chassis.
+   sinking it to the bottom chassis.</span>
 
-   - However, sinking the SoC to the chassis indirectly sinks the SoC to
+<span class="r g1" style="--i:3;--h:2">   - However, sinking the SoC to the chassis indirectly sinks the SoC to
      the battery modules, which also sink to the chassis. Without active
      cooling to remove the heat from the chassis, this will mean the SoC
-     will be pumping heat directly into the battery.
+     will be pumping heat directly into the battery.</span>
 
 
-   <b>### Airjet</b>
+<span class="r g2" style="--i:3">   <b>### Airjet</b></span>
 
-   <a href="https://www.froresystems.com/">Fore Systems'</a> <a href="https://www.froresystems.com/products/airjet-r-mini-g2">airjet</a> is a solid-state cooling system based on
+<span class="r g1" style="--i:3">   <a href="https://www.froresystems.com/">Fore Systems'</a> <a href="https://www.froresystems.com/products/airjet-r-mini-g2">airjet</a> is a solid-state cooling system based on
    piezoelectric actuators, requiring no moving parts and fitting into a
    slim package. <a href="https://www.froresystems.com/media-room/just-when-you-thought-macbook-air-couldnt-get-cooler-airjet-r-makes-it-perform-like-a-macbook-pro">Fitting it into a MacBook</a>, they managed to "increase
-   sustained power by 67%".
+   sustained power by 67%".</span>
 
-   <a href="/media/9383a5cbdcf80ca8437f49f5.png"><img src="/media/9383a5cbdcf80ca8437f49f5.png" width="560" height="315" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/9383a5cbdcf80ca8437f49f5.png"><img src="/media/9383a5cbdcf80ca8437f49f5.png" width="560" height="315" alt=""></a></span>
 
-   - I originally wanted to go with this; it's compact and integrated.
+<span class="r g1" style="--i:3;--h:2">   - I originally wanted to go with this; it's compact and integrated.
      Unfortunately, Fore Systems does not sell to individuals and only to
-     system integrators for use in their products.
+     system integrators for use in their products.</span>
 
 
-   <b>### Laptop Coolers</b>
+<span class="r g2" style="--i:3">   <b>### Laptop Coolers</b></span>
 
-   Laptop coolers have been commonly used for gaming laptops; this is the
-   simplest design possible with fans pointing at the bottom of the laptop.
+<span class="r g1" style="--i:3">   Laptop coolers have been commonly used for gaming laptops; this is the
+   simplest design possible with fans pointing at the bottom of the laptop.</span>
 
-   <a href="/media/ca59ab6dc0aac2dbe71959a9.webp"><img src="/media/ca59ab6dc0aac2dbe71959a9.webp" width="560" height="366" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/ca59ab6dc0aac2dbe71959a9.webp"><img src="/media/ca59ab6dc0aac2dbe71959a9.webp" width="560" height="366" alt=""></a></span>
 
 
-   <b>### Water Cooling</b>
+<span class="r g2" style="--i:3">   <b>### Water Cooling</b></span>
 
-   The <a href="https://www.eluktronics.com/lpp">Liquid Propulsion Package</a> from Eluktronics modifies the vapor
+<span class="r g1" style="--i:3">   The <a href="https://www.eluktronics.com/lpp">Liquid Propulsion Package</a> from Eluktronics modifies the vapor
    chamber in a laptop into a waterblock, and adds in/outtake ports at the
-   back of the laptop to be attached to a desktop radiator.
+   back of the laptop to be attached to a desktop radiator.</span>
 
-   <a href="/media/6cec8c58e2fef107750ca1c8.png"><img src="/media/6cec8c58e2fef107750ca1c8.png" width="560" height="267" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/6cec8c58e2fef107750ca1c8.png"><img src="/media/6cec8c58e2fef107750ca1c8.png" width="560" height="267" alt=""></a></span>
 
 
-   <b>## Decision</b>
-   -----------
+<span class="r g2" style="--i:3">   <b>## Decision</b></span>
+<span class="rl">   -----------</span>
 
-   As the Airjet Minis are not for sale and water-cooling is infeasible
+<span class="r g1" style="--i:3">   As the Airjet Minis are not for sale and water-cooling is infeasible
    since the MBA is too thin for any type of water-cooling solution (and I
    do not possess the ability to manufacture water blocks), the Thermal Pad
-   Mod and Fan-Based Cooler Stand are the only realistic options.
+   Mod and Fan-Based Cooler Stand are the only realistic options.</span>
 
-   I'm worried about the Thermal Pad Mod sinking unnecessary heat into the
+<span class="r g1" style="--i:3">   I'm worried about the Thermal Pad Mod sinking unnecessary heat into the
    battery, hurting battery longevity and being potentially dangerous as
    well. Sadly, I probably have to go with the fan-based cooler (I wanted
-   an excuse to open up the laptop).
+   an excuse to open up the laptop).</span>
 
 
-   <b>## Market Options</b>
-   -----------------
+<span class="r g2" style="--i:3">   <b>## Market Options</b></span>
+<span class="rl">   -----------------</span>
 
-   A lot of the fan cooler options (like the one above) are geared more
+<span class="r g1" style="--i:3">   A lot of the fan cooler options (like the one above) are geared more
    towards gaming—flashy RGB, etc.—which would look out of place next to a
    MacBook. The other options have an ugly wireframe mesh at the bottom and
    thin stamped sheet metal that looks unnecessarily complicated, such as
-   the ones below:
+   the ones below:</span>
 
-   <a href="/media/ff92696ae8f3ddfe03563646.jpg"><img src="/media/ff92696ae8f3ddfe03563646.jpg" width="560" height="295" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/ff92696ae8f3ddfe03563646.jpg"><img src="/media/ff92696ae8f3ddfe03563646.jpg" width="560" height="295" alt=""></a></span>
 
-   <a href="/media/be4f6af390df888c1cfc4df9.jpg"><img src="/media/be4f6af390df888c1cfc4df9.jpg" width="560" height="635" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/be4f6af390df888c1cfc4df9.jpg"><img src="/media/be4f6af390df888c1cfc4df9.jpg" width="560" height="635" alt=""></a></span>
 
-   There are cleaner options, like this Razer cooling pad; however, this is
-   $149, which is insane for a piece of metal with an addressable fan.
+<span class="r g1" style="--i:3">   There are cleaner options, like this Razer cooling pad; however, this is
+   $149, which is insane for a piece of metal with an addressable fan.</span>
 
-   <a href="/media/d49385ebf5bee2a8fcb445e6.jpg"><img src="/media/d49385ebf5bee2a8fcb445e6.jpg" width="560" height="277" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/d49385ebf5bee2a8fcb445e6.jpg"><img src="/media/d49385ebf5bee2a8fcb445e6.jpg" width="560" height="277" alt=""></a></span>
 
-   There is a takeaway from this Razer cooling pad: the ability to tie into
+<span class="r g1" style="--i:3">   There is a takeaway from this Razer cooling pad: the ability to tie into
    the computer and adjust fan curves based on CPU temperatures (PID
-   Control??)
+   Control??)</span>
 
 
-   <b>## The Build</b>
-   ------------
+<span class="r g2" style="--i:3">   <b>## The Build</b></span>
+<span class="rl">   ------------</span>
 
-   <b>### Targets</b>
+<span class="r g1" style="--i:3">   <b>### Targets</b></span>
 
-   - Robust
-   - Built from Metal
-   - Addressable Fan
-   - Manual Speed Control
-   - Tie into OS/CPU Temps (Optional)
+<span class="r g1" style="--i:3;--h:2">   - Robust</span>
+<span class="r" style="--i:3;--h:2">   - Built from Metal</span>
+<span class="r" style="--i:3;--h:2">   - Addressable Fan</span>
+<span class="r" style="--i:3;--h:2">   - Manual Speed Control</span>
+<span class="r" style="--i:3;--h:2">   - Tie into OS/CPU Temps (Optional)</span>
 
 
-   <b>### Hardware</b>
+<span class="r g2" style="--i:3">   <b>### Hardware</b></span>
 
-   2020 aluminum extrusion was a great fit for the industrial aesthetic and
+<span class="r g1" style="--i:3">   2020 aluminum extrusion was a great fit for the industrial aesthetic and
    robust characteristics compared to sheet metal. I sourced mine from
-   <a href="https://us.misumi-ec.com/">MiSUMiUSA</a>.
+   <a href="https://us.misumi-ec.com/">MiSUMiUSA</a>.</span>
 
-   I'm reusing the extrusion from the VZ330's bed assembly (highlighted
-   below):
+<span class="r g1" style="--i:3">   I'm reusing the extrusion from the VZ330's bed assembly (highlighted
+   below):</span>
 
-   <a href="/media/2742195f4e682ef8ae801280.webp"><img src="/media/2742195f4e682ef8ae801280.webp" width="560" height="433" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/2742195f4e682ef8ae801280.webp"><img src="/media/2742195f4e682ef8ae801280.webp" width="560" height="433" alt=""></a></span>
 
-   This is a quick mockup of the design, with one <a href="https://noctua.at/en/products/fan/nf-f12-pwm">Noctua Industrial iPPC</a>
+<span class="r g1" style="--i:3">   This is a quick mockup of the design, with one <a href="https://noctua.at/en/products/fan/nf-f12-pwm">Noctua Industrial iPPC</a>
    <a href="https://noctua.at/en/products/fan/nf-f12-pwm">NF-F12 3000RPM</a> at the bottom in the middle of an extrusion frame, with
-   the laptop lifted by some 20mm extrusion bracing plates.
+   the laptop lifted by some 20mm extrusion bracing plates.</span>
 
-   <a href="/media/659e40f28bbb8ed57e5329c5.webp"><img src="/media/659e40f28bbb8ed57e5329c5.webp" width="560" height="433" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/659e40f28bbb8ed57e5329c5.webp"><img src="/media/659e40f28bbb8ed57e5329c5.webp" width="560" height="433" alt=""></a></span>
 
-   <a href="/media/f79ebc247eb37d51fd46bae1.jpg"><img src="/media/f79ebc247eb37d51fd46bae1.jpg" width="560" height="433" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/f79ebc247eb37d51fd46bae1.jpg"><img src="/media/f79ebc247eb37d51fd46bae1.jpg" width="560" height="433" alt=""></a></span>
 
 
-   <b>### Electronics</b>
+<span class="r g2" style="--i:3">   <b>### Electronics</b></span>
 
-   To control the fan, I'm using <a href="https://www.amazon.com/dp/B00F839VNQ">this PWM motor driver</a> with a knob that I
-   had lying around, with a generic 12V AC wall adapter which I sliced off.
+<span class="r g1" style="--i:3">   To control the fan, I'm using <a href="https://www.amazon.com/dp/B00F839VNQ">this PWM motor driver</a> with a knob that I
+   had lying around, with a generic 12V AC wall adapter which I sliced off.</span>
 
-   Here's a quick proof of concept build:
+<span class="r g1" style="--i:3">   Here's a quick proof of concept build:</span>
 
-   <a href="/media/54bb2f4b580e90d771669501.webp"><img src="/media/54bb2f4b580e90d771669501.webp" width="560" height="420" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/54bb2f4b580e90d771669501.webp"><img src="/media/54bb2f4b580e90d771669501.webp" width="560" height="420" alt=""></a></span>
 
-   Seeing that it works pretty well (as expected), I designed proper mounts
-   for the PWM control board and knob (below in purple):
+<span class="r g1" style="--i:3">   Seeing that it works pretty well (as expected), I designed proper mounts
+   for the PWM control board and knob (below in purple):</span>
 
-   <a href="/media/67a7102eb8dd13ca1d235e11.webp"><img src="/media/67a7102eb8dd13ca1d235e11.webp" width="560" height="433" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/67a7102eb8dd13ca1d235e11.webp"><img src="/media/67a7102eb8dd13ca1d235e11.webp" width="560" height="433" alt=""></a></span>
 
-   Mounted:
+<span class="r g1" style="--i:3">   Mounted:</span>
 
-   <a href="/media/0aac9ec98f72c518f7242b6c.webp"><img src="/media/0aac9ec98f72c518f7242b6c.webp" width="560" height="420" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/0aac9ec98f72c518f7242b6c.webp"><img src="/media/0aac9ec98f72c518f7242b6c.webp" width="560" height="420" alt=""></a></span>
 
-   Furthermore, the fan was almost too quiet and barely blowing much air,
+<span class="r g1" style="--i:3">   Furthermore, the fan was almost too quiet and barely blowing much air,
    so I decided to over-volt the fan to above 12V. This was accomplished
    using USB-C PD (power delivery), which allows for 15V with a supported
    PD charger. I happened to have some of these modules which do the
    handshake (note the voltage my PD charger's display is being negotiated
-   boxed in red):
+   boxed in red):</span>
 
-   <a href="/media/7f1a4543e952081f8b1c508c.webp"><img src="/media/7f1a4543e952081f8b1c508c.webp" width="560" height="420" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/7f1a4543e952081f8b1c508c.webp"><img src="/media/7f1a4543e952081f8b1c508c.webp" width="560" height="420" alt=""></a></span>
 
-   Everything wired up!
+<span class="r g1" style="--i:3">   Everything wired up!</span>
 
-   <a href="/media/9bc8f48eb72af72306de4e73.webp"><img src="/media/9bc8f48eb72af72306de4e73.webp" width="560" height="420" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/9bc8f48eb72af72306de4e73.webp"><img src="/media/9bc8f48eb72af72306de4e73.webp" width="560" height="420" alt=""></a></span>
 
-   <a href="/media/8753bf38ad9b7096a4d863aa.jpg"><img src="/media/8753bf38ad9b7096a4d863aa.jpg" width="560" height="420" alt="image"></a>
+<span class="im g1" style="--i:3">   <a href="/media/8753bf38ad9b7096a4d863aa.jpg"><img src="/media/8753bf38ad9b7096a4d863aa.jpg" width="560" height="420" alt="image"></a></span>
 
-   In total, we have over 55+ CFM of airflow towards the back of the
-   MacBook.
+<span class="r g1" style="--i:3">   In total, we have over 55+ CFM of airflow towards the back of the
+   MacBook.</span>
 
 
-   <b>## Benchmark and Testing</b>
-   ------------------------
+<span class="r g2" style="--i:3">   <b>## Benchmark and Testing</b></span>
+<span class="rl">   ------------------------</span>
 
-   Using <a href="https://apps.apple.com/us/app/endurance-cpu-stress-test/id1590043284?mt=12">Endurance</a>, a free CPU Stress Test app to perform an all-core
+<span class="r g1" style="--i:3">   Using <a href="https://apps.apple.com/us/app/endurance-cpu-stress-test/id1590043284?mt=12">Endurance</a>, a free CPU Stress Test app to perform an all-core
    stress test, alongside <a href="https://github.com/tlkh/asitop">asitop</a>, an Apple Silicon performance monitoring
    tool to measure core frequencies and power output, I measured the impact
-   of the fan solution.
+   of the fan solution.</span>
 
-   I wrote a script to extract and log clock speeds from the built-in
-   `powermetrics` utility:
+<span class="r g1" style="--i:3">   I wrote a script to extract and log clock speeds from the built-in
+   `powermetrics` utility:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@asahi ~ [1]&gt; sudo powermetrics
    |
    | **** Processor usage ****
@@ -277,114 +306,114 @@
    |   :   0% P6 :   0% P7 :   0% P8 :   0%)
    | GPU idle residency:  83.68%
    | GPU Power: 76 mW
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Using <a href="https://github.com/macmade/SMCKit/tree/daaa4c18962bf8c30942cb774eb5ae6f7bf354dd">SMCKit</a>, which provides a CLI that allows querying of the SMC
+<span class="r g1" style="--i:3">   Using <a href="https://github.com/macmade/SMCKit/tree/daaa4c18962bf8c30942cb774eb5ae6f7bf354dd">SMCKit</a>, which provides a CLI that allows querying of the SMC
    (System Management Controller) API, allowing access to internal sensor
    measurements, I wrote a <a href="https://github.com/ZimengXiong/m-thermals">Rust script</a> to query temperatures of the CPU
-   dies and battery.
+   dies and battery.</span>
 
-   Tying all this together, I wrote a <a href="https://gist.github.com/ZimengXiong/4d9296ae6b962e41f96ef7482485ef5a">Python logging script</a> that generates
-   a CSV file with all of these measurements.
+<span class="r g1" style="--i:3">   Tying all this together, I wrote a <a href="https://gist.github.com/ZimengXiong/4d9296ae6b962e41f96ef7482485ef5a">Python logging script</a> that generates
+   a CSV file with all of these measurements.</span>
 
 
-   <b>#### Geekbench</b>
+<span class="r g2" style="--i:3">   <b>#### Geekbench</b></span>
 
-   I wanted to use Geekbench, as it would also give me a score; however,
+<span class="r g1" style="--i:3">   I wanted to use Geekbench, as it would also give me a score; however,
    because of its differing suites of tests (image processing, numbers,
    etc.), it did not produce constant stress on the CPU and did not produce
-   as clean graphs:
+   as clean graphs:</span>
 
-   <a href="/media/e1f477adf13a22dadd521f20.png"><img src="/media/e1f477adf13a22dadd521f20.png" width="560" height="280" alt=""></a>
-
-
-   <b>## Results</b>
-   ----------
-
-   <b>### Clock Speeds</b>
+<span class="im g1" style="--i:3">   <a href="/media/e1f477adf13a22dadd521f20.png"><img src="/media/e1f477adf13a22dadd521f20.png" width="560" height="280" alt=""></a></span>
 
 
-   <b>#### No Fan</b>
+<span class="r g2" style="--i:3">   <b>## Results</b></span>
+<span class="rl">   ----------</span>
 
-   Starting the test, we see the frequency jump from resting around 1000
+<span class="r g1" style="--i:3">   <b>### Clock Speeds</b></span>
+
+
+<span class="r g2" style="--i:3">   <b>#### No Fan</b></span>
+
+<span class="r g1" style="--i:3">   Starting the test, we see the frequency jump from resting around 1000
    MHz close to its max clock speed of 3480 MHz. With the fan off, the
    MacBook throttled after just 3 minutes of running the stress test,
    dropping to 2300 MHz and slowly declining. The efficiency cores remain
-   stable at slightly below their rated max 2400 MHz.
+   stable at slightly below their rated max 2400 MHz.</span>
 
-   Net change: -35%
+<span class="r g1" style="--i:3">   Net change: -35%</span>
 
-   <a href="/media/897fe3e24f7ce044e7a4e5bf.png"><img src="/media/897fe3e24f7ce044e7a4e5bf.png" width="560" height="280" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/897fe3e24f7ce044e7a4e5bf.png"><img src="/media/897fe3e24f7ce044e7a4e5bf.png" width="560" height="280" alt=""></a></span>
 
 
-   <b>#### Fan</b>
+<span class="r g2" style="--i:3">   <b>#### Fan</b></span>
 
-   With the fan, we still see signs of throttling; however, it levels off
+<span class="r g1" style="--i:3">   With the fan, we still see signs of throttling; however, it levels off
    at a very constant 3000 MHz, with the E-cores reaching a slightly
-   higher, max rated clock speed.
+   higher, max rated clock speed.</span>
 
-   Net change: -9%
+<span class="r g1" style="--i:3">   Net change: -9%</span>
 
-   <a href="/media/272aae0a4c5a00817bdeb3d2.png"><img src="/media/272aae0a4c5a00817bdeb3d2.png" width="560" height="280" alt=""></a>
-
-
-   <b>### Power</b>
+<span class="im g1" style="--i:3">   <a href="/media/272aae0a4c5a00817bdeb3d2.png"><img src="/media/272aae0a4c5a00817bdeb3d2.png" width="560" height="280" alt=""></a></span>
 
 
-   <b>#### No Fan</b>
+<span class="r g2" style="--i:3">   <b>### Power</b></span>
 
-   This graph is nearly identical to the frequency chart, starting off
+
+<span class="r g2" style="--i:3">   <b>#### No Fan</b></span>
+
+<span class="r g1" style="--i:3">   This graph is nearly identical to the frequency chart, starting off
    reaching the M2's rated TDP (Thermal Design Power) of 20W, then slowly
-   falling off to less than half, ending at around 7W.
+   falling off to less than half, ending at around 7W.</span>
 
-   Net change: -65%
+<span class="r g1" style="--i:3">   Net change: -65%</span>
 
-   <a href="/media/99d45fa57da2ed4e4fa2fb84.png"><img src="/media/99d45fa57da2ed4e4fa2fb84.png" width="560" height="280" alt=""></a>
-
-
-   <b>#### Fan</b>
-
-   With the fan on, we see a less significant drop; however, it still
-   manages to throttle to 15W, but remains constant around that.
-
-   Net change: -25%
-
-   <a href="/media/b6cddf9f397c557070d93066.png"><img src="/media/b6cddf9f397c557070d93066.png" width="560" height="280" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/99d45fa57da2ed4e4fa2fb84.png"><img src="/media/99d45fa57da2ed4e4fa2fb84.png" width="560" height="280" alt=""></a></span>
 
 
-   <b>### Thermals</b>
+<span class="r g2" style="--i:3">   <b>#### Fan</b></span>
+
+<span class="r g1" style="--i:3">   With the fan on, we see a less significant drop; however, it still
+   manages to throttle to 15W, but remains constant around that.</span>
+
+<span class="r g1" style="--i:3">   Net change: -25%</span>
+
+<span class="im g1" style="--i:3">   <a href="/media/b6cddf9f397c557070d93066.png"><img src="/media/b6cddf9f397c557070d93066.png" width="560" height="280" alt=""></a></span>
 
 
-   <b>#### No Fan</b>
+<span class="r g2" style="--i:3">   <b>### Thermals</b></span>
 
-   Similarly, we see a peak at the start in line with the increased power
+
+<span class="r g2" style="--i:3">   <b>#### No Fan</b></span>
+
+<span class="r g1" style="--i:3">   Similarly, we see a peak at the start in line with the increased power
    draw and declining as the CPU throttles. The battery keeps a stable
-   37°C, only seeing a 1°C incline.
+   37°C, only seeing a 1°C incline.</span>
 
-   Peak: 80°C Average: 74°C
+<span class="r g1" style="--i:3">   Peak: 80°C Average: 74°C</span>
 
-   <a href="/media/2b0d56dc97b3ba76643216d1.png"><img src="/media/2b0d56dc97b3ba76643216d1.png" width="560" height="280" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/2b0d56dc97b3ba76643216d1.png"><img src="/media/2b0d56dc97b3ba76643216d1.png" width="560" height="280" alt=""></a></span>
 
 
-   <b>#### Fan</b>
+<span class="r g2" style="--i:3">   <b>#### Fan</b></span>
 
-   As expected, the CPU temperature takes much longer to ramp up to 75°C,
+<span class="r g1" style="--i:3">   As expected, the CPU temperature takes much longer to ramp up to 75°C,
    and stays there as it throttles to prevent the seeming max temperature
    limit of around 74°C. The battery does not experience any change in
-   temperature.
+   temperature.</span>
 
-   Peak: 74°C Average: 74°C
+<span class="r g1" style="--i:3">   Peak: 74°C Average: 74°C</span>
 
-   <a href="/media/c4929ec3a533b237ca46a0e0.png"><img src="/media/c4929ec3a533b237ca46a0e0.png" width="560" height="280" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/c4929ec3a533b237ca46a0e0.png"><img src="/media/c4929ec3a533b237ca46a0e0.png" width="560" height="280" alt=""></a></span>
 
-   With the fan, the bottom of the laptop is cool to the touch, measuring
-   around ambient.
+<span class="r g1" style="--i:3">   With the fan, the bottom of the laptop is cool to the touch, measuring
+   around ambient.</span>
 
 
-   <b>## Improvements</b>
-   ---------------
+<span class="r g2" style="--i:3">   <b>## Improvements</b></span>
+<span class="rl">   ---------------</span>
 
-   I could very easily add a microcontroller like a `Seeed SAMD21` or a
+<span class="r g1" style="--i:3">   I could very easily add a microcontroller like a `Seeed SAMD21` or a
    `RP2040` to control the fan via PWM, and through a USB Serial interface
    with the computer. I could then run a continuous script, such as with
    `PM2`, that uses `powermetrics` to query the CPU power draw in
@@ -392,19 +421,19 @@
    factors, I could tune either a simple P-curve or a more complex PID
    curve (the latter not being of any use as we are not at the limits of
    cooling throughput as the laptop still throttles), and adjust fan speed
-   accordingly.
+   accordingly.</span>
 
-   However, these loads aren't sudden and are not applied randomly or
+<span class="r g1" style="--i:3">   However, these loads aren't sudden and are not applied randomly or
    frequently. With my status bar showing CPU usage and my obvious
    knowledge of what I'm doing on the computer, I find dialing the knob
    high when I'm running intensive tasks isn't a big hassle, so I have put
-   off this integration.
+   off this integration.</span>
 
 
-   <b>## Conclusions</b>
-   --------------
+<span class="r g2" style="--i:3">   <b>## Conclusions</b></span>
+<span class="rl">   --------------</span>
 
-   Overall, this is a very effective solution at curbing thermal
+<span class="r g1" style="--i:3">   Overall, this is a very effective solution at curbing thermal
    throttling. However, seeing that the MacBook is still throttling even
    when the bottom is ambient temperature, it suggests that the SoC is
    certainly not thermally sunk to the bottom at all, and likely only
@@ -412,18 +441,18 @@
    the top, which the SoC likely has better contact with but is much harder
    to cool. In this case, the Thermal Pad Mod (see before) might be a good
    idea alongside this cooling solution, as it sinks the SoC to the bottom
-   for the air to be dissipated, allowing for more cooling capacity.
+   for the air to be dissipated, allowing for more cooling capacity.</span>
 
-   Even with over 55 CFM of air aimed directly at the bottom of the chassis
+<span class="r g1" style="--i:3">   Even with over 55 CFM of air aimed directly at the bottom of the chassis
    (I know, not "directed" or whatever), the MacBook still manages to
-   throttle. This adds to my regrets of not getting a Pro. 😦.
+   throttle. This adds to my regrets of not getting a Pro. 😦.</span>
 
 
 
 
-   <img src="/art/d-lean.png" width="129" height="150" alt="">   <a href="/">&lt;- back</a>
+<span class="ft g4" style="--w:129">   <img src="/art/d-lean.png" width="129" height="150" alt="">   <a href="/">&lt;- back</a></span>
 
-   <a href="/blog/patching-raycast-to-support-longer-pastes/">&lt;- Patching Raycast to Support Longer Pastes</a>
+<span class="r g1" style="--i:3">   <a href="/blog/patching-raycast-to-support-longer-pastes/">&lt;- Patching Raycast to Support Longer Pastes</a></span>
 
 
 

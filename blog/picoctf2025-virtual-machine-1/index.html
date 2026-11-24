@@ -5,123 +5,152 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>picoCTF2025: Virtual Machine 1</title>
 <script defer src="/prefetch.4aef6239e652.js"></script>
+<style>
+pre.m .vb::-webkit-scrollbar{display:none}
+@media (max-width: 619px) {
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  pre.m{white-space:normal}
+  pre.m>span{display:block;padding-right:16px}
+  pre.m .r{padding-left:calc(var(--i)*1ch + var(--h,0)*1ch);text-indent:calc(var(--h,0)*-1ch);overflow-wrap:anywhere}
+  pre.m .qm{display:none}
+  pre.m .vb{white-space:pre;overflow-x:auto;scrollbar-width:none;padding-right:0}
+  pre.m .rl{white-space:pre;overflow:hidden;padding-right:0}
+  pre.m .im{padding-left:calc(var(--i)*1ch)}
+  pre.m .im img{max-width:100%;height:auto;vertical-align:bottom}
+  pre.m .sep{text-align:center;word-spacing:2ch}
+  pre.m .dt,pre.m .nx{text-align:right}
+  pre.m .nx{padding-left:3ch}
+  pre.m .ta{display:flex;flex-wrap:wrap;align-items:flex-end;align-items:last baseline;column-gap:2ch;padding-left:calc(var(--i)*1ch)}
+  pre.m .ta>b{flex:1 1 12ch;min-width:0}
+  pre.m .ta>img{flex:none;width:calc(var(--w)*1px);max-width:34vw;height:auto}
+  pre.m .ta.rt{justify-content:space-between}
+  pre.m .ta.rt>b{flex:0 1 auto}
+  pre.m .ta.rt>img{max-width:40vw}
+  pre.m .ft{padding-left:3ch}
+  pre.m .ft img{width:calc(var(--w)*1px);max-width:40vw;height:auto;margin-right:2ch}
+  pre.m .g1{margin-top:1lh}
+  pre.m .g2{margin-top:2lh}
+  pre.m .g3{margin-top:3lh}
+  pre.m .g4{margin-top:4lh}
+}
+</style>
 </head>
 <body>
 <pre>   <a href="/">&lt;- back</a></pre>
-<pre>
+<pre class="m">
 
-   <img src="/art/c-picoctf2025-virtual-machine-1.png" width="120" height="184" alt=""> <b>picoCTF2025: Virtual Machine 1</b>
-                                                                10 oct 2025
+<span class="ta" style="--i:3;--w:120">   <img src="/art/c-picoctf2025-virtual-machine-1.png" width="120" height="184" alt=""> <b>picoCTF2025: Virtual Machine 1</b></span>
+<span class="dt">                                                                10 oct 2025</span>
 
 
-   View solve on <a href="https://github.com/ZimengXiong/picoCTF-public/tree/master">github</a>
+<span class="r g2" style="--i:3">   View solve on <a href="https://github.com/ZimengXiong/picoCTF-public/tree/master">github</a></span>
 
-   I thought it would be a good idea to try another picoCTF problem. I
+<span class="r g1" style="--i:3">   I thought it would be a good idea to try another picoCTF problem. I
    noticed none of the problems on last week's picoCTF Mini were `hard`, so
    I picked <a href="https://play.picoctf.org/practice/challenge/386?difficulty=3&amp;page=1">Virtual Machine 1</a>. This problem has `429 solves` and a whopping
-   `30% satisfication rate`
+   `30% satisfication rate`</span>
 
-   <b>The enemy has upgraded their mechanical analog computer. Start an</b>
+<span class="r g1" style="--i:3">   <b>The enemy has upgraded their mechanical analog computer. Start an</b>
    <b>instance to begin.We grabbed this design doc from enemy servers:</b>
    <a href="https://artifacts.picoctf.net/c/265/Virtual-Machine-1.zip"><b>Download</b></a><b>. We know that the rotation of the red axle is the input and the</b>
    <b>rotation of th axle is output. Reverse engineer the me blueechanism and</b>
-   <b>get past their checker program:thnc saturn.picoctf.net 60698.</b>
+   <b>get past their checker program:thnc saturn.picoctf.net 60698.</b></span>
 
 
-   <b>## CAD Model</b>
-   ------------
+<span class="r g2" style="--i:3">   <b>## CAD Model</b></span>
+<span class="rl">   ------------</span>
 
-   First off,
+<span class="r g1" style="--i:3">   First off,</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/P/virtualMachine1&gt; unzip Virtual-Machine-1.zip
    | Archive:  Virtual-Machine-1.zip
    |   inflating: VirtualMachine1.dae
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   we get a COLLADA `.dae` file??? A 3D File?? I don't have anything that
+<span class="r g1" style="--i:3">   we get a COLLADA `.dae` file??? A 3D File?? I don't have anything that
    opens COLLADA files (blender removed support a few versions ago), so I
-   converted it into a STEP file using <a href="https://imagetostl.com/convert/file/dae/to/step#convert">imagetostl.com</a>
+   converted it into a STEP file using <a href="https://imagetostl.com/convert/file/dae/to/step#convert">imagetostl.com</a></span>
 
-   <a href="/media/262de66db43a8d9d05839f3d.png"><img src="/media/262de66db43a8d9d05839f3d.png" width="560" height="440" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/262de66db43a8d9d05839f3d.png"><img src="/media/262de66db43a8d9d05839f3d.png" width="560" height="440" alt=""></a></span>
 
-   We get a sneak peak at the model, this will be fun...
+<span class="r g1" style="--i:3">   We get a sneak peak at the model, this will be fun...</span>
 
-   <a href="/media/7ec2ac3515bb9957b1f42083.png"><img src="/media/7ec2ac3515bb9957b1f42083.png" width="551" height="204" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/7ec2ac3515bb9957b1f42083.png"><img src="/media/7ec2ac3515bb9957b1f42083.png" width="551" height="204" alt=""></a></span>
 
-   It looks like OnShape has failed to translate the file (over 30 minutes)
-   So I converted it into a .blend and opened it with blender
+<span class="r g1" style="--i:3">   It looks like OnShape has failed to translate the file (over 30 minutes)
+   So I converted it into a .blend and opened it with blender</span>
 
-   <a href="/media/c13e660bd0a394bc56de8687.png"><img src="/media/c13e660bd0a394bc56de8687.png" width="560" height="591" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/c13e660bd0a394bc56de8687.png"><img src="/media/c13e660bd0a394bc56de8687.png" width="560" height="591" alt=""></a></span>
 
-   And then exported it as `.glTF` so I could import it into OnShape (I
-   think the gear relations and revolute parameters might come in handy)
+<span class="r g1" style="--i:3">   And then exported it as `.glTF` so I could import it into OnShape (I
+   think the gear relations and revolute parameters might come in handy)</span>
 
-   While it's converting (hopefully), lets inspect the model first, it
-   seems to be some Lego Technic gears, with some differentials(?)
+<span class="r g1" style="--i:3">   While it's converting (hopefully), lets inspect the model first, it
+   seems to be some Lego Technic gears, with some differentials(?)</span>
 
-   Let's take a look at the instance first:
+<span class="r g1" style="--i:3">   Let's take a look at the instance first:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/P/virtualMachine1 [SIGINT]&gt; nc               \
    |   saturn.picoctf.net 50299
    | If the input to the machine is 20698, what is the output?
    | Answer&gt; ^C⏎
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   It looks like the machine is a calculator, 50299 might in radians or
+<span class="r g1" style="--i:3">   It looks like the machine is a calculator, 50299 might in radians or
    degrees or turns, or something like that. We have to solve for the
-   rotation of the output blue axle with relation to the red input axle.
+   rotation of the output blue axle with relation to the red input axle.</span>
 
-   The OnShape finished importing:
+<span class="r g1" style="--i:3">   The OnShape finished importing:</span>
 
-   <a href="/media/b2eaff6b798c85e945693332.png"><img src="/media/b2eaff6b798c85e945693332.png" width="560" height="967" alt=""></a>
-
-
-   <b>## Breaking down into Sections</b>
-   ------------------------------
-
-   We can start working on it in sections:
-
-   <a href="/media/24ed41ef47eabd5938379ea1.png"><img src="/media/24ed41ef47eabd5938379ea1.png" width="560" height="494" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/b2eaff6b798c85e945693332.png"><img src="/media/b2eaff6b798c85e945693332.png" width="560" height="967" alt=""></a></span>
 
 
-   <b>### Lego Gears</b>
+<span class="r g2" style="--i:3">   <b>## Breaking down into Sections</b></span>
+<span class="rl">   ------------------------------</span>
 
-   Here is a list of Lego gear sizes:
+<span class="r g1" style="--i:3">   We can start working on it in sections:</span>
 
-   <a href="/media/801eea047e8682743cd2fadf.png"><img src="/media/801eea047e8682743cd2fadf.png" width="500" height="375" alt=""></a>
-
-   And a differential
-
-   <a href="/media/3a1b67264bad255791cacb50.png"><img src="/media/3a1b67264bad255791cacb50.png" width="518" height="411" alt=""></a>
-
-   The differential is a `Technic, Gear Differential 24-16 Tooth`
-
-   Separating the gears, we see a total of 6 distinct gear ratios
-
-   <a href="/media/c5c03192fa163c4b16a360b3.png"><img src="/media/c5c03192fa163c4b16a360b3.png" width="486" height="444" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/24ed41ef47eabd5938379ea1.png"><img src="/media/24ed41ef47eabd5938379ea1.png" width="560" height="494" alt=""></a></span>
 
 
-   <b>### "Differential Equations", lol</b>
+<span class="r g2" style="--i:3">   <b>### Lego Gears</b></span>
 
-   The differential acts as an averaging mechanism for rotational
-   velocities:
+<span class="r g1" style="--i:3">   Here is a list of Lego gear sizes:</span>
 
-       ω_diff = (ω₁ + ω₂)/2
+<span class="im g1" style="--i:3">   <a href="/media/801eea047e8682743cd2fadf.png"><img src="/media/801eea047e8682743cd2fadf.png" width="500" height="375" alt=""></a></span>
 
-   where ω₁ and ω₂ are the input rotational velocities. Thus, we need to
-   split this section into two parts, by first calculating A₁,₁ and A₁,₂
+<span class="r g1" style="--i:3">   And a differential</span>
 
-   <a href="/media/03bb829afb70557e489a400a.png"><img src="/media/03bb829afb70557e489a400a.png" width="500" height="457" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/3a1b67264bad255791cacb50.png"><img src="/media/3a1b67264bad255791cacb50.png" width="518" height="411" alt=""></a></span>
+
+<span class="r g1" style="--i:3">   The differential is a `Technic, Gear Differential 24-16 Tooth`</span>
+
+<span class="r g1" style="--i:3">   Separating the gears, we see a total of 6 distinct gear ratios</span>
+
+<span class="im g1" style="--i:3">   <a href="/media/c5c03192fa163c4b16a360b3.png"><img src="/media/c5c03192fa163c4b16a360b3.png" width="486" height="444" alt=""></a></span>
 
 
-   <b>## Section I</b>
-   ------------
+<span class="r g2" style="--i:3">   <b>### "Differential Equations", lol</b></span>
 
-   We can derive both sections symbolically with python:
+<span class="r g1" style="--i:3">   The differential acts as an averaging mechanism for rotational
+   velocities:</span>
 
-   .-----------------------------------------------------------------------
+<span class="r g1" style="--i:7">       ω_diff = (ω₁ + ω₂)/2</span>
+
+<span class="r g1" style="--i:3">   where ω₁ and ω₂ are the input rotational velocities. Thus, we need to
+   split this section into two parts, by first calculating A₁,₁ and A₁,₂</span>
+
+<span class="im g1" style="--i:3">   <a href="/media/03bb829afb70557e489a400a.png"><img src="/media/03bb829afb70557e489a400a.png" width="500" height="457" alt=""></a></span>
+
+
+<span class="r g2" style="--i:3">   <b>## Section I</b></span>
+<span class="rl">   ------------</span>
+
+<span class="r g1" style="--i:3">   We can derive both sections symbolically with python:</span>
+
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def A_1_1(A1):
    |     a0 = A1
    |     a1 = -a0*24/8
@@ -129,26 +158,26 @@
    |     a3 = a2*16/8
    |     a4 = -a3
    |     a5 = a4
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   But wait...how do we handle rotation on different axis?? Let's define
+<span class="r g1" style="--i:3">   But wait...how do we handle rotation on different axis?? Let's define
    positive rotation as clockwise when viewed from directly above. But the
    question still remains, how do we define rotation in the horizontal
    axis? Lets arbitrarily define it as clockwise when viewed from the right
-   when viewed from the back:
+   when viewed from the back:</span>
 
-   <a href="/media/754fdcb2fb7e3d334e4463bb.png"><img src="/media/754fdcb2fb7e3d334e4463bb.png" width="500" height="457" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/754fdcb2fb7e3d334e4463bb.png"><img src="/media/754fdcb2fb7e3d334e4463bb.png" width="500" height="457" alt=""></a></span>
 
-   Let's also give the gears on different axis different names:
+<span class="r g1" style="--i:3">   Let's also give the gears on different axis different names:</span>
 
-   <a href="/media/e1c8659860f998ad1830a4cb.png"><img src="/media/e1c8659860f998ad1830a4cb.png" width="500" height="457" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/e1c8659860f998ad1830a4cb.png"><img src="/media/e1c8659860f998ad1830a4cb.png" width="500" height="457" alt=""></a></span>
 
-   With this configuration, if a pitch axial gear (with ω b) is on the left
-   of a yaw axial gear (with ω a), then b=-a, and vice versa.
+<span class="r g1" style="--i:3">   With this configuration, if a pitch axial gear (with ω b) is on the left
+   of a yaw axial gear (with ω a), then b=-a, and vice versa.</span>
 
-   Thus,
+<span class="r g1" style="--i:3">   Thus,</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def B_1_1(iA1):
    |     """
    |     Calculate first branch output for Section I
@@ -184,42 +213,42 @@
    |     Differential averaging of both branches
    |     """
    |     return (b1_1 + b1_2)/2
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Now, we can calculate A₂, first labeling the gears
+<span class="r g1" style="--i:3">   Now, we can calculate A₂, first labeling the gears</span>
 
-   <b>Section I Summary:</b> A₂ = -A₁ × 24/8 × 16/8 × 1/2 = -A₁ × 3
+<span class="r g1" style="--i:3">   <b>Section I Summary:</b> A₂ = -A₁ × 24/8 × 16/8 × 1/2 = -A₁ × 3</span>
 
-   <a href="/media/ba54addb7a8de8040a4e6c78.png"><img src="/media/ba54addb7a8de8040a4e6c78.png" width="500" height="457" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/ba54addb7a8de8040a4e6c78.png"><img src="/media/ba54addb7a8de8040a4e6c78.png" width="500" height="457" alt=""></a></span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def A2(B1):
    |     b0 = -B1
    |     b1 = b0
    |     a0 = -b1
    |     return a0
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-   <b>## Section II</b>
-   -------------
+<span class="r g2" style="--i:3">   <b>## Section II</b></span>
+<span class="rl">   -------------</span>
 
-   Let's annotate in a similar fashion Section #2
+<span class="r g1" style="--i:3">   Let's annotate in a similar fashion Section #2</span>
 
-   <a href="/media/e4cdd2425957ba0076fc1de2.png"><img src="/media/e4cdd2425957ba0076fc1de2.png" width="500" height="338" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/e4cdd2425957ba0076fc1de2.png"><img src="/media/e4cdd2425957ba0076fc1de2.png" width="500" height="338" alt=""></a></span>
 
-   This looks daunting, but it's not that bad. We have 6 distinct sections.
-   Let's number them:
+<span class="r g1" style="--i:3">   This looks daunting, but it's not that bad. We have 6 distinct sections.
+   Let's number them:</span>
 
-   <a href="/media/bd0e320b60a8ecba71d888cc.png"><img src="/media/bd0e320b60a8ecba71d888cc.png" width="500" height="338" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/bd0e320b60a8ecba71d888cc.png"><img src="/media/bd0e320b60a8ecba71d888cc.png" width="500" height="338" alt=""></a></span>
 
-   We can start coding now!
+<span class="r g1" style="--i:3">   We can start coding now!</span>
 
-   <a href="/media/a84a24d7a99b3d1981115eee.png"><img src="/media/a84a24d7a99b3d1981115eee.png" width="500" height="338" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/a84a24d7a99b3d1981115eee.png"><img src="/media/a84a24d7a99b3d1981115eee.png" width="500" height="338" alt=""></a></span>
 
-   We now have B₂,₁ and B₂,₂:
+<span class="r g1" style="--i:3">   We now have B₂,₁ and B₂,₂:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def A_2_1(iA2):
    |     """
    |     First stage of Section II
@@ -255,18 +284,18 @@
    |     a4 = a3
    |     b0 = a4
    |     return b0
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Then, we can derive B₃,₁:
+<span class="r g1" style="--i:3">   Then, we can derive B₃,₁:</span>
 
-   <a href="/media/d2b4ae54fa5090213a7e0223.png"><img src="/media/d2b4ae54fa5090213a7e0223.png" width="329" height="514" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/d2b4ae54fa5090213a7e0223.png"><img src="/media/d2b4ae54fa5090213a7e0223.png" width="329" height="514" alt=""></a></span>
 
-   <a href="/media/301f16451a595a82ac5c6754.png"><img src="/media/301f16451a595a82ac5c6754.png" width="500" height="338" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/301f16451a595a82ac5c6754.png"><img src="/media/301f16451a595a82ac5c6754.png" width="500" height="338" alt=""></a></span>
 
-   Ooops! It looks like this section (orange) is NOT a 36t, but 3x12. Now
-   we can calculate B₃,₁:
+<span class="r g1" style="--i:3">   Ooops! It looks like this section (orange) is NOT a 36t, but 3x12. Now
+   we can calculate B₃,₁:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def B3_1(iB2):
    |     """
    |     First branch of Section III
@@ -278,13 +307,13 @@
    |     b3 = b2
    |     b4 = -b3*40/8    # Second gear reduction (40:8)
    |     return b4
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Moving on, we calculate B₃,₂ using A₂
+<span class="r g1" style="--i:3">   Moving on, we calculate B₃,₂ using A₂</span>
 
-   <a href="/media/c367efb04a625a34553fc34e.png"><img src="/media/c367efb04a625a34553fc34e.png" width="500" height="338" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/c367efb04a625a34553fc34e.png"><img src="/media/c367efb04a625a34553fc34e.png" width="500" height="338" alt=""></a></span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def B3_2(iA2):
    |     """
    |     Second branch of Section III
@@ -307,49 +336,49 @@
    |     a14 = a13
    |     b0 = a14
    |     return b0
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   The approach is repetitive, but my brain is overwhelmed already, so I'll
-   do things the brute-force way.
+<span class="r g1" style="--i:3">   The approach is repetitive, but my brain is overwhelmed already, so I'll
+   do things the brute-force way.</span>
 
-   With B₃,₁ and B₃,₂, we can calculate B₃ using the differential equation
-   (1):
+<span class="r g1" style="--i:3">   With B₃,₁ and B₃,₂, we can calculate B₃ using the differential equation
+   (1):</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def B3(B3_1, B3_2):
    |     return (B3_1 + B3_2)/2
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   This allows us to calculate A₃ relatively easily:
+<span class="r g1" style="--i:3">   This allows us to calculate A₃ relatively easily:</span>
 
-   <b>Section II Summary:</b> A₃ = -B₃ = -(B₃,₁ + B₃,₂)/2
+<span class="r g1" style="--i:3">   <b>Section II Summary:</b> A₃ = -B₃ = -(B₃,₁ + B₃,₂)/2</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def A3(B3):
    |     b0 = B3
    |     b1 = -b0
    |     b2 = b1
    |     a0 = -b2
    |     return a0
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-   <b>## Section III</b>
-   --------------
+<span class="r g2" style="--i:3">   <b>## Section III</b></span>
+<span class="rl">   --------------</span>
 
-   We notice a heuristic here,
+<span class="r g1" style="--i:3">   We notice a heuristic here,</span>
 
-   <a href="/media/2909b18b5e8cf7462a65dd8b.png"><img src="/media/2909b18b5e8cf7462a65dd8b.png" width="500" height="836" alt=""></a>
+<span class="im g1" style="--i:3">   <a href="/media/2909b18b5e8cf7462a65dd8b.png"><img src="/media/2909b18b5e8cf7462a65dd8b.png" width="500" height="836" alt=""></a></span>
 
-   We notice A₁:A₂ = A₃:A₄, so we can use the same transformation function
-   for both sections.
+<span class="r g1" style="--i:3">   We notice A₁:A₂ = A₃:A₄, so we can use the same transformation function
+   for both sections.</span>
 
-   <b>Section III Summary:</b> A₄ = A₂(A₃) = -A₃ × 3
+<span class="r g1" style="--i:3">   <b>Section III Summary:</b> A₄ = A₂(A₃) = -A₃ × 3</span>
 
-   Thus, we just plug A3 back into our A1-&gt;A2 function, and we solve the
-   entire system with:
+<span class="r g1" style="--i:3">   Thus, we just plug A3 back into our A1-&gt;A2 function, and we solve the
+   entire system with:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | ```python
    | def A1_A2(a1):
    |     """
@@ -381,29 +410,29 @@
    |     return A3_A4(A2_A3(A1_A2(a1)))
    |
    | print(solveSystem(-17198))
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-   <b>## Complete System Solution</b>
-   ---------------------------
+<span class="r g2" style="--i:3">   <b>## Complete System Solution</b></span>
+<span class="rl">   ---------------------------</span>
 
-   The complete system can be represented as a series of transformations:
+<span class="r g1" style="--i:3">   The complete system can be represented as a series of transformations:</span>
 
-   A₂ = f₁(A₁) = -A₁ × 3 A₃ = f₂(A₂) = -(B₃,₁(A₂) + B₃,₂(A₂))/2 A₄ = f₃(A₃)
-   = -A₃ × 3
+<span class="r g1" style="--i:3">   A₂ = f₁(A₁) = -A₁ × 3 A₃ = f₂(A₂) = -(B₃,₁(A₂) + B₃,₂(A₂))/2 A₄ = f₃(A₃)
+   = -A₃ × 3</span>
 
-   <b>Final System Equation:</b> A₄ = f₃(f₂(f₁(A₁)))
+<span class="r g1" style="--i:3">   <b>Final System Equation:</b> A₄ = f₃(f₂(f₁(A₁)))</span>
 
-   Where the overall transformation is: A₄ = A₁ × 9 × (B₃,₁(A₁ × 3) +
-   B₃,₂(A₁ × 3))/2
+<span class="r g1" style="--i:3">   Where the overall transformation is: A₄ = A₁ × 9 × (B₃,₁(A₁ × 3) +
+   B₃,₂(A₁ × 3))/2</span>
 
 
-   <b>## Plugging it in</b>
-   -----------------
+<span class="r g2" style="--i:3">   <b>## Plugging it in</b></span>
+<span class="rl">   -----------------</span>
 
-   Lets see if it works!
+<span class="r g1" style="--i:3">   Lets see if it works!</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/P/virtualMachine1&gt; python3 solveSystem.py
    | Traceback (most recent call last):
    |   File "~/SchoolDrive/picoCTF/Practice/virtualMachine1/solveSystem.p \
@@ -420,38 +449,38 @@
    |             ^^^^^
    | UnboundLocalError: cannot access local variable 'A_2_1' where it is  \
    |   not associated with a value
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Nope, looks like my use of the same character as both the variable and
-   function name is causing issues.
+<span class="r g1" style="--i:3">   Nope, looks like my use of the same character as both the variable and
+   function name is causing issues.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/P/virtualMachine1&gt; python3 solveSystem.py
    | -9359.0
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Looks like it works! Let's test it on our input.
+<span class="r g1" style="--i:3">   Looks like it works! Let's test it on our input.</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/P/virtualMachine1&gt; nc saturn.picoctf.net 51644
    |
    | If the input to the machine is 13536, what is the output?
    | Answer&gt; -126683424
    | That's not correct.
    | You have to wait 360.0 seconds before trying again.
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   Sighhh...this mean we only have one more attempt, let's invert the sign
-   of our input to see if we are using different coordinates.
+<span class="r g1" style="--i:3">   Sighhh...this mean we only have one more attempt, let's invert the sign
+   of our input to see if we are using different coordinates.</span>
 
-   Since I didn't want to wait 360 seconds, I launched a new instance and
-   inverted the number
+<span class="r g1" style="--i:3">   Since I didn't want to wait 360 seconds, I launched a new instance and
+   inverted the number</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | print(solveSystem(-17198))
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | zimengx@endeavour ~/S/p/P/virtualMachine1 [SIGINT]&gt; nc               \
    |   saturn.picoctf.net 53014
    | If the input to the machine is 17198, what is the output?
@@ -459,33 +488,33 @@
    | 160956082
    | That's correct!
    | picoCTF{xxxxxxxxxxxxxxxxxxxxxxxx}
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
-   YAYYYYYYYYYY. Total time took: 2hr 10min including time it took to write
-   this, so I guess it would have taken roughly 2/3-1/2 the time without.
+<span class="r g1" style="--i:3">   YAYYYYYYYYYY. Total time took: 2hr 10min including time it took to write
+   this, so I guess it would have taken roughly 2/3-1/2 the time without.</span>
 
 
-   <b>## Complete System Analysis</b>
-   ---------------------------
+<span class="r g2" style="--i:3">   <b>## Complete System Analysis</b></span>
+<span class="rl">   ---------------------------</span>
 
-   <b>### Mathematical Summary</b>
+<span class="r g1" style="--i:3">   <b>### Mathematical Summary</b></span>
 
-   <b>Key Equations:</b>
+<span class="r g1" style="--i:3">   <b>Key Equations:</b></span>
 
-   1. <b>Differential Averaging:</b> ω_diff = (ω₁ + ω₂)/2
+<span class="r g1" style="--i:3;--h:3">   1. <b>Differential Averaging:</b> ω_diff = (ω₁ + ω₂)/2</span>
 
-   2. <b>Section I Transformation (A₁ → A₂):</b> A₂ = -A₁ × 24/8 × 16/8 × 1/2 =
-      -A₁ × 3
+<span class="r g1" style="--i:3;--h:3">   2. <b>Section I Transformation (A₁ → A₂):</b> A₂ = -A₁ × 24/8 × 16/8 × 1/2 =
+      -A₁ × 3</span>
 
-   3. <b>Section II Transformation (A₂ → A₃):</b> A₃ = -(B₃,₁(A₂) + B₃,₂(A₂))/2
+<span class="r g1" style="--i:3;--h:3">   3. <b>Section II Transformation (A₂ → A₃):</b> A₃ = -(B₃,₁(A₂) + B₃,₂(A₂))/2</span>
 
-   4. <b>Section III Transformation (A₃ → A₄):</b> A₄ = -A₃ × 3
+<span class="r g1" style="--i:3;--h:3">   4. <b>Section III Transformation (A₃ → A₄):</b> A₄ = -A₃ × 3</span>
 
-   <b>Complete System Solution:</b> A₄ = A₁ × 9 × (B₃,₁(A₁ × 3) + B₃,₂(A₁ × 3))/2
+<span class="r g1" style="--i:3">   <b>Complete System Solution:</b> A₄ = A₁ × 9 × (B₃,₁(A₁ × 3) + B₃,₂(A₁ × 3))/2</span>
 
-   Full Code:
+<span class="r g1" style="--i:3">   Full Code:</span>
 
-   .-----------------------------------------------------------------------
+<span class="vb g1">   .-----------------------------------------------------------------------
    | def B_1_1(iA1):
    |     a0 = iA1
    |     a1 = -a0*24/8
@@ -597,31 +626,31 @@
    |
    | def solveSystem(a1):
    |     return A3_A4(A2_A3(A1_A2(a1)))
-   '-----------------------------------------------------------------------
+   '-----------------------------------------------------------------------</span>
 
 
-   <b>## Other approaches</b>
-   -------------------
+<span class="r g2" style="--i:3">   <b>## Other approaches</b></span>
+<span class="rl">   -------------------</span>
 
-   Let's see how other people approached this problem. Searching for
+<span class="r g1" style="--i:3">   Let's see how other people approached this problem. Searching for
    "picoCTF 2025 Virtual Machine 1", I don't see any solution besides <a href="https://www.ta-oot.page/posts/ctf-writeups/picoctf2023/virtualmachine1/">this</a>
    <a href="https://www.ta-oot.page/posts/ctf-writeups/picoctf2023/virtualmachine1/">one</a>, which did not provide a solution. Quite disappointing... I wanted
-   to see if there was a faster way.
+   to see if there was a faster way.</span>
 
-   Looking at it, I can't think of a faster way or a shortcut to solving
+<span class="r g1" style="--i:3">   Looking at it, I can't think of a faster way or a shortcut to solving
    this, besides modeling it out in OnShape and doing gear relations for
    each gear, this would help us solve A1-&gt;2 A2-&gt;3 relations faster? I
    don't know how much faster it would be or how accurate it would be. It
    would also be fun to build this out, but I would like to think that
-   would take more time.
+   would take more time.</span>
 
 
 
 
-   <img src="/art/d-profile.png" width="117" height="154" alt="">   <a href="/">&lt;- back</a>
+<span class="ft g4" style="--w:117">   <img src="/art/d-profile.png" width="117" height="154" alt="">   <a href="/">&lt;- back</a></span>
 
-   <a href="/blog/markdown-editors-suck-at-handling-files/">&lt;- Markdown editors suck at handling files</a>
-                                          <a href="/blog/solving-picomini-by-cmu-africa/">Solving picoMini by CMU-Africa -&gt;</a>
+<span class="r g1" style="--i:3">   <a href="/blog/markdown-editors-suck-at-handling-files/">&lt;- Markdown editors suck at handling files</a></span>
+<span class="nx">                                          <a href="/blog/solving-picomini-by-cmu-africa/">Solving picoMini by CMU-Africa -&gt;</a></span>
 
 
 
