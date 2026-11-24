@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -6,6 +7,14 @@ import sharp from 'sharp'
 
 const output = path.resolve('dist')
 const site = 'https://zime.ng'
+const origin = 'https://zimengxiong.com'
+const person = origin + '/#person'
+const website = origin + '/#website'
+const ogImage = origin + '/og-image.png'
+const indexNowKey = '3c9e7a1f5b2d8e4a6c0f9b3d7e1a5c8f'
+const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+const posts = []
+const urls = []
 const processed = new Map()
 const widths = [320, 640, 960, 1280, 1920]
 const persist = process.argv.includes('--save-images')
@@ -28,7 +37,7 @@ async function copySite(dir = '') {
     const file = path.join(dir, entry.name)
     if (entry.isDirectory()) {
       await copySite(file)
-    } else if (entry.isFile() && /\.(html|css|js|txt|png|jpe?g|gif|webp|avif|svg|ico|mp4|webm|woff2?|pdf)$/i.test(file)) {
+    } else if (entry.isFile() && /\.(html|css|js|txt|png|jpe?g|gif|webp|avif|svg|ico|mp4|webm|woff2?|pdf|xml)$/i.test(file)) {
       await mkdir(path.join(output, dir), { recursive: true })
       await cp(file, path.join(output, file))
       assets.add(file)
@@ -101,6 +110,189 @@ async function optimize(url) {
   return { ...responsive(candidates, width, height), src: original }
 }
 
+function escape(value) {
+  return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+function clean(text) {
+  return text.replace(/`/g, '').replace(/\s+/g, ' ').trim()
+}
+
+function clip(text, max = 160) {
+  if (text.length <= max) return text
+  const cut = text.slice(0, max - 1)
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:.—-]+$/, '') + '…'
+}
+
+function parseDate(text) {
+  const match = clean(text).match(/^(\d{1,2}) ([a-z]{3}) (\d{4})$/i)
+  if (!match || !months.includes(match[2].toLowerCase())) throw new Error('Unparseable post date: ' + text)
+  return new Date(Date.UTC(Number(match[3]), months.indexOf(match[2].toLowerCase()), Number(match[1])))
+}
+
+function day(date) {
+  return date.toISOString().slice(0, 10)
+}
+
+function committed(file) {
+  try {
+    return execFileSync('git', ['log', '-1', '--format=%cs', '--', file], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || null
+  } catch {
+    return null
+  }
+}
+
+function excerpt($) {
+  let text = ''
+  for (const element of $('pre.m span.r')) {
+    const span = $(element)
+    const paragraph = clean(span.text())
+    if (paragraph.length < 60 || /^NOTE:/.test(paragraph) || span.children('b').length && clean(span.children('b').text()) === paragraph) continue
+    text = text ? text + ' ' + paragraph : paragraph
+    if (text.length >= 140) break
+  }
+  return clip(text)
+}
+
+function breadcrumbs(items) {
+  return { '@type': 'BreadcrumbList', '@id': items.at(-1).url + '#breadcrumb', itemListElement: items.map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: item.url })) }
+}
+
+function seo($, page) {
+  const route = '/' + page.replace(/index\.html$/, '')
+  const url = origin + route
+  const home = { name: 'Zimeng Xiong', url: origin + '/' }
+  let meta
+  if (route === '/') {
+    meta = {
+      title: 'Zimeng Xiong',
+      heading: 'Zimeng Xiong',
+      type: 'website',
+      description: 'Zimeng Xiong (Alpaca Engineering) — software and hardware projects including PancakeSlicer, ExcaliDash, WinMux, Modelr, and technical writing.',
+      lastmod: committed(page),
+      graph: description => [
+        {
+          '@type': 'Person',
+          '@id': person,
+          name: 'Zimeng Xiong',
+          givenName: 'Zimeng',
+          familyName: 'Xiong',
+          alternateName: ['Zimeng', 'Alpaca Engineering'],
+          url: origin + '/',
+          email: 'mailto:me@zimengxiong.com',
+          sameAs: ['https://github.com/ZimengXiong', 'https://www.youtube.com/@alpacaengineering', 'https://x.com/zimengxiong', 'https://www.reddit.com/user/arduinoRPi4/', 'https://zime.ng/', 'https://excalidash.xyz/', 'https://pancake.cooking/', 'https://www.winmux.dev/', 'https://alpacawebservices.com/']
+        },
+        { '@type': 'WebSite', '@id': website, url: origin + '/', name: 'Zimeng Xiong', alternateName: 'zime.ng', inLanguage: 'en', publisher: { '@id': person } },
+        { '@type': 'ProfilePage', '@id': url + '#webpage', url, name: 'Zimeng Xiong', description, inLanguage: 'en', isPartOf: { '@id': website }, mainEntity: { '@id': person }, about: { '@id': person } }
+      ]
+    }
+  } else if (route === '/things/') {
+    const items = []
+    for (const element of $('pre.m span.r')) {
+      const span = $(element)
+      if (!/--i:3(;|$)/.test(span.attr('style') || '')) continue
+      const link = span.children('a').first()
+      if (!link.length) continue
+      items.push({ '@type': 'ListItem', position: items.length + 1, name: clean(link.text()), url: new URL(link.attr('href'), url).href.replace(site + '/', origin + '/') })
+    }
+    meta = {
+      title: 'Things — Zimeng Xiong',
+      heading: 'Things',
+      type: 'website',
+      description: 'Projects by Zimeng Xiong: WinMux, PancakeSlicer, ExcaliDash, tinyTouch, swipeType, Modelr, hunyuan3D-mlx-swift, and more macOS, 3D printing, and ML tools.',
+      lastmod: committed(page),
+      graph: description => [
+        { '@type': 'CollectionPage', '@id': url + '#webpage', url, name: 'Things', description, inLanguage: 'en', isPartOf: { '@id': website }, about: { '@id': person }, author: { '@id': person }, breadcrumb: { '@id': url + '#breadcrumb' }, mainEntity: { '@type': 'ItemList', numberOfItems: items.length, itemListElement: items } },
+        breadcrumbs([home, { name: 'Things', url }])
+      ]
+    }
+  } else if (route.startsWith('/blog/')) {
+    const heading = clean($('pre.m .ta b').first().text())
+    const date = parseDate($('pre.m .dt').first().text())
+    const description = excerpt($)
+    if (!heading || description.length < 100) throw new Error('Missing post metadata: ' + page)
+    const post = { title: heading, url, date, description }
+    posts.push(post)
+    meta = {
+      title: heading + ' — Zimeng Xiong',
+      heading,
+      type: 'article',
+      description,
+      date,
+      lastmod: day(date),
+      graph: description => [
+        { '@type': 'BlogPosting', '@id': url + '#article', headline: heading, description, datePublished: day(date), author: { '@id': person }, publisher: { '@id': person }, mainEntityOfPage: { '@type': 'WebPage', '@id': url }, url, image: ogImage, inLanguage: 'en', isPartOf: { '@id': website } },
+        breadcrumbs([home, { name: heading, url }])
+      ]
+    }
+  } else {
+    throw new Error('No SEO metadata for ' + page)
+  }
+  urls.push({ url, lastmod: meta.lastmod })
+  const tags = [
+    ['meta', { name: 'description', content: meta.description }],
+    ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1' }],
+    ['link', { rel: 'canonical', href: url }],
+    ['link', { rel: 'icon', href: '/alpaca.svg', type: 'image/svg+xml' }],
+    ['link', { rel: 'alternate', type: 'application/rss+xml', title: 'Zimeng Xiong', href: origin + '/feed.xml' }],
+    ['meta', { property: 'og:site_name', content: 'Zimeng Xiong' }],
+    ['meta', { property: 'og:locale', content: 'en_US' }],
+    ['meta', { property: 'og:type', content: meta.type }],
+    ['meta', { property: 'og:url', content: url }],
+    ['meta', { property: 'og:title', content: meta.heading }],
+    ['meta', { property: 'og:description', content: meta.description }],
+    ['meta', { property: 'og:image', content: ogImage }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { property: 'og:image:alt', content: 'Zimeng Xiong' }]
+  ]
+  if (meta.date) {
+    tags.push(['meta', { property: 'article:published_time', content: day(meta.date) }])
+    tags.push(['meta', { property: 'article:author', content: origin + '/' }])
+  }
+  tags.push(
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:site', content: '@zimengxiong' }],
+    ['meta', { name: 'twitter:creator', content: '@zimengxiong' }],
+    ['meta', { name: 'twitter:title', content: meta.heading }],
+    ['meta', { name: 'twitter:description', content: meta.description }],
+    ['meta', { name: 'twitter:image', content: ogImage }]
+  )
+  const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': meta.graph(meta.description) }).replace(/</g, '\\u003c')
+  const html = tags.map(([tag, attrs]) => '<' + tag + Object.entries(attrs).map(([k, v]) => ' ' + k + '="' + escape(v) + '"').join('') + '>').join('\n') + '\n<script type="application/ld+json">' + graph + '</script>'
+  $('head meta[name="description"], head link[rel="canonical"], head link[rel="icon"]').remove()
+  $('title').text(meta.title).after('\n' + html)
+}
+
+async function discovery() {
+  posts.sort((a, b) => b.date - a.date || a.title.localeCompare(b.title))
+  urls.sort((a, b) => a.url.localeCompare(b.url))
+  const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    urls.map(item => '  <url>\n    <loc>' + escape(item.url) + '</loc>\n' + (item.lastmod ? '    <lastmod>' + item.lastmod + '</lastmod>\n' : '') + '  </url>\n').join('') + '</urlset>\n'
+  const feed = '<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n<channel>\n' +
+    '  <title>Zimeng Xiong</title>\n  <link>' + origin + '/</link>\n  <description>Writing by Zimeng Xiong (Alpaca Engineering) on software, hardware, and tools.</description>\n  <language>en</language>\n' +
+    '  <lastBuildDate>' + posts[0].date.toUTCString() + '</lastBuildDate>\n  <atom:link href="' + origin + '/feed.xml" rel="self" type="application/rss+xml"/>\n' +
+    '  <image>\n    <url>' + ogImage + '</url>\n    <title>Zimeng Xiong</title>\n    <link>' + origin + '/</link>\n  </image>\n' +
+    posts.map(post => '  <item>\n    <title>' + escape(post.title) + '</title>\n    <link>' + escape(post.url) + '</link>\n    <guid isPermaLink="true">' + escape(post.url) + '</guid>\n    <pubDate>' + post.date.toUTCString() + '</pubDate>\n    <author>me@zimengxiong.com (Zimeng Xiong)</author>\n    <description>' + escape(post.description) + '</description>\n  </item>\n').join('') +
+    '</channel>\n</rss>\n'
+  const llms = '# Zimeng Xiong\n\n' +
+    '> Zimeng Xiong builds software and hardware projects and publishes under the name Alpaca Engineering, including the YouTube channel @alpacaengineering. This site (zimengxiong.com, also served at zime.ng) lists projects and technical writing.\n\n' +
+    '- Email: me@zimengxiong.com\n- GitHub: https://github.com/ZimengXiong\n- YouTube: https://www.youtube.com/@alpacaengineering\n- X: https://x.com/zimengxiong\n\n' +
+    '## Projects\n\n' +
+    '- [PancakeSlicer](https://pancake.cooking/): self-hostable, non-planar 3D printing slicer.\n' +
+    '- [ExcaliDash](https://excalidash.xyz/): self-hosted Excalidraw workspace with saved drawings, collections, and real-time collaboration.\n' +
+    '- [WinMux](https://www.winmux.dev/): batteries-included window manager for macOS.\n' +
+    '- [Modelr](https://github.com/ZimengXiong/Modelr): image to 3D on your Mac.\n' +
+    '- [Things](' + origin + '/things/): full project list, including tinyTouch, swipeType, and hunyuan3D-mlx-swift.\n\n' +
+    '## Blog\n\n' +
+    posts.map(post => '- [' + post.title + '](' + post.url + '): ' + day(post.date)).join('\n') + '\n'
+  await writeFile(path.join(output, 'sitemap.xml'), sitemap)
+  await writeFile(path.join(output, 'feed.xml'), feed)
+  await writeFile(path.join(output, 'robots.txt'), 'User-agent: *\nAllow: /\n\nSitemap: ' + origin + '/sitemap.xml\n')
+  await writeFile(path.join(output, 'llms.txt'), llms)
+  await writeFile(path.join(output, indexNowKey + '.txt'), indexNowKey)
+}
+
 function responsive(candidates, width, height) {
   return { srcset: candidates.map(item => item.src + ' ' + item.width + 'w').join(', '), sizes: '(max-width: ' + width + 'px) 100vw, ' + width + 'px', width, height }
 }
@@ -121,8 +313,10 @@ for (const page of pages) {
       if (!img.attr(name) || name === 'src') img.attr(name, String(value))
     }
   }
+  seo($, page)
   await writeFile(path.join(output, page), $.html())
 }
+await discovery()
 for (const file of assets) {
   if (!file.startsWith('images/') || file.startsWith(cacheDir + '/') || !/\.(png|jpe?g|gif|webp|avif|svg)$/i.test(file)) continue
   const url = new URL('/' + file, site)
