@@ -78,7 +78,7 @@ async function optimize(url) {
   if (!['jpeg', 'png', 'webp', 'gif', 'avif', 'heif', 'svg'].includes(meta.format)) throw new Error('Unsupported image format: ' + meta.format)
   const original = local ? url.pathname : stem + '.' + (meta.format === 'heif' ? 'avif' : meta.format)
   if (!local) await writeFile(path.join(output, original), bytes)
-  if (meta.format === 'svg') return { src: original }
+  if (meta.format === 'svg' || (local && file.startsWith('art/'))) return { src: original }
   const rotated = meta.orientation >= 5 && meta.orientation <= 8
   const width = rotated ? meta.height : meta.width
   const height = rotated ? meta.width : meta.pageHeight || meta.height
@@ -121,7 +121,6 @@ for (const page of pages) {
       if (!img.attr(name) || name === 'src') img.attr(name, String(value))
     }
   }
-  if ($('img').length && !$('style').text().includes('max-width: 100%')) $('head').append('<style>img { max-width: 100%; height: auto; }</style>')
   await writeFile(path.join(output, page), $.html())
 }
 for (const file of assets) {

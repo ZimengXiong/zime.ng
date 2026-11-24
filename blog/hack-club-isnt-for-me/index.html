@@ -1,29 +1,122 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>I can never seem to enjoy Hack Club · zimeng xiong</title>
-<script defer="" src="/prefetch.4aef6239e652.js"></script></head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I can never seem to enjoy Hack Club</title>
+<script defer src="/prefetch.4aef6239e652.js"></script>
+</head>
 <body>
-<nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
-<main><article><header><h1>I can never seem to enjoy Hack Club</h1><time datetime="2026-04-27T23:58:28Z">27 April 2026</time> </header><div><p>If you're anyhow engaged in hobbyist tech circles, you've likely heard of <a href="https://hackclub.com/">Hack Club</a>. They're a non profit that encourages teens to learn technical skills like coding and hardware engineering.</p>
-<p>They're a bit confusing to get into (dozens of events (e.g YouShipWeShip, FlavorTown, HQScraps), scattered across hundreds of Slack channels), but they mostly rely on one thing to hand out their credits, points, giveaways, and prizes: time spent on a project. They do this by having you install a <a href="https://hackatime.hackclub.com/">time tracker</a>. I don't like this idea a lot, and it's the main reason I haven't submitted any projects 'officially' to HC (I mainly enjoy talking to people about them instead), it's a classic example of Goodhart's Law: when a measure becomes a target, it ceases to be a good measure.</p>
-<h1>Time Spent ≠ Competence</h1>
-<p>Time Spent, for the same reason as LOC or commits, is not a good indicator of technical ability or quality of output and encourages bad engineering behavior.</p>
-<p>I understand that they likely don't have the resources to manually grade/rate each project, and that time spent (when tracked correctly) is one of the better indicators of effort put into a project, but measuring "time spent" equates activity with productivity. It is a fallacy that ignores the reality of how problems are solved.</p>
-<p>You might jump to conclusions and think I am referring to the cliche comparison between an experienced engineer who can solve a bug in ten minutes that takes a novice six hours, but for this case I actually do think time is a fair metric of actual effort put in, just at different skill levels.</p>
-<p>What is really problematic is the quality vs. volume tradeoff that this structure incentivizes. Programming should reward finding the most elegant, efficient path to a solution. That most elegant and efficient path often is not the most technically superior—a single user todo list doesn't (and shouldn't) need PostgreSQLs backed by Redis.</p>
-<p>Incentivizing students to hit time targets encourages them to overcomplicate things (and often not in a way the student finds fun, imagine finishing a project only to be 2 hours away from a prize, you would likely want to spend those two hours adding features you never wanted in the first place).</p>
-<h1>A lot of work happens outside the IDE</h1>
-<p>Participants are implicitly pressured to keep their editors open or their trackers running to maximize rewards, rather than focusing on the natural, often irregular, flow of creative work.</p>
-<p>This is the main reason I haven't submitted or 'tracked' any time. My workflow is too often sporadic and it happens everywhere. When I have an idea that I want to build...I just go build. The last thing I want to worry when I have five windows open is if my time tracker is installed and counting my current session(s); I just want to build.</p>
-<p>Their trackers also don't count time spent researching or just thinking, which I think is a more indicative measure of effort (for example, when building a core component of WriteAhead (soon^TM), I needed to accurately track the location of the text cursor across cocoa, swift, and electron apps; there wasn't an API on Earth, private or public, that could do that; it took well over tens of hours of research to puzzle together a robust heuristic to accomplish this. the actual time spent in the IDE? maybe one or two.).</p>
-<p>The only time I am reminded of Hack Club during a project is when I finish and think back about how many hours I could've logged for the project, only if I had just configured <code>hackatime</code>.</p>
-<h1>HackClub knows it's a bad metric</h1>
-<p>To be fair to the team at HQ, they aren’t stupid. They know that time is a flawed proxy for value. After talking with some folks at HQ about why they use time as a metric, I started to realize that they are optimizing for something else.</p>
-<p>When the worst of LLMs can generate a functional webpage in six seconds, shipping a project is no longer the hurdle it used to be. The real challenge for a non-profit trying to "inspire a generation of engineers" is persistence. They need a proof of work mechanism that encourages a beginner to sit and struggle with a compiler error, and develop the muscle memory of building. For someone just starting, 40 hours of "time spent" is a life-changing milestone.</p>
-<p>Looking at the success of HackClub, whatever they've been doing, it clearly seems to be working, and maybe the tradeoff here is just right for engaging newcomers.</p></div><a href="/blog/">← blog</a></article></main>
+<pre>   <a href="/">&lt;- back</a></pre>
+<pre>
+
+   <img src="/art/c-hack-club-isnt-for-me.png" width="130" height="177" alt=""> <b>I can never seem to enjoy Hack Club</b>
+                                                                27 apr 2026
+
+
+   If you're anyhow engaged in hobbyist tech circles, you've likely heard
+   of <a href="https://hackclub.com/">Hack Club</a>. They're a non profit that encourages teens to learn
+   technical skills like coding and hardware engineering.
+
+   They're a bit confusing to get into (dozens of events (e.g
+   YouShipWeShip, FlavorTown, HQScraps), scattered across hundreds of Slack
+   channels), but they mostly rely on one thing to hand out their credits,
+   points, giveaways, and prizes: time spent on a project. They do this by
+   having you install a <a href="https://hackatime.hackclub.com/">time tracker</a>. I don't like this idea a lot, and
+   it's the main reason I haven't submitted any projects 'officially' to HC
+   (I mainly enjoy talking to people about them instead), it's a classic
+   example of Goodhart's Law: when a measure becomes a target, it ceases to
+   be a good measure.
+
+
+   <b>## Time Spent ≠ Competence</b>
+   --------------------------
+
+   Time Spent, for the same reason as LOC or commits, is not a good
+   indicator of technical ability or quality of output and encourages bad
+   engineering behavior.
+
+   I understand that they likely don't have the resources to manually
+   grade/rate each project, and that time spent (when tracked correctly) is
+   one of the better indicators of effort put into a project, but measuring
+   "time spent" equates activity with productivity. It is a fallacy that
+   ignores the reality of how problems are solved.
+
+   You might jump to conclusions and think I am referring to the cliche
+   comparison between an experienced engineer who can solve a bug in ten
+   minutes that takes a novice six hours, but for this case I actually do
+   think time is a fair metric of actual effort put in, just at different
+   skill levels.
+
+   What is really problematic is the quality vs. volume tradeoff that this
+   structure incentivizes. Programming should reward finding the most
+   elegant, efficient path to a solution. That most elegant and efficient
+   path often is not the most technically superior—a single user todo list
+   doesn't (and shouldn't) need PostgreSQLs backed by Redis.
+
+   Incentivizing students to hit time targets encourages them to
+   overcomplicate things (and often not in a way the student finds fun,
+   imagine finishing a project only to be 2 hours away from a prize, you
+   would likely want to spend those two hours adding features you never
+   wanted in the first place).
+
+
+   <b>## A lot of work happens outside the IDE</b>
+   ----------------------------------------
+
+   Participants are implicitly pressured to keep their editors open or
+   their trackers running to maximize rewards, rather than focusing on the
+   natural, often irregular, flow of creative work.
+
+   This is the main reason I haven't submitted or 'tracked' any time. My
+   workflow is too often sporadic and it happens everywhere. When I have an
+   idea that I want to build...I just go build. The last thing I want to
+   worry when I have five windows open is if my time tracker is installed
+   and counting my current session(s); I just want to build.
+
+   Their trackers also don't count time spent researching or just thinking,
+   which I think is a more indicative measure of effort (for example, when
+   building a core component of WriteAhead (soon^TM), I needed to
+   accurately track the location of the text cursor across cocoa, swift,
+   and electron apps; there wasn't an API on Earth, private or public, that
+   could do that; it took well over tens of hours of research to puzzle
+   together a robust heuristic to accomplish this. the actual time spent in
+   the IDE? maybe one or two.).
+
+   The only time I am reminded of Hack Club during a project is when I
+   finish and think back about how many hours I could've logged for the
+   project, only if I had just configured `hackatime`.
+
+
+   <b>## HackClub knows it's a bad metric</b>
+   -----------------------------------
+
+   To be fair to the team at HQ, they aren’t stupid. They know that time is
+   a flawed proxy for value. After talking with some folks at HQ about why
+   they use time as a metric, I started to realize that they are optimizing
+   for something else.
+
+   When the worst of LLMs can generate a functional webpage in six seconds,
+   shipping a project is no longer the hurdle it used to be. The real
+   challenge for a non-profit trying to "inspire a generation of engineers"
+   is persistence. They need a proof of work mechanism that encourages a
+   beginner to sit and struggle with a compiler error, and develop the
+   muscle memory of building. For someone just starting, 40 hours of "time
+   spent" is a life-changing milestone.
+
+   Looking at the success of HackClub, whatever they've been doing, it
+   clearly seems to be working, and maybe the tradeoff here is just right
+   for engaging newcomers.
+
+
+
+
+   <img src="/art/d-graze-m.png" width="96" height="150" alt="">   <a href="/">&lt;- back</a>
+
+                                          <a href="/blog/stop-romanticizing-open-source/">Stop Romanticizing Open Source -&gt;</a>
+
+
+
+</pre>
 </body>
 </html>

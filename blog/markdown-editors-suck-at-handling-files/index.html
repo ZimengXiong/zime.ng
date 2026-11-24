@@ -1,54 +1,206 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Markdown editors suck at handling files · zimeng xiong</title>
-<script defer="" src="/prefetch.4aef6239e652.js"></script>
-<style>img, video { max-width: 100%; height: auto; }</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markdown editors suck at handling files</title>
+<script defer src="/prefetch.4aef6239e652.js"></script>
 </head>
 <body>
-<nav><a href="/">home</a> <a href="/blog/">blog</a> <a href="/reading/">reading</a> <a href="/things/">things</a> </nav>
-<main><article><header><h1>Markdown editors suck at handling files</h1><time datetime="2025-11-11T18:54:22.904-08:00">11 November 2025</time> </header><div><p>What has stopped me from using ANY mainstream markdown editors for my blog is because they SUCK at handling images and renaming. They typically fall into a few categories:</p>
-<blockquote>
-<p>I do want to state that most of the time, I am using the clipboard to copy and paste images, I am not talking about dragging and dropping images, that takes wayyy too much time, having to open up a finder window and finding a file.</p>
-</blockquote>
-<h1>1. Import and Forget</h1>
-<p>This is the simplest behavior, VSCode does it:</p>
-<p><img alt="" decoding="async" loading="lazy" src="/images/vscodedemo.gif"/></p>
-<p>However, because screenshots are always named some gibberish such as <code>SCR-20251111-kcnb.png</code> I almost ALWAYS want to IMMEDIATELY rename them. VSCode makes this excruiatingly difficult. I have to:</p>
-<table><thead><tr><th>Action</th><th>Added Click/Key Operations</th></tr></thead><tbody><tr><td>1. Import the image</td><td>1</td></tr><tr><td>2. Click on the image file in the sidebar (WHICH CHANGES MY LEFT EDITOR FOCUS TO THE IMAGE, AND IF I WANT TO NOT DO THIS, I HAVE TO RIGHT CICK AND THEN SELECT RENAME)</td><td>1</td></tr><tr><td>3. Press <code>return</code> and rename, followed by <code>return</code></td><td>3</td></tr><tr><td>4. Close the opened image tab resulting from step #2</td><td>1</td></tr><tr><td>5. Double click the filename to select, and MANUALLY type in the new name</td><td>2</td></tr><tr><td>6. Click somewhere else and start typing</td><td>1</td></tr><tr><td>Total</td><td>9</td></tr></tbody></table>
-<p>Inserting an image and trying to make it maintainable for later me requires NINE STEPS PER INSERTION?!?!</p>
-<h1>2. Auto update</h1>
-<p><img alt="" decoding="async" loading="lazy" src="/images/obsidianAutoUpdateLinks.png"/>
-Obsidian has an "Auto update internal links after renaming", which sounds helpful, and it is much better than VSCode, but it is still largely inefficient.</p>
-<p><img alt="" decoding="async" loading="lazy" src="/images/obsidianDemo.gif"/></p>
-<table><thead><tr><th>Action</th><th>Added Click/Key Operations</th></tr></thead><tbody><tr><td>1. Import the image</td><td>1</td></tr><tr><td>2. Right click and select "Rename", since they don't support pressing <code>Enter</code> to rename</td><td>3 (Time penalty for having to move the cursor down the right click menu and find <code>Rename</code></td></tr><tr><td>3. Rename, followed by <code>return</code></td><td>2</td></tr><tr><td>4. Click somewhere else and start typing</td><td>1</td></tr><tr><td>Total</td><td>7</td></tr></tbody></table>
-<p>There are a couple issues here, mainly the right click menu. Your eyes have to start from the top and trace down it to the "Rename" option. The operation isn't guarenteed, you have to make sure you click the right option, unlike a keyboard shortcut, its vastly less deterministic and I have accidently hit <code>Delete</code> doing this. Overall, pretty good experience, not as optmized as it could be. Another minor issue is that it does not automatically return focus back to my editor after the renaming procedure.</p>
-<h1>3. My implementation</h1>
-<p>Having seen these pitfalls, my blog editor implements a much nicer renaming UX.</p>
-<table><thead><tr><th>Action</th><th>Added Click/Key Operations</th></tr></thead><tbody><tr><td>1. Import the image</td><td>1</td></tr><tr><td>2. Click the image link</td><td>1</td></tr><tr><td>3. Rename, followed by <code>return</code></td><td>2</td></tr><tr><td>Total</td><td>4</td></tr></tbody></table>
-<p><img alt="" decoding="async" loading="lazy" src="/images/myImplementation.gif"/></p>
-<p>Whenver you click on a link or a file, a rename window automatically pops up with only the name part selected, you can safely ignore the window if you choose too, which makes it unobstructive.å
-<img alt="" decoding="async" loading="lazy" src="/images/renameWindow.png"/></p>
-<p>In addition, my implmentation also RETURNS FOCUS back to the editor after the markdown link, meaning you don't need to switch focuses back from what was supposed to be an intermediate UI anyways.</p>
-<p>And yes, it does search for all occurences of the image (for whatever reason there might be multiple of the same image) throughout the file.</p>
-<p>Everything is deterministic (the only clicking you do is clicking on the link, which is MUCH more click surface area than a drop down menu, everything else is all keyboard-centric). You don't need to move all the way to a sidebar, because we're writing, not coding, I don't care where my files go or how they are stored.</p>
-<p>A keyboard shortcut is muscle memory; a context menu is a visual search task. Every time you force a writer to look at UI, you've already lost. The best UI for writing is invisible UX.</p>
-<h1>4. HM: Github</h1>
-<p>Forget renaming, why keep your files in the repo anyways? Make free use of Github's S3 or Azure storage:
-Technically, it scores the best:</p>
-<table><thead><tr><th>Action</th><th>Added Click/Key Operations</th></tr></thead><tbody><tr><td>1. Import the image</td><td>1</td></tr><tr><td>Total</td><td>1</td></tr></tbody></table>
-<p><img alt="" decoding="async" loading="lazy" src="/images/GithubDemo.gif"/></p>
-<p>On a more serious note, I don't actually mind this implementation. It fits in nicely with my view that images should be stored within markdown, and github accomplishes exactly this. I never have to worry about where my images are, or renaming them in the first place. And since its rare I want to use the same image twice (basically never), why even rename? Only downside of this approach is that I still want to be able to manage my files locally, and for that, I (and LLMs!) do want to be able to easily identify them.</p>
-<h1>More discussion on Markdown Editors</h1>
-<h2>Tool Bar</h2>
-<p><img alt="" decoding="async" loading="lazy" src="/images/toolbar.png"/>
-A lot of markdown editors have a toolbar like this, which defeats the purpose of a WYSIWYG editor. The text is supposed to be readable, and really, how much time are you saving at all by moving your mouse all the way to the top instead of just typing <code>*</code> twice or thrice. I haven't even implemented <code>Ctrl+B/I/K</code> to bold, italicize, and hyperlink text because I don't find myself using it, it's not much faster than just typing out <code>_</code> or <code>**</code> or <code>[]()</code>.</p>
-<h2>Sidebar</h2>
-<p>The two examples I've shown above all have file browsers to manage folders, images, etc. Which again defeats the purpose of a WYSIWYG language. I like to think that all the images that I reference in a markdown document are CONTAINED within that document. That if the images aren't used, they shouldnt be there. So why do I need to keep track of them? My editor auto prunes all images not in the post, and I NEVER see the images or files anywhere except in the editor. This keeps my attention focused in the editor, not in a file browser (ironically)</p>
-<p><img alt="" decoding="async" loading="lazy" src="/images/MyEditor.png"/></p>
-<p>Markdown's true potential will remain buried under unnecessary complexity for as long as developers continue with this BS.</p></div><a href="/blog/">← blog</a></article></main>
+<pre>   <a href="/">&lt;- back</a></pre>
+<pre>
+
+   <img src="/art/c-markdown-editors-suck-at-handling-files.png" width="130" height="149" alt=""> <b>Markdown editors suck at handling files</b>
+                                                                11 nov 2025
+
+
+   What has stopped me from using ANY mainstream markdown editors for my
+   blog is because they SUCK at handling images and renaming. They
+   typically fall into a few categories:
+
+   > I do want to state that most of the time, I am using the clipboard to
+   > copy and paste images, I am not talking about dragging and dropping
+   > images, that takes wayyy too much time, having to open up a finder
+   > window and finding a file.
+
+
+   <b>## 1. Import and Forget</b>
+   -----------------------
+
+   This is the simplest behavior, VSCode does it:
+
+   <a href="/images/vscodedemo.gif"><img src="/images/vscodedemo.gif" width="560" height="419" alt=""></a>
+
+   However, because screenshots are always named some gibberish such as
+   `SCR-20251111-kcnb.png` I almost ALWAYS want to IMMEDIATELY rename them.
+   VSCode makes this excruiatingly difficult. I have to:
+
+   <b>Action</b>                                        <b>Added Click/Key Operations</b>
+   --------------------------------------------  --------------------------
+   1. Import the image                           1
+
+   2. Click on the image file in the sidebar     1
+   (WHICH CHANGES MY LEFT EDITOR FOCUS TO THE
+   IMAGE, AND IF I WANT TO NOT DO THIS, I HAVE
+   TO RIGHT CICK AND THEN SELECT RENAME)
+
+   3. Press `return` and rename, followed by     3
+   `return`
+
+   4. Close the opened image tab resulting from  1
+   step #2
+
+   5. Double click the filename to select, and   2
+   MANUALLY type in the new name
+
+   6. Click somewhere else and start typing      1
+
+   Total                                         9
+
+   Inserting an image and trying to make it maintainable for later me
+   requires NINE STEPS PER INSERTION?!?!
+
+
+   <b>## 2. Auto update</b>
+   -----------------
+
+   <a href="/images/obsidianAutoUpdateLinks.png"><img src="/images/obsidianAutoUpdateLinks.png" width="560" height="53" alt=""></a>
+
+   Obsidian has an "Auto update internal links after renaming", which
+   sounds helpful, and it is much better than VSCode, but it is still
+   largely inefficient.
+
+   <a href="/images/obsidianDemo.gif"><img src="/images/obsidianDemo.gif" width="560" height="415" alt=""></a>
+
+   <b>Action</b>                               <b>Added Click/Key Operations</b>
+   -----------------------------------  -----------------------------------
+   1. Import the image                  1
+
+   2. Right click and select "Rename",  3 (Time penalty for having to move
+   since they don't support pressing    the cursor down the right click
+   `Enter` to rename                    menu and find `Rename`
+
+   3. Rename, followed by `return`      2
+
+   4. Click somewhere else and start    1
+   typing
+
+   Total                                7
+
+   There are a couple issues here, mainly the right click menu. Your eyes
+   have to start from the top and trace down it to the "Rename" option. The
+   operation isn't guarenteed, you have to make sure you click the right
+   option, unlike a keyboard shortcut, its vastly less deterministic and I
+   have accidently hit `Delete` doing this. Overall, pretty good
+   experience, not as optmized as it could be. Another minor issue is that
+   it does not automatically return focus back to my editor after the
+   renaming procedure.
+
+
+   <b>## 3. My implementation</b>
+   -----------------------
+
+   Having seen these pitfalls, my blog editor implements a much nicer
+   renaming UX.
+
+   <b>Action</b>                           <b>Added Click/Key Operations</b>
+   -------------------------------  --------------------------
+   1. Import the image              1
+   2. Click the image link          1
+   3. Rename, followed by `return`  2
+   Total                            4
+
+   <a href="/images/myImplementation.gif"><img src="/images/myImplementation.gif" width="560" height="512" alt=""></a>
+
+   Whenver you click on a link or a file, a rename window automatically
+   pops up with only the name part selected, you can safely ignore the
+   window if you choose too, which makes it unobstructive.å
+
+   <a href="/images/renameWindow.png"><img src="/images/renameWindow.png" width="560" height="138" alt=""></a>
+
+   In addition, my implmentation also RETURNS FOCUS back to the editor
+   after the markdown link, meaning you don't need to switch focuses back
+   from what was supposed to be an intermediate UI anyways.
+
+   And yes, it does search for all occurences of the image (for whatever
+   reason there might be multiple of the same image) throughout the file.
+
+   Everything is deterministic (the only clicking you do is clicking on the
+   link, which is MUCH more click surface area than a drop down menu,
+   everything else is all keyboard-centric). You don't need to move all the
+   way to a sidebar, because we're writing, not coding, I don't care where
+   my files go or how they are stored.
+
+   A keyboard shortcut is muscle memory; a context menu is a visual search
+   task. Every time you force a writer to look at UI, you've already lost.
+   The best UI for writing is invisible UX.
+
+
+   <b>## 4. HM: Github</b>
+   ----------------
+
+   Forget renaming, why keep your files in the repo anyways? Make free use
+   of Github's S3 or Azure storage: Technically, it scores the best:
+
+   <b>Action</b>               <b>Added Click/Key Operations</b>
+   -------------------  --------------------------
+   1. Import the image  1
+   Total                1
+
+   <a href="/images/GithubDemo.gif"><img src="/images/GithubDemo.gif" width="560" height="271" alt=""></a>
+
+   On a more serious note, I don't actually mind this implementation. It
+   fits in nicely with my view that images should be stored within
+   markdown, and github accomplishes exactly this. I never have to worry
+   about where my images are, or renaming them in the first place. And
+   since its rare I want to use the same image twice (basically never), why
+   even rename? Only downside of this approach is that I still want to be
+   able to manage my files locally, and for that, I (and LLMs!) do want to
+   be able to easily identify them.
+
+
+   <b>## More discussion on Markdown Editors</b>
+   --------------------------------------
+
+   <b>### Tool Bar</b>
+
+   <a href="/images/toolbar.png"><img src="/images/toolbar.png" width="560" height="67" alt=""></a>
+
+   A lot of markdown editors have a toolbar like this, which defeats the
+   purpose of a WYSIWYG editor. The text is supposed to be readable, and
+   really, how much time are you saving at all by moving your mouse all the
+   way to the top instead of just typing `*` twice or thrice. I haven't
+   even implemented `Ctrl+B/I/K` to bold, italicize, and hyperlink text
+   because I don't find myself using it, it's not much faster than just
+   typing out `_` or `**` or `[]()`.
+
+
+   <b>### Sidebar</b>
+
+   The two examples I've shown above all have file browsers to manage
+   folders, images, etc. Which again defeats the purpose of a WYSIWYG
+   language. I like to think that all the images that I reference in a
+   markdown document are CONTAINED within that document. That if the images
+   aren't used, they shouldnt be there. So why do I need to keep track of
+   them? My editor auto prunes all images not in the post, and I NEVER see
+   the images or files anywhere except in the editor. This keeps my
+   attention focused in the editor, not in a file browser (ironically)
+
+   <a href="/images/MyEditor.png"><img src="/images/MyEditor.png" width="560" height="278" alt=""></a>
+
+   Markdown's true potential will remain buried under unnecessary
+   complexity for as long as developers continue with this BS.
+
+
+
+
+   <img src="/art/d-turn.png" width="151" height="170" alt="">   <a href="/">&lt;- back</a>
+
+   <a href="/blog/agents-will-need-a-good-window-manager/">&lt;- Agents will need a good window manager</a>
+                                          <a href="/blog/picoctf2025-virtual-machine-1/">picoCTF2025: Virtual Machine 1 -&gt;</a>
+
+
+
+</pre>
 </body>
 </html>
