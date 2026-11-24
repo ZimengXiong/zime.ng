@@ -233,7 +233,9 @@ function seo($, page) {
     ['meta', { name: 'description', content: meta.description }],
     ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1' }],
     ['link', { rel: 'canonical', href: url }],
-    ['link', { rel: 'icon', href: '/alpaca.svg', type: 'image/svg+xml' }],
+    ['link', { rel: 'icon', href: '/favicon.png?v=2', type: 'image/png' }],
+    ['link', { rel: 'icon', href: '/favicon.ico?v=2', sizes: 'any' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
     ['link', { rel: 'alternate', type: 'application/rss+xml', title: 'Zimeng Xiong', href: origin + '/feed.xml' }],
     ['meta', { property: 'og:site_name', content: 'Zimeng Xiong' }],
     ['meta', { property: 'og:locale', content: 'en_US' }],
@@ -260,7 +262,7 @@ function seo($, page) {
   )
   const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': meta.graph(meta.description) }).replace(/</g, '\\u003c')
   const html = tags.map(([tag, attrs]) => '<' + tag + Object.entries(attrs).map(([k, v]) => ' ' + k + '="' + escape(v) + '"').join('') + '>').join('\n') + '\n<script type="application/ld+json">' + graph + '</script>'
-  $('head meta[name="description"], head link[rel="canonical"], head link[rel="icon"]').remove()
+  $('head meta[name="description"], head link[rel="canonical"], head link[rel="icon"], head link[rel="apple-touch-icon"]').remove()
   $('title').text(meta.title).after('\n' + html)
 }
 
