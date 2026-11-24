@@ -1,0 +1,32 @@
+name: Import GitHub images
+on:
+  push:
+    branches: [main]
+    paths: ['**.md', '**.markdown', '**.html', 'import-images.mjs', '.github/workflows/import-images.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: import-images-main
+  cancel-in-progress: false
+jobs:
+  import:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node import-images.mjs
+      - run: |
+          git add -u
+          git add images/
+          if ! git diff --cached --quiet; then
+            git -c user.name=github-actions -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m 'save github image attachments'
+            git push origin HEAD:main
+          fi
