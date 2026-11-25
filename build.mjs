@@ -10,7 +10,6 @@ const site = 'https://zime.ng'
 const origin = 'https://zimengxiong.com'
 const person = origin + '/#person'
 const website = origin + '/#website'
-const ogImage = origin + '/og-image.png'
 const indexNowKey = '3c9e7a1f5b2d8e4a6c0f9b3d7e1a5c8f'
 const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 const posts = []
@@ -221,7 +220,7 @@ function seo($, page) {
       date,
       lastmod: day(date),
       graph: description => [
-        { '@type': 'BlogPosting', '@id': url + '#article', headline: heading, description, datePublished: day(date), author: { '@id': person }, publisher: { '@id': person }, mainEntityOfPage: { '@type': 'WebPage', '@id': url }, url, image: ogImage, inLanguage: 'en', isPartOf: { '@id': website } },
+        { '@type': 'BlogPosting', '@id': url + '#article', headline: heading, description, datePublished: day(date), author: { '@id': person }, publisher: { '@id': person }, mainEntityOfPage: { '@type': 'WebPage', '@id': url }, url, inLanguage: 'en', isPartOf: { '@id': website } },
         breadcrumbs([home, { name: heading, url }])
       ]
     }
@@ -230,7 +229,6 @@ function seo($, page) {
   }
   urls.push({ url, lastmod: meta.lastmod })
   const tags = [
-    ['meta', { name: 'description', content: meta.description }],
     ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1' }],
     ['link', { rel: 'canonical', href: url }],
     ['link', { rel: 'icon', href: '/alpaca.svg', type: 'image/svg+xml' }],
@@ -239,24 +237,16 @@ function seo($, page) {
     ['meta', { property: 'og:locale', content: 'en_US' }],
     ['meta', { property: 'og:type', content: meta.type }],
     ['meta', { property: 'og:url', content: url }],
-    ['meta', { property: 'og:title', content: meta.heading }],
-    ['meta', { property: 'og:description', content: meta.description }],
-    ['meta', { property: 'og:image', content: ogImage }],
-    ['meta', { property: 'og:image:width', content: '1200' }],
-    ['meta', { property: 'og:image:height', content: '630' }],
-    ['meta', { property: 'og:image:alt', content: 'Zimeng Xiong' }]
+    ['meta', { property: 'og:title', content: meta.heading }]
   ]
   if (meta.date) {
     tags.push(['meta', { property: 'article:published_time', content: day(meta.date) }])
     tags.push(['meta', { property: 'article:author', content: origin + '/' }])
   }
   tags.push(
-    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:site', content: '@zimengxiong' }],
     ['meta', { name: 'twitter:creator', content: '@zimengxiong' }],
-    ['meta', { name: 'twitter:title', content: meta.heading }],
-    ['meta', { name: 'twitter:description', content: meta.description }],
-    ['meta', { name: 'twitter:image', content: ogImage }]
+    ['meta', { name: 'twitter:title', content: meta.heading }]
   )
   const graph = JSON.stringify({ '@context': 'https://schema.org', '@graph': meta.graph(meta.description) }).replace(/</g, '\\u003c')
   const html = tags.map(([tag, attrs]) => '<' + tag + Object.entries(attrs).map(([k, v]) => ' ' + k + '="' + escape(v) + '"').join('') + '>').join('\n') + '\n<script type="application/ld+json">' + graph + '</script>'
@@ -272,7 +262,6 @@ async function discovery() {
   const feed = '<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n<channel>\n' +
     '  <title>Zimeng Xiong</title>\n  <link>' + origin + '/</link>\n  <description>Writing by Zimeng Xiong (Alpaca Engineering) on software, hardware, and tools.</description>\n  <language>en</language>\n' +
     '  <lastBuildDate>' + posts[0].date.toUTCString() + '</lastBuildDate>\n  <atom:link href="' + origin + '/feed.xml" rel="self" type="application/rss+xml"/>\n' +
-    '  <image>\n    <url>' + ogImage + '</url>\n    <title>Zimeng Xiong</title>\n    <link>' + origin + '/</link>\n  </image>\n' +
     posts.map(post => '  <item>\n    <title>' + escape(post.title) + '</title>\n    <link>' + escape(post.url) + '</link>\n    <guid isPermaLink="true">' + escape(post.url) + '</guid>\n    <pubDate>' + post.date.toUTCString() + '</pubDate>\n    <author>me@zimengxiong.com (Zimeng Xiong)</author>\n    <description>' + escape(post.description) + '</description>\n  </item>\n').join('') +
     '</channel>\n</rss>\n'
   const llms = '# Zimeng Xiong\n\n' +
