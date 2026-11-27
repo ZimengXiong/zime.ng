@@ -82,6 +82,33 @@ pre.m .im img.bd{border:1px solid #d4d4d4}
 <span class="r g1" style="--i:3">   I think I outdid myself with this one, truly. I have never spent this
    much time on a personal portfolio.</span>
 
+<span class="r g2" style="--i:3">   <b>## optimizing the engines</b></span>
+<span class="rl">   -------------------------</span>
+
+<span class="r g1" style="--i:3">   To prevent our friend GoogleBot from being blocked from carrying out its
+   work on our site, we have to lazy mount the paywall DOM until scroll
+   hits 60%, that way only users see it (as GoogleBot never scrolls or
+   clicks). As mentioned earlier, we also don't initiate the redirect
+   unless there is user interaction (to prevent being treated as a redirect
+   site during indexing).</span>
+
+<span class="r g1" style="--i:3">   Now that we can be indexed, how do we get to the top?</span>
+
+<span class="r g1" style="--i:3">   Normally, ranking #1 for a unique personal name is trivial because you
+   just drop your URL into your socials, but obviously I didn't have access
+   to any of his accounts. So here's what I did:</span>
+
+<span class="r g1" style="--i:3;--h:2">   - every single page has "Naman Siddheshwar" in &lt;title&gt;, canonical URLs,
+     sitemap.xml, feed.xml, llms.txt</span>
+<span class="r" style="--i:3;--h:2">   - I added his socials to Person.sameAs in JSON-LD across the core pages,
+     plus other features in subjectOf, and put visible rel="me" links in
+     the footer so Google's visible-link check matches the structured data.</span>
+<span class="r" style="--i:3;--h:2">   - I added backlinks from domains I control, e.g. "Featured Clients" on
+     <a href="https://alpacawebservices.com/">alpacawebservices.com</a> and a shoutout on my homepage.</span>
+<span class="r" style="--i:3;--h:2">   - I contacted the guy managing a website that he was featured on
+     (3rd-4th place search result for his name), and asked him to add a
+     backlink to <a href="https://namansiddheshwar.com/">namansiddheshwar.com</a>.</span>
+
 <span class="r g2" style="--i:3">   <b>## Funness</b></span>
 <span class="rl">   ----------</span>
 
@@ -128,33 +155,6 @@ pre.m .im img.bd{border:1px solid #d4d4d4}
 <span class="im g1" style="--i:3">   <a href="/media/0285aaf830bf5b4e06c4d3f2.webp"><img src="/media/0285aaf830bf5b4e06c4d3f2.webp" width="560" height="360" alt="Paywall overlay at 60% scroll: Pay to unlock the rest of this page"></a></span>
 
 <span class="im g1" style="--i:3">   <a href="/media/b377c00cd075deed7e410641.webp"><img src="/media/b377c00cd075deed7e410641.webp" width="560" height="360" alt="Stripe checkout page for $1,000.00 to Alpaca Web Design Services"></a></span>
-
-<span class="r g2" style="--i:3">   <b>## optimizing the engines</b></span>
-<span class="rl">   -------------------------</span>
-
-<span class="r g1" style="--i:3">   To prevent our friend GoogleBot from being blocked from carrying out its
-   work on our site, we have to lazy mount the paywall DOM until scroll
-   hits 60%, that way only users see it (as GoogleBot never scrolls or
-   clicks). As mentioned earlier, we also don't initiate the redirect
-   unless there is user interaction (to prevent being treated as a redirect
-   site during indexing).</span>
-
-<span class="r g1" style="--i:3">   Now that we can be indexed, how do we get to the top?</span>
-
-<span class="r g1" style="--i:3">   Normally, ranking #1 for a unique personal name is trivial because you
-   just drop your URL into your socials, but obviously I didn't have access
-   to any of his accounts. So here's what I did:</span>
-
-<span class="r g1" style="--i:3;--h:2">   - every single page has "Naman Siddheshwar" in &lt;title&gt;, canonical URLs,
-     sitemap.xml, feed.xml, llms.txt</span>
-<span class="r" style="--i:3;--h:2">   - I added his socials to Person.sameAs in JSON-LD across the core pages,
-     plus other features in subjectOf, and put visible rel="me" links in
-     the footer so Google's visible-link check matches the structured data.</span>
-<span class="r" style="--i:3;--h:2">   - I added backlinks from domains I control, e.g. "Featured Clients" on
-     <a href="https://alpacawebservices.com/">alpacawebservices.com</a> and a shoutout on my homepage.</span>
-<span class="r" style="--i:3;--h:2">   - I contacted the guy managing a website that he was featured on
-     (3rd-4th place search result for his name), and asked him to add a
-     backlink to <a href="https://namansiddheshwar.com/">namansiddheshwar.com</a>.</span>
 
 <span class="r g2" style="--i:3">   <b>## realism</b></span>
 <span class="rl">   ----------</span>
