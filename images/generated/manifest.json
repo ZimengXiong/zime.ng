@@ -1374,5 +1374,27 @@
       "src": "/images/generated/48dc4dd66aa3321a3d29-1600.webp",
       "width": 1600
     }
+  ],
+  "92670b87601ce35a0af97cc15e4ab70822faa992bc6175e8ed25f11890e532ac": [
+    {
+      "src": "/images/generated/dbd9d68230d1035af4eb-320.webp",
+      "width": 320
+    },
+    {
+      "src": "/images/generated/6a532b603275dba06f87-640.webp",
+      "width": 640
+    },
+    {
+      "src": "/images/generated/b3e07957ada9ba9bba40-960.webp",
+      "width": 960
+    },
+    {
+      "src": "/images/generated/7d617831a204b7301f48-1280.webp",
+      "width": 1280
+    },
+    {
+      "src": "/images/generated/ac1cdfe5f1737faf9430-1456.webp",
+      "width": 1456
+    }
   ]
 }
