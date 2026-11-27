@@ -156,6 +156,22 @@ pre.m .im img.bd{border:1px solid #d4d4d4}
      (3rd-4th place search result for his name), and asked him to add a
      backlink to <a href="https://namansiddheshwar.com/">namansiddheshwar.com</a>.</span>
 
+<span class="r g2" style="--i:3">   <b>## realism</b></span>
+<span class="rl">   ----------</span>
+
+<span class="r g1" style="--i:3">   The redirect was too fast, normal cf turnstiles take a second to load
+   in and you see the spinning circle in your browser. I fixed this by</span>
+
+<span class="r g1" style="--i:3;--h:3">   1. Adding a server-side delay to incoming requests of ~500ms</span>
+<span class="r" style="--i:3;--h:3">   2. Add a multi-redirect chain, first going to trust.[REDACTED.com] and
+      then turnstile.[REDACTED.com] so it feels like real things are
+      happening</span>
+
+<span class="r g1" style="--i:3">   After all this, it finally seemed pretty real</span>
+
+<span class="r g1" style="--i:3">   You can try out the difference yourself: <a href="https://alexmercer-instant.dotprod.xyz/">no delay</a> and
+   <a href="https://alexmercer.dotprod.xyz/">delay+chained redirects</a></span>
+
 <span class="r g2" style="--i:3">   <b>## did it work?</b></span>
 <span class="rl">   ---------------</span>
 
